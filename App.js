@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
-import { PaperProvider } from "react-native-paper";
+import { StyleSheet, Text, View } from 'react-native'
+import { PaperProvider } from 'react-native-paper'
 
 export default function App() {
     return (
@@ -8,14 +8,14 @@ export default function App() {
                 <Text>Initialized...</Text>
             </View>
         </PaperProvider>
-    );
+    )
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#ffff",
-        alignItems: "center",
-        justifyContent: "center",
+        backgroundColor: '#ffff',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-});
+})
