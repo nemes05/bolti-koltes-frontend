@@ -1,6 +1,6 @@
 import { PaperProvider } from 'react-native-paper'
 
-import MainScreen from './src/Components/MainScreen'
+import MainScreen from './src/Components/Screens/MainScreen'
 
 export default function App() {
     return (

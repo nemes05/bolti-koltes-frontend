@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 const BOTTOM_APPBAR_HEIGHT = 50
 
 const BottomNavBar = () => {
-    const bottom = useSafeAreaInsets()
+    const { bottom } = useSafeAreaInsets()
 
     return (
         <Appbar
