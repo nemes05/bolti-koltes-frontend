@@ -1,37 +1,38 @@
 import * as React from 'react'
-import { StyleSheet } from 'react-native'
-import { Appbar } from 'react-native-paper'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { BottomNavigation } from 'react-native-paper'
 
-const BOTTOM_APPBAR_HEIGHT = 50
+import CartScreen from '../Screens/CartScreen'
+import ListScreen from '../Screens/ListScreen'
 
 const BottomNavBar = () => {
-    const { bottom } = useSafeAreaInsets()
+    const [index, setIndex] = React.useState(0)
+    const [routes] = React.useState([
+        {
+            key: 'list',
+            title: 'Lists',
+            focusedIcon: 'format-list-bulleted',
+            unfocusedIcon: 'format-list-bulleted',
+        },
+        {
+            key: 'cart',
+            title: 'Cart',
+            focusedIcon: 'cart-outline',
+            unfocusedIcon: 'cart-outline',
+        },
+    ])
+
+    const renderScene = BottomNavigation.SceneMap({
+        list: ListScreen,
+        cart: CartScreen,
+    })
 
     return (
-        <Appbar
-            style={[
-                styles.bottom,
-                {
-                    height: BOTTOM_APPBAR_HEIGHT + bottom,
-                },
-            ]}
-            safeAreaInsets={{ bottom }}
-        >
-            <Appbar.Action icon="format-list-bulleted" onPress={() => {}} />
-            <Appbar.Action icon="cart-outline" onPress={() => {}} />
-        </Appbar>
+        <BottomNavigation
+            navigationState={{ index, routes }}
+            onIndexChange={setIndex}
+            renderScene={renderScene}
+        />
     )
 }
-
-const styles = StyleSheet.create({
-    bottom: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        bottom: 0,
-        justifyContent: 'space-evenly',
-    },
-})
 
 export default BottomNavBar

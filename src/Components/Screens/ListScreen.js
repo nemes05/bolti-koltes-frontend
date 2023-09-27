@@ -1,13 +1,9 @@
-import AddButton from '../Navigation/AddButton'
-import BottomNavBar from '../Navigation/BottomNavBar'
-import TopNavBar from '../Navigation/TopNavBar'
+import { Text } from 'react-native-paper'
 
 const ListScreen = () => {
     return (
         <>
-            <TopNavBar title="Lista" />
-            <AddButton />
-            <BottomNavBar />
+            <Text>Lista</Text>
         </>
     )
 }

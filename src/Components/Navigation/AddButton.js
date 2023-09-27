@@ -7,7 +7,7 @@ const AddButton = () => {
     return (
         <FAB
             icon="plus"
-            style={[styles.fab, { bottom: insets.bottom + 60 }]}
+            style={[styles.fab, { bottom: insets.bottom + 100 }]}
             onPress={() => console.log('Add item')}
         />
     )
