@@ -25,6 +25,15 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-barcode-scanner",
+        {
+          "cameraPermission": "Engedéjezze a kamera hozzáférést"
+        }
+      ],
+      "expo-router"
+    ]
   }
 }
