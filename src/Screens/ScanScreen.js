@@ -65,7 +65,6 @@ const ScanScreen = () => {
                         style={{ height: 600, width: 400 }}
                     />
                 </View>
-                <View style={{ padding: 20 }} />
                 {scanned && (
                     <Button
                         mode="contained"
@@ -96,6 +95,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         borderRadius: 30,
         backgroundColor: 'tomato',
+        marginBottom: 20,
     },
 })
 
