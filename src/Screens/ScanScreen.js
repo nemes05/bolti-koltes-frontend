@@ -1,6 +1,7 @@
 import { BarCodeScanner } from 'expo-barcode-scanner'
 import { useState, useEffect } from 'react'
-import { Text, View } from 'react-native'
+import { View, StyleSheet } from 'react-native'
+import { Button, Text } from 'react-native-paper'
 
 const ScanScreen = () => {
     const [hasPermission, setHasPermission] = useState(null)
@@ -26,6 +27,7 @@ const ScanScreen = () => {
             <View
                 style={{
                     alignItems: 'center',
+                    justifyContent: 'center',
                     height: 100,
                     padding: 20,
                 }}
@@ -39,6 +41,7 @@ const ScanScreen = () => {
             <View
                 style={{
                     alignItems: 'center',
+                    justifyContent: 'center',
                     height: 100,
                     padding: 20,
                 }}
@@ -49,12 +52,21 @@ const ScanScreen = () => {
     }
 
     return (
-        <View style={{ flex: 1 }}>
+        <>
             <BarCodeScanner
                 onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+                style={StyleSheet.absoluteFillObject}
             />
-        </View>
-        // {scanned && <Button onPress={() => setScanned(false)} />}
+            {scanned && (
+                <Button
+                    icon="camera"
+                    mode="contained"
+                    onPress={() => setScanned(false)}
+                >
+                    Scan again
+                </Button>
+            )}
+        </>
     )
 }
 

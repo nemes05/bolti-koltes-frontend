@@ -30,7 +30,7 @@
       [
         "expo-barcode-scanner",
         {
-          "cameraPermission": "Engedéjezze a kamera hozzáférést"
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
         }
       ],
       "expo-router"
