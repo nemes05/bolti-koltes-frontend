@@ -5,6 +5,12 @@ import CartScreen from '../Screens/CartScreen'
 import ListScreen from '../Screens/ListScreen'
 
 const BottomNavBar = () => {
+    React.useEffect(() => {
+        setTimeout(() => {
+            setIndex(1)
+        }, 10000)
+    }, [])
+
     const [index, setIndex] = React.useState(0)
     const [routes] = React.useState([
         {

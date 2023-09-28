@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native'
 import { FAB } from 'react-native-paper'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-const AddButton = () => {
+const AddButton = (props) => {
     const insets = useSafeAreaInsets()
     return (
         <FAB
