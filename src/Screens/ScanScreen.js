@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Button, Text } from 'react-native-paper'
 
+import TopNavBar from '../Navigation/TopNavBar'
+
 const ScanScreen = () => {
     const [hasPermission, setHasPermission] = useState(null)
     const [scanned, setScanned] = useState(false)
@@ -53,21 +55,48 @@ const ScanScreen = () => {
 
     return (
         <>
-            <BarCodeScanner
-                onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-                style={StyleSheet.absoluteFillObject}
-            />
-            {scanned && (
-                <Button
-                    icon="camera"
-                    mode="contained"
-                    onPress={() => setScanned(false)}
-                >
-                    Scan again
-                </Button>
-            )}
+            <TopNavBar />
+            <View style={styles.container}>
+                <View style={styles.barcodebox}>
+                    <BarCodeScanner
+                        onBarCodeScanned={
+                            scanned ? undefined : handleBarCodeScanned
+                        }
+                        style={{ height: 600, width: 400 }}
+                    />
+                </View>
+                <View style={{ padding: 20 }} />
+                {scanned && (
+                    <Button
+                        mode="contained"
+                        onPress={() => setScanned(false)}
+                        style={{ width: 200 }}
+                        uppercase
+                    >
+                        Scan again
+                    </Button>
+                )}
+            </View>
         </>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    barcodebox: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 300,
+        width: 300,
+        overflow: 'hidden',
+        borderRadius: 30,
+        backgroundColor: 'tomato',
+    },
+})
 
 export default ScanScreen
