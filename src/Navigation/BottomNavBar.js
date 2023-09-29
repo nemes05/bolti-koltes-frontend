@@ -6,6 +6,7 @@ import ListScreen from '../Screens/ListScreen'
 
 const BottomNavBar = () => {
     const [index, setIndex] = React.useState(0)
+
     React.useEffect(() => {
         console.log(index)
     }, [index])
@@ -17,6 +18,7 @@ const BottomNavBar = () => {
             setIndex(1)
         }
     }
+
     const [routes] = React.useState([
         {
             key: 'list',
