@@ -1,21 +1,15 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { PaperProvider } from 'react-native-paper'
+
+import MainScreen from './src/Screens/MainScreen'
+import ScanScreen from './src/Screens/ScanScreen'
 
 export default function App() {
     return (
         <PaperProvider>
-            <View style={styles.container}>
-                <Text>Initialized...</Text>
-            </View>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+                <MainScreen />
+            </GestureHandlerRootView>
         </PaperProvider>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#ffff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-})
