@@ -7,10 +7,6 @@ import ListScreen from '../Screens/ListScreen'
 const BottomNavBar = () => {
     const [index, setIndex] = React.useState(0)
 
-    React.useEffect(() => {
-        console.log(index)
-    }, [index])
-
     const swipeHandler = (screen) => {
         if (screen === 'cart') {
             setIndex(0)
