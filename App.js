@@ -4,6 +4,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { PaperProvider } from 'react-native-paper'
 
 import MainScreen from './src/Screens/MainScreen'
+import ScanScreen from './src/Screens/ScanScreen'
 
 export default function App() {
     const Stack = createNativeStackNavigator()
@@ -13,11 +14,8 @@ export default function App() {
             <PaperProvider>
                 <GestureHandlerRootView style={{ flex: 1 }}>
                     <Stack.Navigator screenOptions={{ headerShown: false }}>
-                        <Stack.Screen
-                            name="main"
-                            component={MainScreen}
-                            style={{ flex: 1 }}
-                        />
+                        <Stack.Screen name="main" component={MainScreen} />
+                        <Stack.Screen name="scan" component={ScanScreen} />
                     </Stack.Navigator>
                 </GestureHandlerRootView>
             </PaperProvider>

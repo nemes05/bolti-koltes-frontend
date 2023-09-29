@@ -8,7 +8,7 @@ const AddButton = (props) => {
         <FAB
             icon="plus"
             style={[styles.fab, { bottom: insets.bottom + 100 }]}
-            onPress={() => console.log('Add item')}
+            onPress={() => props.navigateToScanScreen()}
         />
     )
 }
