@@ -2,10 +2,12 @@ import { View } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { Text } from 'react-native-paper'
 
-const CartScreen = () => {
-    const panGesture = Gesture.Pan().onStart((e) => {
-        console.log(e)
-    })
+const CartScreen = (props) => {
+    const panGesture = Gesture.Pan()
+        .activeOffsetX(150)
+        .onEnd(() => {
+            props.cartSwipeHandler('cart')
+        })
 
     return (
         <GestureDetector gesture={panGesture}>

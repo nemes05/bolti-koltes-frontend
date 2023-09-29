@@ -5,13 +5,18 @@ import CartScreen from '../Screens/CartScreen'
 import ListScreen from '../Screens/ListScreen'
 
 const BottomNavBar = () => {
-    React.useEffect(() => {
-        setTimeout(() => {
-            setIndex(1)
-        }, 10000)
-    }, [])
-
     const [index, setIndex] = React.useState(0)
+    React.useEffect(() => {
+        console.log(index)
+    }, [index])
+
+    const swipeHandler = (screen) => {
+        if (screen === 'cart') {
+            setIndex(0)
+        } else if (screen === 'list') {
+            setIndex(1)
+        }
+    }
     const [routes] = React.useState([
         {
             key: 'list',
@@ -27,10 +32,28 @@ const BottomNavBar = () => {
         },
     ])
 
-    const renderScene = BottomNavigation.SceneMap({
-        list: ListScreen,
-        cart: CartScreen,
-    })
+    const renderScene = ({ route, jumpTo }) => {
+        switch (route.key) {
+            case 'list':
+                return (
+                    <ListScreen
+                        listSwipeHandler={(screen) => {
+                            swipeHandler(screen)
+                        }}
+                        jumpTo={jumpTo}
+                    />
+                )
+            case 'cart':
+                return (
+                    <CartScreen
+                        cartSwipeHandler={(screen) => {
+                            swipeHandler(screen)
+                        }}
+                        jumpTo={jumpTo}
+                    />
+                )
+        }
+    }
 
     return (
         <BottomNavigation
