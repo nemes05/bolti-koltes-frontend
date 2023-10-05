@@ -6,7 +6,7 @@ import { Button, Text } from 'react-native-paper'
 import ApiContext from '../../api/api-context'
 import TopNavBar from '../Navigation/TopNavBar'
 
-const ScanScreen = () => {
+const ScanScreen = (props) => {
     const [hasPermission, setHasPermission] = useState(null)
     const [scanned, setScanned] = useState(false)
     const api = useContext(ApiContext)
@@ -22,7 +22,10 @@ const ScanScreen = () => {
     const handleBarCodeScanned = ({ type, data }) => {
         setScanned(true)
         api.getProduct(data).then((details) => {
-            console.log(details)
+            props.navigation.replace('productnavigation', {
+                screen: 'productpage',
+                params: { details },
+            })
         })
     }
 
