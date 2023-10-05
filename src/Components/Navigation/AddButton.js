@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const AddButton = (props) => {
     const insets = useSafeAreaInsets()
+
     return (
         <FAB
             icon="plus"
