@@ -4,11 +4,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const AddButton = (props) => {
     const insets = useSafeAreaInsets()
+
     return (
         <FAB
             icon="plus"
             style={[styles.fab, { bottom: insets.bottom + 100 }]}
-            onPress={() => console.log('Add item')}
+            onPress={() => props.navigateToScanScreen()}
         />
     )
 }
