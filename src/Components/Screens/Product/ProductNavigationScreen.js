@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import ManualInputScreen from './Item/ManualInputScreen'
 import ProductScreen from './Item/ProductScreen'
 
-const ProductNavigationScreen = () => {
+const ProductNavigationScreen = (props) => {
     const Stack = createNativeStackNavigator()
 
     return (
