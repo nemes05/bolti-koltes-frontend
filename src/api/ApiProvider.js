@@ -5,15 +5,23 @@ import ApiContext from './api-context'
 const ApiProvider = (props) => {
     const getProductHandler = async (barcode) => {
         try {
-            const res = await fetch(`http://192.168.0.102:3000/${barcode}`)
+            const res = await fetch(`http://192.168.0.107:3000/${barcode}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            })
             if (!res.ok) {
-                throw new Error('Something went wrong')
+                if (res.status === 400) {
+                    throw new Error('Nem találtuk a terméket!')
+                } else {
+                    throw new Error('Valami hiba történt!')
+                }
             }
+
             if (res.status === 200) {
                 return res.json()
             }
         } catch (err) {
-            console.log(err)
+            throw err
         }
     }
 
