@@ -4,7 +4,7 @@ import { BottomNavigation } from 'react-native-paper'
 import CartScreen from '../Screens/CartScreen'
 import ListScreen from '../Screens/ListScreen'
 
-const BottomNavBar = () => {
+const BottomNavBar = (props) => {
     const [index, setIndex] = React.useState(0)
 
     const swipeHandler = (screen) => {
@@ -38,6 +38,9 @@ const BottomNavBar = () => {
                         listSwipeHandler={(screen) => {
                             swipeHandler(screen)
                         }}
+                        handleAddButton={() => {
+                            props.navigateToScanScreen()
+                        }}
                         jumpTo={jumpTo}
                     />
                 )
@@ -53,13 +56,7 @@ const BottomNavBar = () => {
         }
     }
 
-    return (
-        <BottomNavigation
-            navigationState={{ index, routes }}
-            onIndexChange={setIndex}
-            renderScene={renderScene}
-        />
-    )
+    return <BottomNavigation navigationState={{ index, routes }} onIndexChange={setIndex} renderScene={renderScene} />
 }
 
 export default BottomNavBar

@@ -1,4 +1,3 @@
-import AddButton from '../Navigation/AddButton'
 import BottomNavBar from '../Navigation/BottomNavBar'
 import TopNavBar from '../Navigation/TopNavBar'
 
@@ -6,10 +5,8 @@ const MainScreen = (props) => {
     return (
         <>
             <TopNavBar />
-            <BottomNavBar />
-            <AddButton
-                navigateToScanScreen={() => props.navigation.navigate('scan')}
-            />
+            <BottomNavBar navigateToScanScreen={() => props.navigation.navigate('scan')} />
+            {/* <AddButton navigateToScanScreen={() => props.navigation.navigate('scan')} /> */}
         </>
     )
 }

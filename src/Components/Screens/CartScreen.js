@@ -2,6 +2,8 @@ import { View } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { Text } from 'react-native-paper'
 
+import IconButton from '../Navigation/IconButton'
+
 const CartScreen = (props) => {
     const panGesture = Gesture.Pan()
         .activeOffsetX(150)
@@ -19,6 +21,12 @@ const CartScreen = (props) => {
                 }}
             >
                 <Text>Cart</Text>
+                <IconButton
+                    icon="cash-multiple"
+                    handlePress={() => {
+                        console.log('Empty cart')
+                    }}
+                />
             </View>
         </GestureDetector>
     )

@@ -2,6 +2,8 @@ import { View } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { Text } from 'react-native-paper'
 
+import IconButton from '../Navigation/IconButton'
+
 const ListScreen = (props) => {
     const panGesture = Gesture.Pan()
         .activeOffsetX(-150)
@@ -19,6 +21,12 @@ const ListScreen = (props) => {
                 }}
             >
                 <Text>Lista</Text>
+                <IconButton
+                    icon="plus"
+                    handlePress={() => {
+                        props.handleAddButton()
+                    }}
+                />
             </View>
         </GestureDetector>
     )

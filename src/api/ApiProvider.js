@@ -29,11 +29,7 @@ const ApiProvider = (props) => {
         getProduct: getProductHandler,
     }
 
-    return (
-        <ApiContext.Provider value={apiContext}>
-            {props.children}
-        </ApiContext.Provider>
-    )
+    return <ApiContext.Provider value={apiContext}>{props.children}</ApiContext.Provider>
 }
 
 export default ApiProvider

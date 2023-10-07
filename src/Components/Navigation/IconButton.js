@@ -2,14 +2,16 @@ import { StyleSheet } from 'react-native'
 import { FAB } from 'react-native-paper'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-const AddButton = (props) => {
+const IconButton = (props) => {
     const insets = useSafeAreaInsets()
 
     return (
         <FAB
-            icon="plus"
-            style={[styles.fab, { bottom: insets.bottom + 100 }]}
-            onPress={() => props.navigateToScanScreen()}
+            icon={props.icon}
+            style={[styles.fab, { bottom: insets.bottom + 40 }]}
+            onPress={() => {
+                props.handlePress()
+            }}
         />
     )
 }
@@ -23,4 +25,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default AddButton
+export default IconButton
