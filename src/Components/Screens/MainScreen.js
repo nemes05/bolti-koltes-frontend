@@ -6,7 +6,6 @@ const MainScreen = (props) => {
         <>
             <TopNavBar />
             <BottomNavBar navigateToScanScreen={() => props.navigation.navigate('scan')} />
-            {/* <AddButton navigateToScanScreen={() => props.navigation.navigate('scan')} /> */}
         </>
     )
 }

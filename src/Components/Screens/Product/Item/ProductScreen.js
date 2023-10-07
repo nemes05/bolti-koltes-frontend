@@ -1,61 +1,44 @@
-import { useState, useRef } from 'react'
-import { Text, View, StyleSheet } from 'react-native'
+import { useState, useRef, useContext } from 'react'
+import { View, StyleSheet } from 'react-native'
 import { Dropdown } from 'react-native-element-dropdown'
 import NumericInput from 'react-native-numeric-input'
-import { Button, Card, IconButton, TextInput } from 'react-native-paper'
+import { Button, Card, IconButton, TextInput, Text } from 'react-native-paper'
 
+import ApiContext from '../../../../api/api-context'
 import TopNavBar from '../../../Navigation/TopNavBar'
 
 const ProductScreen = (props) => {
     const prodDetails = props.route.params.details
     const [value, setValue] = useState(undefined)
+    const api = useContext(ApiContext)
     const pieces = useRef(0)
 
-    const data = [{ label: 'Tesco', value: 1 }]
+    api.getShops().catch((err) => {
+        console.log(err.message)
+    })
 
     return (
         <>
             <TopNavBar />
 
-            <Card style={style.card}>
+            <Card style={styles.card}>
                 <Card.Content>
-                    <View style={{ flexDirection: 'row' }}>
-                        <Card.Cover
-                            source={{ uri: prodDetails.ImageLink }}
-                            style={{
-                                width: 80,
-                                height: 80,
-                                marginRight: 10,
-                            }}
-                        />
-                        <Text
-                            variant="bodyMedium"
-                            style={{
-                                flex: 1,
-                                verticalAlign: 'top',
-                                fontSize: 18,
-                                textAlign: 'justify',
-                            }}
-                        >
+                    <View style={styles.productcardimagebox}>
+                        <Card.Cover source={{ uri: prodDetails.ImageLink }} style={styles.productimage} />
+                        <Text variant="titleMedium" style={styles.productname}>
                             {prodDetails.Name}
                         </Text>
                     </View>
                     <Card.Actions>
-                        <View
-                            style={{
-                                flex: 1,
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }}
-                        >
+                        <View style={styles.productcardactioncontainer}>
                             <Dropdown
-                                data={data}
-                                style={style.dropdown}
+                                data={api.shops}
+                                style={styles.dropdown}
                                 labelField="label"
                                 valueField="value"
                                 placeholder="Válasszon boltot"
-                                placeholderStyle={style.placeholderStyle}
-                                selectedTextStyle={style.selectedTextStyle}
+                                placeholderStyle={styles.placeholderStyle}
+                                selectedTextStyle={styles.selectedTextStyle}
                                 value={value}
                                 onChange={(item) => setValue(item.value)}
                             />
@@ -70,49 +53,23 @@ const ProductScreen = (props) => {
                 </Card.Content>
             </Card>
 
-            <Card style={style.card}>
-                <Card.Actions style={{ margin: 10 }}>
-                    <View
-                        style={{
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            width: '52%',
-                        }}
-                    >
+            <Card style={styles.card}>
+                <Card.Actions>
+                    <View style={styles.pricecardinputcontainer}>
                         <TextInput
                             mode="outlined"
                             placeholder={prodDetails.Price.toString()}
-                            disabled={
-                                value !== undefined &&
-                                data[value - 1].label !== 'Egyéb'
-                            }
-                            style={{
-                                margin: 10,
-                                width: '100%',
-                                height: 60,
-                                fontSize: 28,
-                            }}
+                            disabled={value !== undefined && api.shops[value - 1].label !== 'Egyéb'}
+                            style={styles.priceinput}
                             keyboardType="numeric"
                         />
-                        <NumericInput
-                            onChange={() => {}}
-                            ref={pieces}
-                            minValue={1}
-                            maxValue={100}
-                            rounded="true"
-                        />
+                        <NumericInput onChange={() => {}} ref={pieces} minValue={1} maxValue={100} rounded="true" />
                     </View>
-                    <View
-                        style={{
-                            flex: 2,
-                            flexDirection: 'row',
-                            justifyContent: 'flex-end',
-                        }}
-                    >
+                    <View style={styles.pricecardbuttoncontainer}>
                         <View>
                             <Button
                                 mode="contained"
-                                style={{ margin: 10 }}
+                                style={styles.button}
                                 onPress={() => {
                                     console.log('Lista')
                                 }}
@@ -121,7 +78,7 @@ const ProductScreen = (props) => {
                             </Button>
                             <Button
                                 mode="contained"
-                                style={{ margin: 10 }}
+                                style={styles.button}
                                 onPress={() => {
                                     console.log('Kosár')
                                 }}
@@ -132,16 +89,10 @@ const ProductScreen = (props) => {
                     </View>
                 </Card.Actions>
             </Card>
-            <View
-                style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }}
-            >
+            <View style={styles.newbuttoncontainer}>
                 <Button
                     mode="contained"
-                    style={{ width: '50%', justifyContent: 'center' }}
+                    style={styles.newbutton}
                     onPress={() => {
                         const parent = props.navigation.getParent()
                         parent.navigate('scan')
@@ -154,12 +105,57 @@ const ProductScreen = (props) => {
     )
 }
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
+    productcardimagebox: {
+        flexDirection: 'row',
+    },
+    productimage: {
+        width: 80,
+        height: 80,
+        marginRight: 10,
+    },
+    productname: {
+        flex: 1,
+        verticalAlign: 'top',
+        textAlign: 'justify',
+    },
+    productcardactioncontainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    pricecardinputcontainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '52%',
+    },
+    priceinput: {
+        margin: 10,
+        width: '100%',
+        height: 60,
+        fontSize: 28,
+    },
+    pricecardbuttoncontainer: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+    },
+    newbuttoncontainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    newbutton: {
+        width: '50%',
+        justifyContent: 'center',
+    },
+    button: {
+        margin: 10,
+    },
     card: {
         margin: 10,
         padding: 5,
     },
-
     dropdown: {
         height: 50,
         borderColor: 'gray',
