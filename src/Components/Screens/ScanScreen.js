@@ -1,7 +1,7 @@
 import { BarCodeScanner } from 'expo-barcode-scanner'
 import { useState, useEffect, useContext } from 'react'
 import { View, StyleSheet } from 'react-native'
-import { Button, Text, Portal, Modal, Card } from 'react-native-paper'
+import { Button, Text, Portal, Modal, Card, ActivityIndicator } from 'react-native-paper'
 
 import ApiContext from '../../api/api-context'
 import TopNavBar from '../Navigation/TopNavBar'
@@ -44,7 +44,7 @@ const ScanScreen = (props) => {
 
     if (hasPermission === null) {
         return (
-            <View style={styles.permissioncontainer}>
+            <View style={styles.centeredcontainer}>
                 <Text>Requesting for camera permission</Text>
             </View>
         )
@@ -52,7 +52,7 @@ const ScanScreen = (props) => {
 
     if (hasPermission === false) {
         return (
-            <View style={styles.permissioncontainer}>
+            <View style={styles.centeredcontainer}>
                 <Text>No access for camera</Text>
             </View>
         )
@@ -83,33 +83,46 @@ const ScanScreen = (props) => {
                 </Modal>
             </Portal>
 
-            <TopNavBar />
-            <View style={styles.container}>
-                <View style={styles.barcodebox}>
-                    <BarCodeScanner
-                        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-                        style={styles.barcodescanner}
-                    />
+            {!scanned && (
+                <>
+                    <TopNavBar />
+                    <View style={styles.container}>
+                        <View style={styles.barcodebox}>
+                            <BarCodeScanner
+                                onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+                                style={styles.barcodescanner}
+                            />
+                        </View>
+                    </View>
+                    <View style={styles.buttonbox}>
+                        <Button mode="contained" style={styles.button}>
+                            Manuális bevitel
+                        </Button>
+                        <Button mode="contained" style={styles.button} onPress={handleNavigation}>
+                            Mégse{' '}
+                        </Button>
+                    </View>
+                </>
+            )}
+
+            {scanned && (
+                <View style={styles.centeredcontainer}>
+                    <ActivityIndicator size="large" />
+                    <Text style={styles.loadingtext}>Adatok lekérése...</Text>
                 </View>
-            </View>
-            <View style={styles.buttonbox}>
-                <Button mode="contained" style={styles.button}>
-                    Manuális bevitel
-                </Button>
-                <Button mode="contained" style={styles.button} onPress={handleNavigation}>
-                    Mégse{' '}
-                </Button>
-            </View>
+            )}
         </>
     )
 }
 
 const styles = StyleSheet.create({
-    permissioncontainer: {
-        alignItems: 'center',
+    centeredcontainer: {
+        flex: 1,
         justifyContent: 'center',
-        height: 100,
-        padding: 20,
+        alignItems: 'center',
+    },
+    loadingtext: {
+        margin: 20,
     },
     modalcard: {
         width: '90%',

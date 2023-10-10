@@ -7,7 +7,7 @@ const ApiProvider = (props) => {
 
     const getProductHandler = async (barcode) => {
         try {
-            const res = await fetch(`http://192.168.136.79:3000/${barcode}`, {
+            const res = await fetch(`https://my-shopping-cart-5b67.onrender.com/${barcode}`, {
                 method: 'GET',
                 cache: 'no-store',
                 headers: { 'Content-Type': 'application/json' },
@@ -30,7 +30,7 @@ const ApiProvider = (props) => {
 
     const getShopsHandler = async () => {
         try {
-            const res = await fetch('http://192.168.136.79:3000/shops', {
+            const res = await fetch('https://my-shopping-cart-5b67.onrender.com/shops', {
                 method: 'GET',
                 cache: 'no-store',
                 headers: { 'Content-Type': 'application/json' },

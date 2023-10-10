@@ -1,4 +1,4 @@
-import { useState, useRef, useContext } from 'react'
+import { useState, useContext } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Dropdown } from 'react-native-element-dropdown'
 import NumericInput from 'react-native-numeric-input'
@@ -11,8 +11,8 @@ const ProductScreen = (props) => {
     const prodDetails = props.route.params.details
     const [value, setValue] = useState(undefined)
     const [price, setPrice] = useState(0)
+    const [pieces, setPieces] = useState(1)
     const api = useContext(ApiContext)
-    const pieces = useRef(0)
 
     return (
         <>
@@ -58,7 +58,6 @@ const ProductScreen = (props) => {
                     <View style={styles.pricecardinputcontainer}>
                         <TextInput
                             mode="outlined"
-                            placeholder={prodDetails.Price.toString()}
                             disabled={value !== undefined && api.shops[value - 1].ShopName !== 'Egyéb'}
                             style={styles.priceinput}
                             value={price.toString()}
@@ -67,7 +66,18 @@ const ProductScreen = (props) => {
                             }}
                             keyboardType="numeric"
                         />
-                        <NumericInput onChange={() => {}} ref={pieces} minValue={1} maxValue={100} rounded="true" />
+                        <NumericInput
+                            onChange={(value) => {
+                                setPieces(value)
+                            }}
+                            onLimitReached={() => {
+                                console.log('asd')
+                            }}
+                            value={pieces}
+                            minValue={1}
+                            maxValue={100}
+                            rounded="true"
+                        />
                     </View>
                     <View style={styles.pricecardbuttoncontainer}>
                         <View>
