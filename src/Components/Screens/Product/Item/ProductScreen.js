@@ -56,22 +56,25 @@ const ProductScreen = (props) => {
             <Card style={styles.card}>
                 <Card.Actions>
                     <View style={styles.pricecardinputcontainer}>
-                        <TextInput
-                            mode="outlined"
-                            disabled={value !== undefined && api.shops[value - 1].ShopName !== 'Egyéb'}
-                            style={styles.priceinput}
-                            value={price.toString()}
-                            onChangeText={(inputPrice) => {
-                                setPrice(inputPrice)
-                            }}
-                            keyboardType="numeric"
-                        />
+                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                            <TextInput
+                                mode="outlined"
+                                editable={!(value !== undefined && api.shops[value - 1].ShopName !== 'Egyéb')}
+                                //disabled={value !== undefined && api.shops[value - 1].ShopName !== 'Egyéb'}
+                                style={styles.priceinput}
+                                value={price.toString()}
+                                onChangeText={(inputPrice) => {
+                                    setPrice(inputPrice)
+                                }}
+                                keyboardType="numeric"
+                            />
+                            <Text variant="titleMedium" style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                Ft/db
+                            </Text>
+                        </View>
                         <NumericInput
                             onChange={(value) => {
                                 setPieces(value)
-                            }}
-                            onLimitReached={() => {
-                                console.log('asd')
                             }}
                             value={pieces}
                             minValue={1}
@@ -103,6 +106,7 @@ const ProductScreen = (props) => {
                     </View>
                 </Card.Actions>
             </Card>
+
             <View style={styles.newbuttoncontainer}>
                 <Button
                     mode="contained"
@@ -145,7 +149,7 @@ const styles = StyleSheet.create({
     },
     priceinput: {
         margin: 10,
-        width: '100%',
+        width: '80%',
         height: 60,
         fontSize: 28,
     },
