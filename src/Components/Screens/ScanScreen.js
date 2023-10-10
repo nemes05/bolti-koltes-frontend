@@ -18,6 +18,10 @@ const ScanScreen = (props) => {
             setHasPermission(status === 'granted')
         }
         getBarCodeScannerPermissions()
+
+        api.getShops().catch(() => {
+            console.log('Boltok inicializálása sikertelen')
+        })
     }, [])
 
     const handleNavigation = () => {
