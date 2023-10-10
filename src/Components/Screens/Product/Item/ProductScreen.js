@@ -10,12 +10,9 @@ import TopNavBar from '../../../Navigation/TopNavBar'
 const ProductScreen = (props) => {
     const prodDetails = props.route.params.details
     const [value, setValue] = useState(undefined)
+    const [price, setPrice] = useState(0)
     const api = useContext(ApiContext)
     const pieces = useRef(0)
-
-    api.getShops().catch((err) => {
-        console.log(err.message)
-    })
 
     return (
         <>
@@ -34,13 +31,16 @@ const ProductScreen = (props) => {
                             <Dropdown
                                 data={api.shops}
                                 style={styles.dropdown}
-                                labelField="label"
-                                valueField="value"
+                                labelField="ShopName"
+                                valueField="ShopID"
                                 placeholder="Válasszon boltot"
                                 placeholderStyle={styles.placeholderStyle}
                                 selectedTextStyle={styles.selectedTextStyle}
                                 value={value}
-                                onChange={(item) => setValue(item.value)}
+                                onChange={(item) => {
+                                    setValue(item.ShopID)
+                                    setPrice(prodDetails.Price)
+                                }}
                             />
                         </View>
                         <IconButton
@@ -59,8 +59,12 @@ const ProductScreen = (props) => {
                         <TextInput
                             mode="outlined"
                             placeholder={prodDetails.Price.toString()}
-                            disabled={value !== undefined && api.shops[value - 1].label !== 'Egyéb'}
+                            disabled={value !== undefined && api.shops[value - 1].ShopName !== 'Egyéb'}
                             style={styles.priceinput}
+                            value={price.toString()}
+                            onChangeText={(inputPrice) => {
+                                setPrice(inputPrice)
+                            }}
                             keyboardType="numeric"
                         />
                         <NumericInput onChange={() => {}} ref={pieces} minValue={1} maxValue={100} rounded="true" />
