@@ -6,7 +6,13 @@ const CartProvider = (props) => {
     const [cart, setCart] = useState([])
 
     const addProductHandler = (product) => {
-        setCart((prevCart) => [...prevCart, product])
+        const newProd = cart.find((listProduct) => listProduct.Barcode === product.Barcode)
+        if (newProd !== undefined) {
+            const newList = cart.filter((element) => element.Barcode !== product.Barcode)
+            setCart([...newList, { ...newProd, Price: product.Price, Pieces: product.Pieces + newProd.Pieces }])
+        } else {
+            setCart((prevList) => [...prevList, product])
+        }
     }
 
     const listContext = {
