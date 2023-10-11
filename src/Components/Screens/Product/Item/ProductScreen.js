@@ -2,9 +2,11 @@ import { useState, useContext } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Dropdown } from 'react-native-element-dropdown'
 import NumericInput from 'react-native-numeric-input'
-import { Button, Card, IconButton, TextInput, Text } from 'react-native-paper'
+import { Button, Card, IconButton, TextInput, Text, Portal, Modal, Snackbar } from 'react-native-paper'
 
 import ApiContext from '../../../../api/api-context'
+import CartContext from '../../../../list-cart/cart-context'
+import ListContext from '../../../../list-cart/list-context'
 import TopNavBar from '../../../Navigation/TopNavBar'
 
 const ProductScreen = (props) => {
@@ -12,12 +14,65 @@ const ProductScreen = (props) => {
     const [value, setValue] = useState(undefined)
     const [price, setPrice] = useState(0)
     const [pieces, setPieces] = useState(1)
+    const [showModal, setShowModal] = useState(false)
+    const [showSnackBar, setShowSnackBar] = useState(false)
     const api = useContext(ApiContext)
+    const list = useContext(ListContext)
+    const cart = useContext(CartContext)
 
     return (
         <>
-            <TopNavBar />
+            {showModal && (
+                <Portal>
+                    <Modal
+                        visible={showModal}
+                        onDismiss={() => {
+                            setShowModal(false)
+                        }}
+                    >
+                        <View style={styles.centerview}>
+                            <Card style={styles.modalcard}>
+                                <Card.Content>
+                                    <View style={styles.centerview}>
+                                        <Text variant="headlineSmall" style={styles.modaltext}>
+                                            Válasszon egy boltot!
+                                        </Text>
+                                    </View>
+                                </Card.Content>
+                                <Card.Actions>
+                                    <View style={styles.modalbuttonbox}>
+                                        <Button
+                                            mode="outlined"
+                                            onPress={() => {
+                                                setShowModal(false)
+                                            }}
+                                        >
+                                            Vissza
+                                        </Button>
+                                    </View>
+                                </Card.Actions>
+                            </Card>
+                        </View>
+                    </Modal>
+                </Portal>
+            )}
 
+            <Snackbar
+                visible={showSnackBar}
+                onDismiss={() => {
+                    setShowSnackBar(false)
+                }}
+                elevation={3}
+                icon="check"
+                onIconPress={() => {
+                    setShowSnackBar(false)
+                }}
+                style={{ marginBottom: 20 }}
+            >
+                Sikeresen hozzáadva
+            </Snackbar>
+
+            <TopNavBar />
             <Card style={styles.card}>
                 <Card.Content>
                     <View style={styles.productcardimagebox}>
@@ -52,7 +107,6 @@ const ProductScreen = (props) => {
                     </Card.Actions>
                 </Card.Content>
             </Card>
-
             <Card style={styles.card}>
                 <Card.Actions>
                     <View style={styles.pricecardinputcontainer}>
@@ -88,7 +142,17 @@ const ProductScreen = (props) => {
                                 mode="contained"
                                 style={styles.button}
                                 onPress={() => {
-                                    console.log('Lista')
+                                    if (value === undefined) {
+                                        setShowModal(true)
+                                    } else {
+                                        list.addProduct({
+                                            ...prodDetails,
+                                            Price: price,
+                                            Pieces: pieces,
+                                            ShopID: api.shops[value - 1].ShopID,
+                                        })
+                                        setShowSnackBar(true)
+                                    }
                                 }}
                             >
                                 Listára
@@ -97,7 +161,17 @@ const ProductScreen = (props) => {
                                 mode="contained"
                                 style={styles.button}
                                 onPress={() => {
-                                    console.log('Kosár')
+                                    if (value === undefined) {
+                                        setShowModal(true)
+                                    } else {
+                                        cart.addProduct({
+                                            ...prodDetails,
+                                            Price: price,
+                                            Pieces: pieces,
+                                            ShopID: api.shops[value - 1].ShopID,
+                                        })
+                                        setShowSnackBar(true)
+                                    }
                                 }}
                             >
                                 Kosárba
@@ -106,14 +180,13 @@ const ProductScreen = (props) => {
                     </View>
                 </Card.Actions>
             </Card>
-
             <View style={styles.newbuttoncontainer}>
                 <Button
                     mode="contained"
                     style={styles.newbutton}
                     onPress={() => {
                         const parent = props.navigation.getParent()
-                        parent.navigate('scan')
+                        parent.replace('scan')
                     }}
                 >
                     Új kód beolvasása
@@ -188,6 +261,23 @@ const styles = StyleSheet.create({
     },
     selectedTextStyle: {
         fontSize: 16,
+    },
+    centerview: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalcard: {
+        width: '90%',
+        padding: 15,
+    },
+    modalbuttonbox: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modaltext: {
+        textAlign: 'center',
+        margin: 10,
     },
 })
 
