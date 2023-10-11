@@ -180,7 +180,7 @@ const ProductScreen = (props) => {
                     </View>
                 </Card.Actions>
             </Card>
-            <View style={styles.newbuttoncontainer}>
+            <View style={styles.navigationbuttoncontainer}>
                 <Button
                     mode="contained"
                     style={styles.newbutton}
@@ -190,6 +190,16 @@ const ProductScreen = (props) => {
                     }}
                 >
                     Új kód beolvasása
+                </Button>
+                <Button
+                    mode="contained"
+                    style={styles.mainpagebutton}
+                    onPress={() => {
+                        const parent = props.navigation.getParent()
+                        parent.navigate('main')
+                    }}
+                >
+                    Vissza a főoldalra
                 </Button>
             </View>
         </>
@@ -231,14 +241,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-end',
     },
-    newbuttoncontainer: {
+    navigationbuttoncontainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
     newbutton: {
         width: '50%',
-        justifyContent: 'center',
+        margin: 10,
     },
     button: {
         margin: 10,
@@ -277,6 +287,10 @@ const styles = StyleSheet.create({
     },
     modaltext: {
         textAlign: 'center',
+        margin: 10,
+    },
+    mainpagebutton: {
+        width: '50%',
         margin: 10,
     },
 })
