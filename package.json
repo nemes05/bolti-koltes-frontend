@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "1.18.2",
     "@react-navigation/native-stack": "^6.9.14",
     "expo": "~49.0.12",
     "expo-barcode-scanner": "~12.5.3",
@@ -26,9 +27,9 @@
     "react-native-paper-grid": "^0.1.12",
     "react-native-safe-area-context": "4.6.3",
     "react-native-screens": "~3.22.0",
+    "react-native-select-dropdown": "^3.4.0",
     "react-native-vector-icons": "^9.2.0",
-    "readme-md-generator": "^1.0.0",
-    "@react-native-async-storage/async-storage": "1.18.2"
+    "readme-md-generator": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
