@@ -19,10 +19,24 @@ const ListProvider = (props) => {
         }
     }
 
+    const removeProductHandler = (barcode) => {
+        const newList = list.filter((item) => item.Barcode !== barcode)
+        setList(newList)
+        removeItemHandler(barcode)
+    }
+
     const getContentPriceHandler = () => {
         let price = 0
         list.forEach((element) => (price += element.Price * element.Pieces))
         return price
+    }
+
+    const updateProductHandler = (product, newPrice, newPieces, newShopID) => {
+        const oldProduct = list.find((listProduct) => listProduct.Barcode === product.Barcode)
+        const newProduct = { ...oldProduct, Price: newPrice, Pieces: newPieces, ShopID: newShopID }
+        const newList = list.filter((element) => element.Barcode !== product.Barcode)
+        setList([...newList, newProduct])
+        updateItemHandler(newProduct)
     }
 
     const loadListHandler = async () => {
@@ -40,8 +54,8 @@ const ListProvider = (props) => {
         await AsyncStorage.setItem(product.Barcode, JSON.stringify(product))
     }
 
-    const removeItemHandler = async (product) => {
-        await AsyncStorage.removeItem(product.Barcode)
+    const removeItemHandler = async (barcode) => {
+        await AsyncStorage.removeItem(barcode)
     }
 
     const updateItemHandler = async (product) => {
@@ -51,6 +65,8 @@ const ListProvider = (props) => {
     const listContext = {
         addProduct: addProductHandler,
         getContentPrice: getContentPriceHandler,
+        updateProduct: updateProductHandler,
+        removeProduct: removeProductHandler,
         initLoad: loadListHandler,
         list,
     }
