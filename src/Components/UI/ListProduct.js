@@ -1,27 +1,58 @@
+import { useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { Card, IconButton, Text } from 'react-native-paper'
+import { Card, Divider, IconButton, Modal, Portal, Text } from 'react-native-paper'
+
+import ProductDetails from './ProductDetails'
 
 const ListProduct = (props) => {
     const prod = props.product
+    const [showDetails, setShowDetails] = useState(false)
     return (
-        <Card style={{ margin: 5, padding: 3 }}>
-            <Card.Content style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                <View style={{ flexDirection: 'row' }}>
-                    <Card.Cover source={{ uri: prod.ImageLink }} style={styles.productimage} />
-                    <View style={{ justifyContent: 'center', width: '65%' }}>
-                        <Text numberOfLines={1}>{prod.Name}</Text>
+        <>
+            <Portal>
+                <Modal
+                    visible={showDetails}
+                    onDismiss={() => {
+                        setShowDetails(false)
+                    }}
+                >
+                    <ProductDetails
+                        onDismiss={() => {
+                            setShowDetails(false)
+                        }}
+                        product={prod}
+                    />
+                </Modal>
+            </Portal>
+
+            <Card
+                style={{ margin: 5, padding: 3 }}
+                onPress={() => {
+                    setShowDetails(true)
+                }}
+            >
+                <Card.Content>
+                    <View style={{ marginBottom: 5 }}>
                         <Text variant="labelLarge" style={{ textAlign: 'center' }}>
-                            {prod.Price}
+                            {prod.Name}
                         </Text>
                     </View>
-                </View>
-                <Card.Actions>
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <IconButton icon="cart-plus" style={{ marginRight: 20, borderWidth: 1 }} />
+                    <Divider horizontalInset="true" bold="true" />
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            marginTop: 10,
+                        }}
+                    >
+                        <Card.Cover source={{ uri: prod.ImageLink }} style={{ width: 70, height: 70 }} />
+                        <Text variant="headlineMedium">{(prod.Pieces * prod.Price).toLocaleString()} Ft</Text>
+                        <IconButton icon="cart-plus" />
                     </View>
-                </Card.Actions>
-            </Card.Content>
-        </Card>
+                </Card.Content>
+            </Card>
+        </>
     )
 }
 

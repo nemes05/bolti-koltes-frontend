@@ -1,7 +1,6 @@
 import { useContext } from 'react'
-import { View } from 'react-native'
+import { FlatList, View } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
-import { Text } from 'react-native-paper'
 
 import ListContext from '../../list-cart/list-context'
 import IconButton from '../Navigation/IconButton'
@@ -17,18 +16,8 @@ const ListScreen = (props) => {
 
     return (
         <GestureDetector gesture={panGesture}>
-            <View
-                style={{
-                    alignItems: 'center',
-                    height: '100%',
-                    padding: 20,
-                }}
-            >
-                <View>
-                    {list.list.length !== 0 &&
-                        list.list.map((product) => <ListProduct key={product.Barcode} product={product} />)}
-                </View>
-                {list.list.length === 0 && <Text> Nincs termék a listán</Text>}
+            <View style={{ height: '100%' }}>
+                <FlatList data={list.list} renderItem={({ item }) => <ListProduct product={item} />} />
                 <IconButton
                     icon="plus"
                     handlePress={() => {
