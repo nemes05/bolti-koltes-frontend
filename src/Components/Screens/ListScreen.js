@@ -16,7 +16,7 @@ const ListScreen = (props) => {
 
     return (
         <GestureDetector gesture={panGesture}>
-            <View style={{ height: '100%' }}>
+            <View style={{ height: '100%', marginTop: 5, marginBottom: 5 }}>
                 <FlatList data={list.list} renderItem={({ item }) => <ListProduct product={item} />} />
                 <IconButton
                     icon="plus"

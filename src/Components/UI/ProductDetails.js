@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
-import { Card, Text, Button, Divider, TextInput, IconButton } from 'react-native-paper'
+import { Card, Text, Button, Divider, TextInput, IconButton, useTheme } from 'react-native-paper'
 import SelectDropdown from 'react-native-select-dropdown'
 
 import ApiContext from '../../api/api-context'
@@ -15,99 +15,144 @@ const ProductDetails = (props) => {
     const [newPrice, setNewPrice] = useState(prod.Price)
     const [newPiece, setNewPiece] = useState(prod.Pieces)
     const [newShop, setNewShop] = useState(prod.ShopID)
+    const [showError, setShowError] = useState(false)
+    const theme = useTheme()
 
-    const validNumber = (number) => {
-        return parseInt(number, 10) && parseInt(number, 10) >= 0
+    const validInput = (type, number) => {
+        if (type === 'price') return parseInt(number, 10) && parseInt(number, 10) >= 0
+        if (type === 'piece') return parseInt(number, 10) && parseInt(number, 10) > 0
     }
 
     const formValidation = () => {
-        console.log(newPrice)
-        if (validNumber(newPrice) && validNumber(newPiece)) {
+        if (validInput('price', newPrice) && validInput('piece', newPiece)) {
             list.updateProduct(prod, newPrice, newPiece, newShop)
             props.onDismiss()
         } else {
+            setShowError(true)
         }
     }
 
     return (
-        <View style={styles.centerview}>
-            <Card style={styles.modalcard}>
-                <Card.Content>
-                    <View style={styles.productcardimagebox}>
-                        <Card.Cover source={{ uri: prod.ImageLink }} style={styles.productimage} />
-                        <Text variant="titleMedium" style={styles.productname}>
-                            {prod.Name}
-                        </Text>
-                    </View>
-                    <Divider />
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                        <TextInput
-                            mode="outlined"
-                            inputMode="numeric"
-                            placeholder={prod.Pieces.toString()}
-                            onChangeText={(piece) => {
-                                setNewPiece(piece)
-                            }}
-                            style={{ width: '50%', marginRight: 10, fontSize: 30 }}
-                        />
-                        <Text variant="headlineSmall">db</Text>
-                    </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-                        <TextInput
-                            mode="outlined"
-                            placeholder={prod.Price.toString()}
-                            inputMode="numeric"
-                            onChangeText={(price) => {
-                                setNewPrice(price)
-                            }}
-                            style={{ width: '50%', marginRight: 10, fontSize: 30 }}
-                        />
-                        <Text variant="headlineSmall">Ft/db</Text>
-                    </View>
-                    <View style={{ marginTop: 10, justifyContent: 'center', alignItems: 'center' }}>
-                        <SelectDropdown
-                            data={shopNames}
-                            defaultValueByIndex={prod.ShopID - 1}
-                            statusBarTranslucent={dummyBoolean}
-                            buttonStyle={styles.dropdownBtnStyle}
-                            buttonTextStyle={styles.dropdown1BtnTxtStyle}
-                            dropdownStyle={styles.dropdown1DropdownStyle}
-                            rowStyle={styles.dropdown1RowStyle}
-                            rowTextStyle={styles.dropdown1RowTxtStyle}
-                            onSelect={(item) => {
-                                const shop = api.shops.find((element) => element.ShopName === item)
-                                setNewShop(shop.ShopID)
-                            }}
-                        />
-                    </View>
-                </Card.Content>
-                <Card.Actions>
-                    <IconButton
-                        icon="close"
-                        onPress={() => {
-                            list.removeProduct(prod.Barcode)
-                            props.onDismiss()
-                        }}
-                    />
-                    <Button
-                        mode="outlined"
-                        onPress={() => {
-                            formValidation()
-                        }}
-                    >
-                        Mentés
-                    </Button>
-                    <Button
-                        mode="outlined"
-                        onPress={() => {
-                            props.onDismiss()
-                        }}
-                    >
-                        Vissza
-                    </Button>
-                </Card.Actions>
-            </Card>
-        </View>
+        <>
+            {!showError && (
+                <View style={styles.centerview}>
+                    <Card style={styles.modalcard}>
+                        <Card.Content>
+                            <View style={styles.productcardimagebox}>
+                                <Card.Cover source={{ uri: prod.ImageLink }} style={styles.productimage} />
+                                <Text variant="titleMedium" style={styles.productname}>
+                                    {prod.Name}
+                                </Text>
+                            </View>
+                            <Divider />
+                            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+                                <TextInput
+                                    mode="outlined"
+                                    inputMode="numeric"
+                                    placeholder={prod.Pieces.toString()}
+                                    onChangeText={(piece) => {
+                                        setNewPiece(piece)
+                                    }}
+                                    style={{ width: '50%', marginRight: 10, fontSize: 30 }}
+                                />
+                                <Text variant="headlineSmall">db</Text>
+                            </View>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+                                <TextInput
+                                    mode="outlined"
+                                    placeholder={prod.Price.toString()}
+                                    inputMode="numeric"
+                                    onChangeText={(price) => {
+                                        setNewPrice(price)
+                                    }}
+                                    style={{ width: '50%', marginRight: 10, fontSize: 30 }}
+                                />
+                                <Text variant="headlineSmall">Ft/db</Text>
+                            </View>
+                            <View style={{ marginTop: 10, justifyContent: 'center', alignItems: 'center' }}>
+                                <SelectDropdown
+                                    data={shopNames}
+                                    defaultValueByIndex={prod.ShopID - 1}
+                                    statusBarTranslucent={dummyBoolean}
+                                    buttonStyle={styles.dropdownBtnStyle}
+                                    buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                                    dropdownStyle={styles.dropdown1DropdownStyle}
+                                    rowStyle={styles.dropdown1RowStyle}
+                                    rowTextStyle={styles.dropdown1RowTxtStyle}
+                                    onSelect={(item) => {
+                                        const shop = api.shops.find((element) => element.ShopName === item)
+                                        setNewShop(shop.ShopID)
+                                    }}
+                                />
+                            </View>
+                        </Card.Content>
+                        <Card.Actions>
+                            <View
+                                style={{
+                                    flex: 1,
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <IconButton
+                                    icon="close"
+                                    size={30}
+                                    style={{ margin: 0, padding: 0 }}
+                                    mode="outlined"
+                                    iconColor={theme.colors.error}
+                                    borderColor={theme.colors.error}
+                                    onPress={() => {
+                                        list.removeProduct(prod.Barcode)
+                                        props.onDismiss()
+                                    }}
+                                />
+                                <Button
+                                    mode="outlined"
+                                    onPress={() => {
+                                        formValidation()
+                                    }}
+                                >
+                                    Mentés
+                                </Button>
+                                <Button
+                                    mode="outlined"
+                                    onPress={() => {
+                                        props.onDismiss()
+                                    }}
+                                >
+                                    Vissza
+                                </Button>
+                            </View>
+                        </Card.Actions>
+                    </Card>
+                </View>
+            )}
+
+            {showError && (
+                <View style={styles.centerview}>
+                    <Card style={styles.modalcard}>
+                        <Card.Content>
+                            <Text variant="headlineSmall" style={{ textAlign: 'center', margin: 10 }}>
+                                Adjon meg helyes adatokat!
+                            </Text>
+                        </Card.Content>
+                        <Card.Actions>
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <Button
+                                    mode="outlined"
+                                    onPress={() => {
+                                        setShowError(false)
+                                    }}
+                                >
+                                    Vissza
+                                </Button>
+                            </View>
+                        </Card.Actions>
+                    </Card>
+                </View>
+            )}
+        </>
     )
 }
 

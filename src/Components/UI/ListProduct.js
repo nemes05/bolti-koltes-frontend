@@ -48,7 +48,7 @@ const ListProduct = (props) => {
                     >
                         <Card.Cover source={{ uri: prod.ImageLink }} style={{ width: 70, height: 70 }} />
                         <Text variant="headlineMedium">{(prod.Pieces * prod.Price).toLocaleString()} Ft</Text>
-                        <IconButton icon="cart-plus" />
+                        <IconButton onPress={() => {}} icon="cart-plus" size={30} mode="contained-tonal" />
                     </View>
                 </Card.Content>
             </Card>

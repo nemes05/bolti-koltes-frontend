@@ -11,6 +11,7 @@ import TopNavBar from '../../../Navigation/TopNavBar'
 
 const ProductScreen = (props) => {
     const prodDetails = props.route.params.details
+    const parent = props.navigation.getParent()
     const [value, setValue] = useState(undefined)
     const [price, setPrice] = useState(0)
     const [pieces, setPieces] = useState(1)
@@ -72,7 +73,17 @@ const ProductScreen = (props) => {
                 Sikeresen hozzáadva
             </Snackbar>
 
-            <TopNavBar />
+            <TopNavBar
+                title={
+                    <IconButton
+                        icon="home"
+                        size={40}
+                        onPress={() => {
+                            parent.navigate('main')
+                        }}
+                    />
+                }
+            />
             <Card style={styles.card}>
                 <Card.Content>
                     <View style={styles.productcardimagebox}>
@@ -185,7 +196,6 @@ const ProductScreen = (props) => {
                     mode="contained"
                     style={styles.newbutton}
                     onPress={() => {
-                        const parent = props.navigation.getParent()
                         parent.replace('scan')
                     }}
                 >
@@ -195,7 +205,6 @@ const ProductScreen = (props) => {
                     mode="contained"
                     style={styles.mainpagebutton}
                     onPress={() => {
-                        const parent = props.navigation.getParent()
                         parent.navigate('main')
                     }}
                 >

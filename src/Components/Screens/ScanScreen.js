@@ -73,8 +73,22 @@ const ScanScreen = (props) => {
                             </Card.Content>
                             <Card.Actions>
                                 <View style={styles.modalbuttonbox}>
-                                    <Button mode="outlined" onPress={handleNavigation}>
+                                    <Button
+                                        mode="outlined"
+                                        style={{ margin: 5, width: '65%' }}
+                                        onPress={handleNavigation}
+                                    >
                                         Vissza a főoldalra
+                                    </Button>
+                                    <Button
+                                        mode="outlined"
+                                        style={{ margin: 5, width: '65%' }}
+                                        onPress={() => {
+                                            setScanned(false)
+                                            setError({ hasError: false, msg: '' })
+                                        }}
+                                    >
+                                        Új beolvasás
                                     </Button>
                                 </View>
                             </Card.Actions>
