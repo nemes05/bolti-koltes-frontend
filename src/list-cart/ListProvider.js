@@ -50,16 +50,22 @@ const ListProvider = (props) => {
         setList(localList)
     }
 
-    const saveItemHandler = async (product) => {
-        await AsyncStorage.setItem(product.Barcode, JSON.stringify(product))
+    const saveItemHandler = (product) => {
+        AsyncStorage.setItem(product.Barcode, JSON.stringify(product)).catch((err) => {
+            console.log(err.message)
+        })
     }
 
-    const removeItemHandler = async (barcode) => {
-        await AsyncStorage.removeItem(barcode)
+    const removeItemHandler = (barcode) => {
+        AsyncStorage.removeItem(barcode).catch((err) => {
+            console.log(err.message)
+        })
     }
 
-    const updateItemHandler = async (product) => {
-        await AsyncStorage.mergeItem(product.Barcode, JSON.stringify(product))
+    const updateItemHandler = (product) => {
+        AsyncStorage.mergeItem(product.Barcode, JSON.stringify(product)).catch((err) => {
+            console.log(err.message)
+        })
     }
 
     const listContext = {
