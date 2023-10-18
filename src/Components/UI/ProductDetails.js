@@ -12,7 +12,9 @@ const ProductDetails = (props) => {
     const api = useContext(ApiContext)
     const list = useContext(ListContext)
     const shopNames = api.shops.map((item) => item.ShopName)
-    const [newPrice, setNewPrice] = useState(prod.Price)
+    const [newPrice, setNewPrice] = useState(
+        prod.Price[prod.Price.findIndex((shop) => shop.ShopID === prod.ShopID)].Price
+    )
     const [newPiece, setNewPiece] = useState(prod.Pieces)
     const [newShop, setNewShop] = useState(prod.ShopID)
     const [showError, setShowError] = useState(false)
@@ -60,8 +62,11 @@ const ProductDetails = (props) => {
                             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
                                 <TextInput
                                     mode="outlined"
-                                    placeholder={prod.Price.toString()}
+                                    placeholder={prod.Price[
+                                        prod.Price.findIndex((shop) => shop.ShopID === prod.ShopID)
+                                    ].Price.toString()}
                                     inputMode="numeric"
+                                    value={newPrice.toString()}
                                     onChangeText={(price) => {
                                         setNewPrice(price)
                                     }}
@@ -72,7 +77,7 @@ const ProductDetails = (props) => {
                             <View style={{ marginTop: 10, justifyContent: 'center', alignItems: 'center' }}>
                                 <SelectDropdown
                                     data={shopNames}
-                                    defaultValueByIndex={prod.ShopID - 1}
+                                    defaultValueByIndex={api.shops.findIndex((shop) => shop.ShopID === prod.ShopID)}
                                     statusBarTranslucent={dummyBoolean}
                                     buttonStyle={styles.dropdownBtnStyle}
                                     buttonTextStyle={styles.dropdown1BtnTxtStyle}
@@ -82,6 +87,11 @@ const ProductDetails = (props) => {
                                     onSelect={(item) => {
                                         const shop = api.shops.find((element) => element.ShopName === item)
                                         setNewShop(shop.ShopID)
+                                        setNewPrice(
+                                            prod.Price[
+                                                prod.Price.findIndex((element) => element.ShopID === shop.ShopID)
+                                            ].Price
+                                        )
                                     }}
                                 />
                             </View>

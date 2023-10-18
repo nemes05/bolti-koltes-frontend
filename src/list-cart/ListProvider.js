@@ -10,7 +10,7 @@ const ListProvider = (props) => {
         const newProd = list.find((listProduct) => listProduct.Barcode === product.Barcode)
         if (newProd !== undefined) {
             const newList = list.filter((element) => element.Barcode !== product.Barcode)
-            const updatedProduct = { ...newProd, Price: product.Price, Pieces: product.Pieces + newProd.Pieces }
+            const updatedProduct = { ...newProd, Pieces: product.Pieces + newProd.Pieces }
             setList([...newList, updatedProduct])
             updateItemHandler(updatedProduct)
         } else {
@@ -26,14 +26,20 @@ const ListProvider = (props) => {
     }
 
     const getContentPriceHandler = () => {
+        console.log('szamolok')
         let price = 0
-        list.forEach((element) => (price += element.Price * element.Pieces))
+        list.forEach(
+            (element) =>
+                (price +=
+                    element.Price[element.Price.findIndex((shop) => shop.ShopID === element.ShopID)].Price *
+                    element.Pieces)
+        )
         return price
     }
 
     const updateProductHandler = (product, newPrice, newPieces, newShopID) => {
         const oldProduct = list.find((listProduct) => listProduct.Barcode === product.Barcode)
-        const newProduct = { ...oldProduct, Price: newPrice, Pieces: newPieces, ShopID: newShopID }
+        const newProduct = { ...oldProduct, Pieces: newPieces, ShopID: newShopID }
         const newList = list.filter((element) => element.Barcode !== product.Barcode)
         setList([...newList, newProduct])
         updateItemHandler(newProduct)

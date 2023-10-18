@@ -60,13 +60,16 @@ const ProductScreen = (props) => {
 
             <Snackbar
                 visible={showSnackBar}
+                duration={1000}
                 onDismiss={() => {
                     setShowSnackBar(false)
+                    parent.navigate('main')
                 }}
                 elevation={3}
                 icon="check"
                 onIconPress={() => {
                     setShowSnackBar(false)
+                    parent.navigate('main')
                 }}
                 style={{ marginBottom: 20 }}
             >
@@ -84,6 +87,7 @@ const ProductScreen = (props) => {
                     />
                 }
             />
+
             <Card style={styles.card}>
                 <Card.Content>
                     <View style={styles.productcardimagebox}>
@@ -105,7 +109,9 @@ const ProductScreen = (props) => {
                                 value={value}
                                 onChange={(item) => {
                                     setValue(item.ShopID)
-                                    setPrice(prodDetails.Price)
+                                    setPrice(
+                                        prodDetails.Price.filter((data) => data.ShopName === item.ShopName)[0].Price
+                                    )
                                 }}
                             />
                         </View>
@@ -118,14 +124,14 @@ const ProductScreen = (props) => {
                     </Card.Actions>
                 </Card.Content>
             </Card>
+
             <Card style={styles.card}>
                 <Card.Actions>
                     <View style={styles.pricecardinputcontainer}>
-                        <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={styles.pricecardinputcontainerbox}>
                             <TextInput
                                 mode="outlined"
-                                editable={!(value !== undefined && api.shops[value - 1].ShopName !== 'Egyéb')}
-                                //disabled={value !== undefined && api.shops[value - 1].ShopName !== 'Egyéb'}
+                                editable
                                 style={styles.priceinput}
                                 value={price.toString()}
                                 onChangeText={(inputPrice) => {
@@ -133,7 +139,7 @@ const ProductScreen = (props) => {
                                 }}
                                 keyboardType="numeric"
                             />
-                            <Text variant="titleMedium" style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <Text variant="titleMedium" style={styles.priceftperdb}>
                                 Ft/db
                             </Text>
                         </View>
@@ -158,7 +164,6 @@ const ProductScreen = (props) => {
                                     } else {
                                         list.addProduct({
                                             ...prodDetails,
-                                            Price: price,
                                             Pieces: pieces,
                                             ShopID: api.shops[value - 1].ShopID,
                                         })
@@ -191,6 +196,7 @@ const ProductScreen = (props) => {
                     </View>
                 </Card.Actions>
             </Card>
+
             <View style={styles.navigationbuttoncontainer}>
                 <Button
                     mode="contained"
@@ -238,6 +244,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         width: '52%',
+    },
+    pricecardinputcontainerbox: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    priceftperdb: {
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     priceinput: {
         margin: 10,

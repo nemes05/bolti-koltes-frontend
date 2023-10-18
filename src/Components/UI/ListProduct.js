@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { View } from 'react-native'
 import { Card, Divider, IconButton, Modal, Portal, Text } from 'react-native-paper'
 
 import ProductDetails from './ProductDetails'
@@ -47,7 +47,13 @@ const ListProduct = (props) => {
                         }}
                     >
                         <Card.Cover source={{ uri: prod.ImageLink }} style={{ width: 70, height: 70 }} />
-                        <Text variant="headlineMedium">{(prod.Pieces * prod.Price).toLocaleString()} Ft</Text>
+                        <Text variant="headlineMedium">
+                            {(
+                                prod.Pieces *
+                                prod.Price[prod.Price.findIndex((shop) => shop.ShopID === prod.ShopID)].Price
+                            ).toLocaleString()}{' '}
+                            Ft
+                        </Text>
                         <IconButton onPress={() => {}} icon="cart-plus" size={30} mode="contained-tonal" />
                     </View>
                 </Card.Content>
@@ -56,12 +62,12 @@ const ListProduct = (props) => {
     )
 }
 
-const styles = StyleSheet.create({
-    productimage: {
-        width: 70,
-        height: 70,
-        marginRight: 10,
-    },
-})
+// const styles = StyleSheet.create({
+//     productimage: {
+//         width: 70,
+//         height: 70,
+//         marginRight: 10,
+//     },
+// })
 
 export default ListProduct
