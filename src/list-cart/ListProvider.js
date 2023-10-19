@@ -26,7 +26,6 @@ const ListProvider = (props) => {
     }
 
     const getContentPriceHandler = () => {
-        console.log('szamolok')
         let price = 0
         list.forEach(
             (element) =>

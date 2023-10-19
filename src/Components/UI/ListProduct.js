@@ -7,6 +7,7 @@ import ProductDetails from './ProductDetails'
 const ListProduct = (props) => {
     const prod = props.product
     const [showDetails, setShowDetails] = useState(false)
+
     return (
         <>
             <Portal>

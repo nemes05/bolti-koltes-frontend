@@ -12,14 +12,43 @@ import TopNavBar from '../../../Navigation/TopNavBar'
 const ProductScreen = (props) => {
     const prodDetails = props.route.params.details
     const parent = props.navigation.getParent()
+
     const [value, setValue] = useState(undefined)
     const [price, setPrice] = useState(0)
     const [pieces, setPieces] = useState(1)
     const [showModal, setShowModal] = useState(false)
     const [showSnackBar, setShowSnackBar] = useState(false)
+
     const api = useContext(ApiContext)
     const list = useContext(ListContext)
     const cart = useContext(CartContext)
+
+    const addProductHandler = (source) => {
+        if (value === undefined) {
+            setShowModal(true)
+            return
+        }
+
+        if (source === 'list') {
+            list.addProduct({
+                ...prodDetails,
+                Pieces: pieces,
+                ShopID: api.shops[value - 1].ShopID,
+            })
+            setShowSnackBar(true)
+        } else if (source === 'cart') {
+            cart.addProduct({
+                ...prodDetails,
+                Pieces: pieces,
+                ShopID: api.shops[value - 1].ShopID,
+            })
+            setShowSnackBar(true)
+        }
+    }
+
+    const getShopPrice = (shopName) => {
+        return prodDetails.Price.filter((data) => data.ShopName === shopName)[0].Price
+    }
 
     return (
         <>
@@ -41,7 +70,7 @@ const ProductScreen = (props) => {
                                     </View>
                                 </Card.Content>
                                 <Card.Actions>
-                                    <View style={styles.modalbuttonbox}>
+                                    <View style={styles.centercontainer}>
                                         <Button
                                             mode="outlined"
                                             onPress={() => {
@@ -97,7 +126,7 @@ const ProductScreen = (props) => {
                         </Text>
                     </View>
                     <Card.Actions>
-                        <View style={styles.productcardactioncontainer}>
+                        <View style={styles.centercontainer}>
                             <Dropdown
                                 data={api.shops}
                                 style={styles.dropdown}
@@ -109,9 +138,7 @@ const ProductScreen = (props) => {
                                 value={value}
                                 onChange={(item) => {
                                     setValue(item.ShopID)
-                                    setPrice(
-                                        prodDetails.Price.filter((data) => data.ShopName === item.ShopName)[0].Price
-                                    )
+                                    setPrice(getShopPrice(item.ShopName))
                                 }}
                             />
                         </View>
@@ -139,7 +166,7 @@ const ProductScreen = (props) => {
                                 }}
                                 keyboardType="numeric"
                             />
-                            <Text variant="titleMedium" style={styles.priceftperdb}>
+                            <Text variant="titleMedium" style={styles.centerview}>
                                 Ft/db
                             </Text>
                         </View>
@@ -159,16 +186,7 @@ const ProductScreen = (props) => {
                                 mode="contained"
                                 style={styles.button}
                                 onPress={() => {
-                                    if (value === undefined) {
-                                        setShowModal(true)
-                                    } else {
-                                        list.addProduct({
-                                            ...prodDetails,
-                                            Pieces: pieces,
-                                            ShopID: api.shops[value - 1].ShopID,
-                                        })
-                                        setShowSnackBar(true)
-                                    }
+                                    addProductHandler('list')
                                 }}
                             >
                                 Listára
@@ -177,17 +195,7 @@ const ProductScreen = (props) => {
                                 mode="contained"
                                 style={styles.button}
                                 onPress={() => {
-                                    if (value === undefined) {
-                                        setShowModal(true)
-                                    } else {
-                                        cart.addProduct({
-                                            ...prodDetails,
-                                            Price: price,
-                                            Pieces: pieces,
-                                            ShopID: api.shops[value - 1].ShopID,
-                                        })
-                                        setShowSnackBar(true)
-                                    }
+                                    addProductHandler('cart')
                                 }}
                             >
                                 Kosárba
@@ -197,7 +205,7 @@ const ProductScreen = (props) => {
                 </Card.Actions>
             </Card>
 
-            <View style={styles.navigationbuttoncontainer}>
+            <View style={styles.centercontainer}>
                 <Button
                     mode="contained"
                     style={styles.newbutton}
@@ -222,6 +230,11 @@ const ProductScreen = (props) => {
 }
 
 const styles = StyleSheet.create({
+    centercontainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     productcardimagebox: {
         flexDirection: 'row',
     },
@@ -235,11 +248,6 @@ const styles = StyleSheet.create({
         verticalAlign: 'top',
         textAlign: 'justify',
     },
-    productcardactioncontainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     pricecardinputcontainer: {
         justifyContent: 'center',
         alignItems: 'center',
@@ -251,7 +259,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    priceftperdb: {
+    centerview: {
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -265,11 +273,6 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'flex-end',
-    },
-    navigationbuttoncontainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
     },
     newbutton: {
         width: '50%',
@@ -297,18 +300,9 @@ const styles = StyleSheet.create({
     selectedTextStyle: {
         fontSize: 16,
     },
-    centerview: {
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     modalcard: {
         width: '90%',
         padding: 15,
-    },
-    modalbuttonbox: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
     },
     modaltext: {
         textAlign: 'center',

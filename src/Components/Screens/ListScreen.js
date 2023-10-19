@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { FlatList, View } from 'react-native'
+import { FlatList, View, StyleSheet } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 
 import ListContext from '../../list-cart/list-context'
@@ -16,7 +16,7 @@ const ListScreen = (props) => {
 
     return (
         <GestureDetector gesture={panGesture}>
-            <View style={{ height: '100%', marginTop: 5, marginBottom: 5 }}>
+            <View style={styles.listcontainer}>
                 <FlatList data={list.list} renderItem={({ item }) => <ListProduct product={item} />} />
                 <IconButton
                     icon="plus"
@@ -28,5 +28,13 @@ const ListScreen = (props) => {
         </GestureDetector>
     )
 }
+
+const styles = StyleSheet.create({
+    listcontainer: {
+        height: '100%',
+        marginTop: 5,
+        marginBottom: 5,
+    },
+})
 
 export default ListScreen

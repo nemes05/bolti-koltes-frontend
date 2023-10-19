@@ -12,15 +12,16 @@ const ScanScreen = (props) => {
     const [error, setError] = useState({ hasError: false, msg: '' })
     const api = useContext(ApiContext)
 
+    const getBarCodeScannerPermissions = async () => {
+        const { status } = await BarCodeScanner.requestPermissionsAsync()
+        setHasPermission(status === 'granted')
+    }
+
     useEffect(() => {
-        const getBarCodeScannerPermissions = async () => {
-            const { status } = await BarCodeScanner.requestPermissionsAsync()
-            setHasPermission(status === 'granted')
-        }
         getBarCodeScannerPermissions()
 
         api.getShops().catch(() => {
-            console.log('Boltok inicializálása sikertelen')
+            setError({ hasError: true, msg: 'Boltok inicializálása sikertelen' })
         })
     }, [])
 
@@ -28,7 +29,7 @@ const ScanScreen = (props) => {
         props.navigation.replace('main')
     }
 
-    const handleBarCodeScanned = ({ type, data }) => {
+    const handleBarCodeScanned = ({ data }) => {
         setScanned(true)
         api.getProduct(data)
             .then((details) => {
@@ -45,7 +46,10 @@ const ScanScreen = (props) => {
     if (hasPermission === null) {
         return (
             <View style={styles.centeredcontainer}>
-                <Text>Requesting for camera permission</Text>
+                <ActivityIndicator animating size="large" />
+                <Text variant="labelMedium" style={styles.loadingtext}>
+                    Kamera hozzáférés kérése...
+                </Text>
             </View>
         )
     }
@@ -53,7 +57,17 @@ const ScanScreen = (props) => {
     if (hasPermission === false) {
         return (
             <View style={styles.centeredcontainer}>
-                <Text>No access for camera</Text>
+                <ActivityIndicator animating size="large" />
+                <Text variant="labelMedium" style={styles.loadingtext}>
+                    Nincs hozzáférés a kamerához
+                </Text>
+                <Button
+                    onPress={() => {
+                        getBarCodeScannerPermissions()
+                    }}
+                >
+                    Engedély adása
+                </Button>
             </View>
         )
     }
@@ -72,17 +86,13 @@ const ScanScreen = (props) => {
                                 </View>
                             </Card.Content>
                             <Card.Actions>
-                                <View style={styles.modalbuttonbox}>
-                                    <Button
-                                        mode="outlined"
-                                        style={{ margin: 5, width: '65%' }}
-                                        onPress={handleNavigation}
-                                    >
+                                <View style={styles.centeredcontainer}>
+                                    <Button mode="outlined" style={styles.button} onPress={handleNavigation}>
                                         Vissza a főoldalra
                                     </Button>
                                     <Button
                                         mode="outlined"
-                                        style={{ margin: 5, width: '65%' }}
+                                        style={styles.button}
                                         onPress={() => {
                                             setScanned(false)
                                             setError({ hasError: false, msg: '' })
@@ -108,7 +118,7 @@ const ScanScreen = (props) => {
                             />
                         </View>
                     </View>
-                    <View style={styles.buttonbox}>
+                    <View style={styles.centerview}>
                         <Button mode="contained" style={styles.button}>
                             Manuális bevitel
                         </Button>
@@ -122,7 +132,9 @@ const ScanScreen = (props) => {
             {scanned && (
                 <View style={styles.centeredcontainer}>
                     <ActivityIndicator size="large" />
-                    <Text style={styles.loadingtext}>Adatok lekérése...</Text>
+                    <Text variant="labelMedium" style={styles.loadingtext}>
+                        Adatok lekérése...
+                    </Text>
                 </View>
             )}
         </>
@@ -145,11 +157,6 @@ const styles = StyleSheet.create({
     modaltext: {
         textAlign: 'center',
         margin: 10,
-    },
-    modalbuttonbox: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
     },
     centerview: {
         justifyContent: 'center',
@@ -176,13 +183,9 @@ const styles = StyleSheet.create({
         height: 600,
         width: 400,
     },
-    buttonbox: {
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     button: {
         width: '75%',
-        margin: 10,
+        margin: 7,
     },
 })
 
