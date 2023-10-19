@@ -13,7 +13,6 @@ const LoadScreen = (props) => {
         const getShops = async () => {
             await api.getShops()
         }
-
         getShops().then(
             list
                 .initLoad()

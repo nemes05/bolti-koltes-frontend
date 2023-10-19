@@ -8,7 +8,6 @@ import ListContext from '../../list-cart/list-context'
 
 const ProductDetails = (props) => {
     const prod = props.product
-    const dummyBoolean = true
     const api = useContext(ApiContext)
     const list = useContext(ListContext)
     const shopNames = api.shops.map((item) => item.ShopName)
@@ -27,6 +26,8 @@ const ProductDetails = (props) => {
 
     const formValidation = () => {
         if (validInput('price', newPrice) && validInput('piece', newPiece)) {
+            const shop = prod.Price.filter((data) => data.ShopID === newShop)[0]
+            prod.Price[prod.Price.indexOf(shop)].Price = newPrice
             list.updateProduct(prod, newPrice, newPiece, newShop)
             props.onDismiss()
         } else {
@@ -78,7 +79,7 @@ const ProductDetails = (props) => {
                                 <SelectDropdown
                                     data={shopNames}
                                     defaultValueByIndex={api.shops.findIndex((shop) => shop.ShopID === prod.ShopID)}
-                                    statusBarTranslucent={dummyBoolean}
+                                    statusBarTranslucent
                                     buttonStyle={styles.dropdownBtnStyle}
                                     buttonTextStyle={styles.dropdown1BtnTxtStyle}
                                     dropdownStyle={styles.dropdown1DropdownStyle}

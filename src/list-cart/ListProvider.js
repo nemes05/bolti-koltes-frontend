@@ -10,7 +10,7 @@ const ListProvider = (props) => {
         const newProd = list.find((listProduct) => listProduct.Barcode === product.Barcode)
         if (newProd !== undefined) {
             const newList = list.filter((element) => element.Barcode !== product.Barcode)
-            const updatedProduct = { ...newProd, Pieces: product.Pieces + newProd.Pieces }
+            const updatedProduct = { ...newProd, Pieces: product.Pieces + newProd.Pieces, ShopID: product.ShopID }
             setList([...newList, updatedProduct])
             updateItemHandler(updatedProduct)
         } else {

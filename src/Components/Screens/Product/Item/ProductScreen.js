@@ -29,6 +29,9 @@ const ProductScreen = (props) => {
             return
         }
 
+        const shop = prodDetails.Price.filter((data) => data.ShopID === api.shops[value - 1].ShopID)[0]
+        prodDetails.Price[prodDetails.Price.indexOf(shop)].Price = price
+
         if (source === 'list') {
             list.addProduct({
                 ...prodDetails,
