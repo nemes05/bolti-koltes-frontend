@@ -1,9 +1,8 @@
 import { useContext, useEffect } from 'react'
-import { StyleSheet } from 'react-native'
-import { Text, ActivityIndicator } from 'react-native-paper'
 
 import ApiContext from '../../api/api-context'
 import ListContext from '../../list-cart/list-context'
+import LoadIndicator from '../UI/LoadIndicator'
 
 const LoadScreen = (props) => {
     const list = useContext(ListContext)
@@ -13,6 +12,7 @@ const LoadScreen = (props) => {
         const getShops = async () => {
             await api.getShops()
         }
+
         getShops().then(
             list
                 .initLoad()
@@ -23,21 +23,7 @@ const LoadScreen = (props) => {
         )
     }, [])
 
-    return (
-        <>
-            <ActivityIndicator animating size="large" />
-            <Text style={styles.loadingtext} variant="labelLarge">
-                Loading...
-            </Text>
-        </>
-    )
+    return <LoadIndicator title="Loading..." />
 }
-
-const styles = StyleSheet.create({
-    loadingtext: {
-        textAlign: 'center',
-        margin: 20,
-    },
-})
 
 export default LoadScreen

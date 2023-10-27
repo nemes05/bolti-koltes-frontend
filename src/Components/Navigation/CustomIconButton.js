@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native'
 import { FAB } from 'react-native-paper'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-const IconButton = (props) => {
+const CustomIconButton = (props) => {
     const insets = useSafeAreaInsets()
 
     return (
@@ -25,4 +25,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default IconButton
+export default CustomIconButton

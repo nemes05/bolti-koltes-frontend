@@ -1,6 +1,5 @@
 import { useState, useContext } from 'react'
 import { View, StyleSheet } from 'react-native'
-import { Dropdown } from 'react-native-element-dropdown'
 import NumericInput from 'react-native-numeric-input'
 import { Button, Card, IconButton, TextInput, Text, Portal, Modal, Snackbar } from 'react-native-paper'
 
@@ -8,6 +7,7 @@ import ApiContext from '../../../../api/api-context'
 import CartContext from '../../../../list-cart/cart-context'
 import ListContext from '../../../../list-cart/list-context'
 import TopNavBar from '../../../Navigation/TopNavBar'
+import Dropdown from '../../../UI/Dropdown'
 
 const ProductScreen = (props) => {
     const prodDetails = props.route.params.details
@@ -22,6 +22,8 @@ const ProductScreen = (props) => {
     const api = useContext(ApiContext)
     const list = useContext(ListContext)
     const cart = useContext(CartContext)
+
+    const shopNames = api.shops.map((item) => item.ShopName)
 
     const addProductHandler = (source) => {
         if (value === undefined) {
@@ -131,17 +133,12 @@ const ProductScreen = (props) => {
                     <Card.Actions>
                         <View style={styles.centercontainer}>
                             <Dropdown
-                                data={api.shops}
-                                style={styles.dropdown}
-                                labelField="ShopName"
-                                valueField="ShopID"
-                                placeholder="Válasszon boltot"
-                                placeholderStyle={styles.placeholderStyle}
-                                selectedTextStyle={styles.selectedTextStyle}
-                                value={value}
-                                onChange={(item) => {
-                                    setValue(item.ShopID)
-                                    setPrice(getShopPrice(item.ShopName))
+                                placeholder="Válasszon egy boltot"
+                                data={shopNames}
+                                onSelect={(item) => {
+                                    const shop = api.shops.find((element) => element.ShopName === item)
+                                    setValue(shop.ShopID)
+                                    setPrice(getShopPrice(shop.ShopName))
                                 }}
                             />
                         </View>
@@ -270,7 +267,7 @@ const styles = StyleSheet.create({
         margin: 10,
         width: '80%',
         height: 60,
-        fontSize: 28,
+        fontSize: 30,
     },
     pricecardbuttoncontainer: {
         flex: 1,
@@ -314,6 +311,29 @@ const styles = StyleSheet.create({
     mainpagebutton: {
         width: '50%',
         margin: 10,
+    },
+    dropdownBtnStyle: {
+        height: 50,
+        width: '100%',
+        backgroundColor: '#FFF',
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: '#444',
+    },
+    dropdown1BtnTxtStyle: {
+        color: '#444',
+        textAlign: 'left',
+    },
+    dropdown1DropdownStyle: {
+        backgroundColor: '#EFEFEF',
+    },
+    dropdown1RowStyle: {
+        backgroundColor: '#EFEFEF',
+        borderBottomColor: '#C5C5C5',
+    },
+    dropdown1RowTxtStyle: {
+        color: '#444',
+        textAlign: 'left',
     },
 })
 

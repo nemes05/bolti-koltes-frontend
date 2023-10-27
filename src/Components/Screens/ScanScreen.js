@@ -1,10 +1,11 @@
 import { BarCodeScanner } from 'expo-barcode-scanner'
 import { useState, useEffect, useContext } from 'react'
 import { View, StyleSheet } from 'react-native'
-import { Button, Text, Portal, Modal, Card, ActivityIndicator } from 'react-native-paper'
+import { Button, Text, Portal, Modal, Card } from 'react-native-paper'
 
 import ApiContext from '../../api/api-context'
 import TopNavBar from '../Navigation/TopNavBar'
+import LoadIndicator from '../UI/LoadIndicator'
 
 const ScanScreen = (props) => {
     const [hasPermission, setHasPermission] = useState(null)
@@ -20,9 +21,9 @@ const ScanScreen = (props) => {
     useEffect(() => {
         getBarCodeScannerPermissions()
 
-        api.getShops().catch(() => {
-            setError({ hasError: true, msg: 'Boltok inicializálása sikertelen' })
-        })
+        // api.getShops().catch(() => {
+        //     setError({ hasError: true, msg: 'Boltok inicializálása sikertelen' })
+        // })
     }, [])
 
     const handleNavigation = () => {
@@ -46,10 +47,7 @@ const ScanScreen = (props) => {
     if (hasPermission === null) {
         return (
             <View style={styles.centeredcontainer}>
-                <ActivityIndicator animating size="large" />
-                <Text variant="labelMedium" style={styles.loadingtext}>
-                    Kamera hozzáférés kérése...
-                </Text>
+                <LoadIndicator title="Kamera hozzáférés kérése..." />
             </View>
         )
     }
@@ -57,8 +55,7 @@ const ScanScreen = (props) => {
     if (hasPermission === false) {
         return (
             <View style={styles.centeredcontainer}>
-                <ActivityIndicator animating size="large" />
-                <Text variant="labelMedium" style={styles.loadingtext}>
+                <Text variant="labelMedium" style={styles.text}>
                     Nincs hozzáférés a kamerához
                 </Text>
                 <Button
@@ -80,7 +77,7 @@ const ScanScreen = (props) => {
                         <Card style={styles.modalcard}>
                             <Card.Content>
                                 <View style={styles.centerview}>
-                                    <Text variant="headlineSmall" style={styles.modaltext}>
+                                    <Text variant="headlineSmall" style={styles.text}>
                                         {error.msg}
                                     </Text>
                                 </View>
@@ -131,10 +128,7 @@ const ScanScreen = (props) => {
 
             {scanned && (
                 <View style={styles.centeredcontainer}>
-                    <ActivityIndicator size="large" />
-                    <Text variant="labelMedium" style={styles.loadingtext}>
-                        Adatok lekérése...
-                    </Text>
+                    <LoadIndicator title="Adatok lekérése..." />
                 </View>
             )}
         </>
@@ -147,16 +141,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    loadingtext: {
+    text: {
+        textAlign: 'center',
         margin: 20,
     },
     modalcard: {
         width: '90%',
         padding: 15,
-    },
-    modaltext: {
-        textAlign: 'center',
-        margin: 10,
     },
     centerview: {
         justifyContent: 'center',

@@ -4,8 +4,7 @@ import { Card, Divider, IconButton, Modal, Portal, Text } from 'react-native-pap
 
 import ProductDetails from './ProductDetails'
 
-const ListProduct = (props) => {
-    const prod = props.product
+const ListProduct = ({ product }) => {
     const [showDetails, setShowDetails] = useState(false)
 
     return (
@@ -21,7 +20,7 @@ const ListProduct = (props) => {
                         onDismiss={() => {
                             setShowDetails(false)
                         }}
-                        product={prod}
+                        product={product}
                     />
                 </Modal>
             </Portal>
@@ -35,7 +34,7 @@ const ListProduct = (props) => {
                 <Card.Content>
                     <View style={{ marginBottom: 5 }}>
                         <Text variant="labelLarge" style={{ textAlign: 'center' }}>
-                            {prod.Name}
+                            {product.Name}
                         </Text>
                     </View>
                     <Divider horizontalInset="true" bold="true" />
@@ -47,11 +46,11 @@ const ListProduct = (props) => {
                             marginTop: 10,
                         }}
                     >
-                        <Card.Cover source={{ uri: prod.ImageLink }} style={{ width: 70, height: 70 }} />
+                        <Card.Cover source={{ uri: product.ImageLink }} style={{ width: 70, height: 70 }} />
                         <Text variant="headlineMedium">
                             {(
-                                prod.Pieces *
-                                prod.Price[prod.Price.findIndex((shop) => shop.ShopID === prod.ShopID)].Price
+                                product.Pieces *
+                                product.Price[product.Price.findIndex((shop) => shop.ShopID === product.ShopID)].Price
                             ).toLocaleString()}{' '}
                             Ft
                         </Text>

@@ -1,23 +1,24 @@
 import { useContext, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Card, Text, Button, Divider, TextInput, IconButton, useTheme } from 'react-native-paper'
-import SelectDropdown from 'react-native-select-dropdown'
+//import SelectDropdown from 'react-native-select-dropdown'
 
-import ApiContext from '../../api/api-context'
-import ListContext from '../../list-cart/list-context'
+import ApiContext from '../../../api/api-context'
+import ListContext from '../../../list-cart/list-context'
+import Dropdown from '../Dropdown'
 
-const ProductDetails = (props) => {
-    const prod = props.product
+const ProductDetails = ({ onDismiss, product }) => {
     const api = useContext(ApiContext)
     const list = useContext(ListContext)
-    const shopNames = api.shops.map((item) => item.ShopName)
-    const [newPrice, setNewPrice] = useState(
-        prod.Price[prod.Price.findIndex((shop) => shop.ShopID === prod.ShopID)].Price
-    )
-    const [newPiece, setNewPiece] = useState(prod.Pieces)
-    const [newShop, setNewShop] = useState(prod.ShopID)
-    const [showError, setShowError] = useState(false)
     const theme = useTheme()
+    const [newPrice, setNewPrice] = useState(
+        product.Price[product.Price.findIndex((shop) => shop.ShopID === product.ShopID)].Price
+    )
+    const [newPiece, setNewPiece] = useState(product.Pieces)
+    const [newShop, setNewShop] = useState(product.ShopID)
+    const [showError, setShowError] = useState(false)
+
+    const shopNames = api.shops.map((item) => item.ShopName)
 
     const validInput = (type, number) => {
         if (type === 'price') return parseInt(number, 10) && parseInt(number, 10) >= 0
@@ -26,10 +27,10 @@ const ProductDetails = (props) => {
 
     const formValidation = () => {
         if (validInput('price', newPrice) && validInput('piece', newPiece)) {
-            const shop = prod.Price.filter((data) => data.ShopID === newShop)[0]
-            prod.Price[prod.Price.indexOf(shop)].Price = newPrice
-            list.updateProduct(prod, newPrice, newPiece, newShop)
-            props.onDismiss()
+            const shop = product.Price.filter((data) => data.ShopID === newShop)[0]
+            product.Price[product.Price.indexOf(shop)].Price = newPrice
+            list.updateProduct(product, newPrice, newPiece, newShop)
+            onDismiss()
         } else {
             setShowError(true)
         }
@@ -42,55 +43,46 @@ const ProductDetails = (props) => {
                     <Card style={styles.modalcard}>
                         <Card.Content>
                             <View style={styles.productcardimagebox}>
-                                <Card.Cover source={{ uri: prod.ImageLink }} style={styles.productimage} />
+                                <Card.Cover source={{ uri: product.ImageLink }} style={styles.productimage} />
                                 <Text variant="titleMedium" style={styles.productname}>
-                                    {prod.Name}
+                                    {product.Name}
                                 </Text>
                             </View>
                             <Divider />
-                            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+                            <View style={styles.inputcontainer}>
                                 <TextInput
                                     mode="outlined"
                                     inputMode="numeric"
-                                    placeholder={prod.Pieces.toString()}
+                                    value={newPiece.toString()}
                                     onChangeText={(piece) => {
                                         setNewPiece(piece)
                                     }}
-                                    style={{ width: '50%', marginRight: 10, fontSize: 30 }}
+                                    style={styles.textinput}
                                 />
                                 <Text variant="headlineSmall">db</Text>
                             </View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+                            <View style={styles.inputcontainer}>
                                 <TextInput
                                     mode="outlined"
-                                    placeholder={prod.Price[
-                                        prod.Price.findIndex((shop) => shop.ShopID === prod.ShopID)
-                                    ].Price.toString()}
                                     inputMode="numeric"
                                     value={newPrice.toString()}
                                     onChangeText={(price) => {
                                         setNewPrice(price)
                                     }}
-                                    style={{ width: '50%', marginRight: 10, fontSize: 30 }}
+                                    style={styles.textinput}
                                 />
                                 <Text variant="headlineSmall">Ft/db</Text>
                             </View>
-                            <View style={{ marginTop: 10, justifyContent: 'center', alignItems: 'center' }}>
-                                <SelectDropdown
+                            <View style={styles.dropdowncontainer}>
+                                <Dropdown
                                     data={shopNames}
-                                    defaultValueByIndex={api.shops.findIndex((shop) => shop.ShopID === prod.ShopID)}
-                                    statusBarTranslucent
-                                    buttonStyle={styles.dropdownBtnStyle}
-                                    buttonTextStyle={styles.dropdown1BtnTxtStyle}
-                                    dropdownStyle={styles.dropdown1DropdownStyle}
-                                    rowStyle={styles.dropdown1RowStyle}
-                                    rowTextStyle={styles.dropdown1RowTxtStyle}
+                                    defaultValue={api.shops.findIndex((shop) => shop.ShopID === product.ShopID)}
                                     onSelect={(item) => {
                                         const shop = api.shops.find((element) => element.ShopName === item)
                                         setNewShop(shop.ShopID)
                                         setNewPrice(
-                                            prod.Price[
-                                                prod.Price.findIndex((element) => element.ShopID === shop.ShopID)
+                                            product.Price[
+                                                product.Price.findIndex((element) => element.ShopID === shop.ShopID)
                                             ].Price
                                         )
                                     }}
@@ -98,24 +90,17 @@ const ProductDetails = (props) => {
                             </View>
                         </Card.Content>
                         <Card.Actions>
-                            <View
-                                style={{
-                                    flex: 1,
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                }}
-                            >
+                            <View style={styles.cardactionscontainer}>
                                 <IconButton
                                     icon="close"
                                     size={30}
-                                    style={{ margin: 0, padding: 0 }}
+                                    style={styles.iconbutton}
                                     mode="outlined"
                                     iconColor={theme.colors.error}
                                     borderColor={theme.colors.error}
                                     onPress={() => {
-                                        list.removeProduct(prod.Barcode)
-                                        props.onDismiss()
+                                        list.removeProduct(product.Barcode)
+                                        onDismiss()
                                     }}
                                 />
                                 <Button
@@ -129,7 +114,7 @@ const ProductDetails = (props) => {
                                 <Button
                                     mode="outlined"
                                     onPress={() => {
-                                        props.onDismiss()
+                                        onDismiss()
                                     }}
                                 >
                                     Vissza
@@ -144,12 +129,12 @@ const ProductDetails = (props) => {
                 <View style={styles.centerview}>
                     <Card style={styles.modalcard}>
                         <Card.Content>
-                            <Text variant="headlineSmall" style={{ textAlign: 'center', margin: 10 }}>
+                            <Text variant="headlineSmall" style={styles.errortext}>
                                 Adjon meg helyes adatokat!
                             </Text>
                         </Card.Content>
                         <Card.Actions>
-                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                            <View style={styles.cetercontainer}>
                                 <Button
                                     mode="outlined"
                                     onPress={() => {
@@ -173,6 +158,11 @@ const styles = StyleSheet.create({
         height: 70,
         marginRight: 10,
     },
+    cetercontainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     centerview: {
         justifyContent: 'center',
         alignItems: 'center',
@@ -189,6 +179,35 @@ const styles = StyleSheet.create({
         flex: 1,
         verticalAlign: 'top',
         textAlign: 'justify',
+    },
+    inputcontainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    textinput: {
+        width: '50%',
+        marginRight: 10,
+        fontSize: 30,
+    },
+    cardactionscontainer: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    dropdowncontainer: {
+        marginTop: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    iconbutton: {
+        margin: 0,
+        padding: 0,
+    },
+    errortext: {
+        textAlign: 'center',
+        margin: 10,
     },
     dropdownBtnStyle: {
         height: 50,
