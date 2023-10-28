@@ -1,58 +1,63 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useState } from 'react'
+import { useReducer } from 'react'
 
 import ListContext from './list-context'
 
-const ListProvider = (props) => {
-    const [list, setList] = useState([])
-
-    const addProductHandler = (product) => {
-        const newProd = list.find((listProduct) => listProduct.Barcode === product.Barcode)
+const listReducer = (state, action) => {
+    if (action.type === 'ADD_OR_UPDATE') {
+        const newProd = state.find((element) => element.Barcode === action.product.Barcode)
         if (newProd !== undefined) {
-            const newList = list.filter((element) => element.Barcode !== product.Barcode)
-            const updatedProduct = { ...newProd, Pieces: product.Pieces + newProd.Pieces, ShopID: product.ShopID }
-            setList([...newList, updatedProduct])
-            updateItemHandler(updatedProduct)
+            action.type = 'UPDATE'
         } else {
-            setList((prevList) => [...prevList, product])
-            saveItemHandler(product)
+            action.type = 'ADD'
         }
     }
 
+    switch (action.type) {
+        case 'ADD': {
+            return [...state, action.product]
+        }
+        case 'UPDATE': {
+            return state.map((item) => {
+                if (item.Barcode !== action.product.Barcode) {
+                    return item
+                } else {
+                    return {
+                        ...item,
+                        Pieces: +item.Pieces + +action.product.Pieces,
+                        ShopID: action.product.ShopID,
+                        Price: action.product.Price,
+                    }
+                }
+            })
+        }
+        case 'REMOVE': {
+            return state.filter((item) => item.Barcode !== action.barcode)
+        }
+        case 'INIT_LOAD': {
+            return action.list
+        }
+    }
+}
+
+const ListProvider = (props) => {
+    const [list, dispatch] = useReducer(listReducer, [])
+
+    const addProductHandler = (product) => {
+        console.log(product)
+        dispatch({ type: 'ADD_OR_UPDATE', product })
+        saveItemHandler(product)
+    }
+
     const removeProductHandler = (barcode) => {
-        const newList = list.filter((item) => item.Barcode !== barcode)
-        setList(newList)
+        dispatch({ type: 'REMOVE', barcode })
         removeItemHandler(barcode)
     }
 
-    const getContentPriceHandler = () => {
-        let price = 0
-        list.forEach(
-            (element) =>
-                (price +=
-                    element.Price[element.Price.findIndex((shop) => shop.ShopID === element.ShopID)].Price *
-                    element.Pieces)
-        )
-        return price
-    }
-
-    const updateProductHandler = (product, newPrice, newPieces, newShopID) => {
-        const oldProduct = list.find((listProduct) => listProduct.Barcode === product.Barcode)
-        const newProduct = { ...oldProduct, Pieces: newPieces, ShopID: newShopID }
-        const newList = list.filter((element) => element.Barcode !== product.Barcode)
-        setList([...newList, newProduct])
+    const updateProductHandler = (product, newPieces, newShopID) => {
+        const newProduct = { ...product, Pieces: newPieces - product.Pieces, ShopID: newShopID }
+        dispatch({ type: 'UPDATE', product: newProduct })
         updateItemHandler(newProduct)
-    }
-
-    const loadListHandler = async () => {
-        //Reads localstorage
-        const keys = await AsyncStorage.getAllKeys()
-        const list = await AsyncStorage.multiGet(keys)
-        const localList = []
-        list.forEach((element) => {
-            localList.push(JSON.parse(element[1]))
-        })
-        setList(localList)
     }
 
     const saveItemHandler = (product) => {
@@ -71,6 +76,27 @@ const ListProvider = (props) => {
         AsyncStorage.mergeItem(product.Barcode, JSON.stringify(product)).catch((err) => {
             console.log(err.message)
         })
+    }
+
+    const getContentPriceHandler = () => {
+        let price = 0
+        list.forEach(
+            (element) =>
+                (price +=
+                    element.Price[element.Price.findIndex((shop) => shop.ShopID === element.ShopID)].Price *
+                    element.Pieces)
+        )
+        return price
+    }
+
+    const loadListHandler = async () => {
+        const keys = await AsyncStorage.getAllKeys()
+        const list = await AsyncStorage.multiGet(keys)
+        const localList = []
+        list.forEach((element) => {
+            localList.push(JSON.parse(element[1]))
+        })
+        dispatch({ type: 'INIT_LOAD', list: localList })
     }
 
     const getShopPriceHandler = (product, shopID) => {

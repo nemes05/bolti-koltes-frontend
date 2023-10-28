@@ -27,7 +27,7 @@ const ProductDetails = ({ onDismiss, product }) => {
         if (validInput('price', newPrice) && validInput('piece', newPiece)) {
             const shop = product.Price.filter((data) => data.ShopID === newShop)[0]
             product.Price[product.Price.indexOf(shop)].Price = newPrice
-            list.updateProduct(product, newPrice, newPiece, newShop)
+            list.updateProduct(product, newPiece, newShop)
             onDismiss()
         } else {
             setShowError(true)
