@@ -20,10 +20,6 @@ const ScanScreen = (props) => {
 
     useEffect(() => {
         getBarCodeScannerPermissions()
-
-        // api.getShops().catch(() => {
-        //     setError({ hasError: true, msg: 'Boltok inicializálása sikertelen' })
-        // })
     }, [])
 
     const handleNavigation = () => {
