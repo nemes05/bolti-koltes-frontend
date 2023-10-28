@@ -51,10 +51,6 @@ const ProductScreen = (props) => {
         }
     }
 
-    const getShopPrice = (shopName) => {
-        return prodDetails.Price.filter((data) => data.ShopName === shopName)[0].Price
-    }
-
     return (
         <>
             {showModal && (
@@ -138,7 +134,7 @@ const ProductScreen = (props) => {
                                 onSelect={(item) => {
                                     const shop = api.shops.find((element) => element.ShopName === item)
                                     setValue(shop.ShopID)
-                                    setPrice(getShopPrice(shop.ShopName))
+                                    setPrice(list.getShopPrice(prodDetails, shop.ShopID))
                                 }}
                             />
                         </View>

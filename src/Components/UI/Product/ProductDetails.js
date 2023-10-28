@@ -10,6 +10,7 @@ const ProductDetails = ({ onDismiss, product }) => {
     const api = useContext(ApiContext)
     const list = useContext(ListContext)
     const theme = useTheme()
+
     const [newPrice, setNewPrice] = useState(list.getShopPrice(product, product.ShopID))
     const [newPiece, setNewPiece] = useState(product.Pieces)
     const [newShop, setNewShop] = useState(product.ShopID)

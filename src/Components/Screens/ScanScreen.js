@@ -8,10 +8,11 @@ import TopNavBar from '../Navigation/TopNavBar'
 import LoadIndicator from '../UI/LoadIndicator'
 
 const ScanScreen = (props) => {
+    const api = useContext(ApiContext)
+
     const [hasPermission, setHasPermission] = useState(null)
     const [scanned, setScanned] = useState(false)
     const [error, setError] = useState({ hasError: false, msg: '' })
-    const api = useContext(ApiContext)
 
     const getBarCodeScannerPermissions = async () => {
         const { status } = await BarCodeScanner.requestPermissionsAsync()

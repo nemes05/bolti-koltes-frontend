@@ -8,9 +8,10 @@ import ListContext from '../../list-cart/list-context'
 import LoadIndicator from '../UI/LoadIndicator'
 
 const LoadScreen = (props) => {
-    const [error, setError] = useState(false)
     const list = useContext(ListContext)
     const api = useContext(ApiContext)
+
+    const [error, setError] = useState(false)
 
     const checkNetwork = async () => {
         const connection = await getNetworkStateAsync()
@@ -45,7 +46,11 @@ const LoadScreen = (props) => {
 
     return (
         <>
-            {!error && <LoadIndicator title="Loading..." />}
+            {!error && (
+                <View style={styles.centercontainer}>
+                    <LoadIndicator title="Loading..." />
+                </View>
+            )}
             {error && (
                 <Portal>
                     <Modal visible={error} dismissable={false}>

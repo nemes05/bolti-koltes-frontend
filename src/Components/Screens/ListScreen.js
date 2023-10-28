@@ -12,6 +12,7 @@ const ListScreen = (props) => {
         .onEnd(() => {
             props.listSwipeHandler('list')
         })
+
     const list = useContext(ListContext)
 
     return (

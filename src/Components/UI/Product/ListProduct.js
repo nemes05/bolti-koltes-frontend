@@ -7,6 +7,7 @@ import ListContext from '../../../list-cart/list-context'
 
 const ListProduct = ({ product }) => {
     const [showDetails, setShowDetails] = useState(false)
+
     const list = useContext(ListContext)
 
     return (
