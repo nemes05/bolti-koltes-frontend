@@ -1,7 +1,6 @@
 import { useContext, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Card, Text, Button, Divider, TextInput, IconButton, useTheme } from 'react-native-paper'
-//import SelectDropdown from 'react-native-select-dropdown'
 
 import ApiContext from '../../../api/api-context'
 import ListContext from '../../../list-cart/list-context'
@@ -11,9 +10,7 @@ const ProductDetails = ({ onDismiss, product }) => {
     const api = useContext(ApiContext)
     const list = useContext(ListContext)
     const theme = useTheme()
-    const [newPrice, setNewPrice] = useState(
-        product.Price[product.Price.findIndex((shop) => shop.ShopID === product.ShopID)].Price
-    )
+    const [newPrice, setNewPrice] = useState(list.getShopPrice(product, product.ShopID))
     const [newPiece, setNewPiece] = useState(product.Pieces)
     const [newShop, setNewShop] = useState(product.ShopID)
     const [showError, setShowError] = useState(false)
@@ -80,11 +77,7 @@ const ProductDetails = ({ onDismiss, product }) => {
                                     onSelect={(item) => {
                                         const shop = api.shops.find((element) => element.ShopName === item)
                                         setNewShop(shop.ShopID)
-                                        setNewPrice(
-                                            product.Price[
-                                                product.Price.findIndex((element) => element.ShopID === shop.ShopID)
-                                            ].Price
-                                        )
+                                        setNewPrice(list.getShopPrice(product, shop.ShopID))
                                     }}
                                 />
                             </View>

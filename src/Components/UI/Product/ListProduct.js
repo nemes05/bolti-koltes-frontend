@@ -1,11 +1,13 @@
-import { useState } from 'react'
-import { View } from 'react-native'
+import { useContext, useState } from 'react'
+import { View, StyleSheet } from 'react-native'
 import { Card, Divider, IconButton, Modal, Portal, Text } from 'react-native-paper'
 
 import ProductDetails from './ProductDetails'
+import ListContext from '../../../list-cart/list-context'
 
 const ListProduct = ({ product }) => {
     const [showDetails, setShowDetails] = useState(false)
+    const list = useContext(ListContext)
 
     return (
         <>
@@ -26,33 +28,20 @@ const ListProduct = ({ product }) => {
             </Portal>
 
             <Card
-                style={{ margin: 5, padding: 3 }}
+                style={styles.card}
                 onPress={() => {
                     setShowDetails(true)
                 }}
             >
                 <Card.Content>
-                    <View style={{ marginBottom: 5 }}>
-                        <Text variant="labelLarge" style={{ textAlign: 'center' }}>
-                            {product.Name}
-                        </Text>
-                    </View>
+                    <Text variant="labelLarge" style={{ textAlign: 'center', marginBottom: 5 }}>
+                        {product.Name}
+                    </Text>
                     <Divider horizontalInset="true" bold="true" />
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            marginTop: 10,
-                        }}
-                    >
-                        <Card.Cover source={{ uri: product.ImageLink }} style={{ width: 70, height: 70 }} />
+                    <View style={styles.cardbottom}>
+                        <Card.Cover source={{ uri: product.ImageLink }} style={styles.productimage} />
                         <Text variant="headlineMedium">
-                            {(
-                                product.Pieces *
-                                product.Price[product.Price.findIndex((shop) => shop.ShopID === product.ShopID)].Price
-                            ).toLocaleString()}{' '}
-                            Ft
+                            {(product.Pieces * list.getShopPrice(product, product.ShopID)).toLocaleString()} Ft
                         </Text>
                         <IconButton onPress={() => {}} icon="cart-plus" size={30} mode="contained-tonal" />
                     </View>
@@ -62,12 +51,21 @@ const ListProduct = ({ product }) => {
     )
 }
 
-// const styles = StyleSheet.create({
-//     productimage: {
-//         width: 70,
-//         height: 70,
-//         marginRight: 10,
-//     },
-// })
+const styles = StyleSheet.create({
+    card: {
+        margin: 5,
+        padding: 3,
+    },
+    cardbottom: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    productimage: {
+        width: 70,
+        height: 70,
+    },
+})
 
 export default ListProduct

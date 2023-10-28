@@ -73,12 +73,17 @@ const ListProvider = (props) => {
         })
     }
 
+    const getShopPriceHandler = (product, shopID) => {
+        return product.Price[product.Price.findIndex((shop) => shop.ShopID === shopID)].Price
+    }
+
     const listContext = {
         addProduct: addProductHandler,
         getContentPrice: getContentPriceHandler,
         updateProduct: updateProductHandler,
         removeProduct: removeProductHandler,
         initLoad: loadListHandler,
+        getShopPrice: getShopPriceHandler,
         list,
     }
     return <ListContext.Provider value={listContext}>{props.children}</ListContext.Provider>

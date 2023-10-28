@@ -6,6 +6,7 @@ const ListContext = React.createContext({
     updateProduct: (product, newPrice, newPieces, newShopID) => {},
     getContentPrice: () => {},
     initLoad: async () => {},
+    getShopPrice: (product, shopID) => {},
     list: [],
 })
 
