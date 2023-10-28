@@ -1,18 +1,31 @@
-import { useContext, useEffect } from 'react'
+import { getNetworkStateAsync } from 'expo-network'
+import { useContext, useEffect, useState } from 'react'
+import { StyleSheet, View } from 'react-native'
+import { Text, Card, Button, Modal, Portal } from 'react-native-paper'
 
 import ApiContext from '../../api/api-context'
 import ListContext from '../../list-cart/list-context'
 import LoadIndicator from '../UI/LoadIndicator'
 
 const LoadScreen = (props) => {
+    const [error, setError] = useState(false)
     const list = useContext(ListContext)
     const api = useContext(ApiContext)
 
-    useEffect(() => {
-        const getShops = async () => {
-            await api.getShops()
+    const checkNetwork = async () => {
+        const connection = await getNetworkStateAsync()
+        if (!connection.isConnected) {
+            setError(true)
+        } else {
+            loadContent()
         }
+    }
 
+    const getShops = async () => {
+        await api.getShops()
+    }
+
+    const loadContent = () => {
         getShops().then(
             list
                 .initLoad()
@@ -20,10 +33,61 @@ const LoadScreen = (props) => {
                 .catch((err) => {
                     console.log(err.message)
                 })
+                .catch((err) => {
+                    console.log(err)
+                })
         )
+    }
+
+    useEffect(() => {
+        checkNetwork()
     }, [])
 
-    return <LoadIndicator title="Loading..." />
+    return (
+        <>
+            {!error && <LoadIndicator title="Loading..." />}
+            {error && (
+                <Portal>
+                    <Modal visible={error} dismissable={false}>
+                        <View style={styles.centerview}>
+                            <Card style={styles.card}>
+                                <Card.Content>
+                                    <Text variant="headlineSmall">Kapcsolja be az internetet</Text>
+                                </Card.Content>
+                                <Card.Actions>
+                                    <View style={styles.centercontainer}>
+                                        <Button
+                                            onPress={() => {
+                                                setError(false)
+                                            }}
+                                        >
+                                            Újratöltés
+                                        </Button>
+                                    </View>
+                                </Card.Actions>
+                            </Card>
+                        </View>
+                    </Modal>
+                </Portal>
+            )}
+        </>
+    )
 }
+
+const styles = StyleSheet.create({
+    card: {
+        width: '90%',
+        padding: 15,
+    },
+    centerview: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    centercontainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+})
 
 export default LoadScreen
