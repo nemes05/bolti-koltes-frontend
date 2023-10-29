@@ -15,6 +15,7 @@ const LoadIndicator = ({ title }) => {
 const styles = StyleSheet.create({
     loadingtext: {
         textAlign: 'center',
+        flexWrap: 'nowrap',
         margin: 20,
     },
 })

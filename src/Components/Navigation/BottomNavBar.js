@@ -1,11 +1,11 @@
-import * as React from 'react'
+import { useEffect, useState } from 'react'
 import { BottomNavigation } from 'react-native-paper'
 
 import CartScreen from '../Screens/CartScreen'
 import ListScreen from '../Screens/ListScreen'
 
-const BottomNavBar = (props) => {
-    const [index, setIndex] = React.useState(0)
+const BottomNavBar = ({ navigateToScanScreen, onScreenChange }) => {
+    const [index, setIndex] = useState(0)
 
     const swipeHandler = (screen) => {
         if (screen === 'cart') {
@@ -15,7 +15,15 @@ const BottomNavBar = (props) => {
         }
     }
 
-    const [routes] = React.useState([
+    useEffect(() => {
+        if (index === 0) {
+            onScreenChange('list')
+        } else {
+            onScreenChange('cart')
+        }
+    }, [index])
+
+    const [routes] = useState([
         {
             key: 'list',
             title: 'Lists',
@@ -39,7 +47,7 @@ const BottomNavBar = (props) => {
                             swipeHandler(screen)
                         }}
                         handleAddButton={() => {
-                            props.navigateToScanScreen()
+                            navigateToScanScreen()
                         }}
                         jumpTo={jumpTo}
                     />

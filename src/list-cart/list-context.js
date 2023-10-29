@@ -3,9 +3,9 @@ import React from 'react'
 const ListContext = React.createContext({
     addProduct: (product) => {},
     removeProduct: (barcode) => {},
-    updateProduct: (product, newPrice, newPieces, newShopID) => {},
+    updateProduct: (product, newPieces, newShopID, inCart) => {},
     getContentPrice: () => {},
-    initLoad: async () => {},
+    initList: async () => {},
     getShopPrice: (product, shopID) => {},
     list: [],
 })

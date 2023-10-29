@@ -3,12 +3,14 @@ import { View, StyleSheet } from 'react-native'
 import { Card, Divider, IconButton, Modal, Portal, Text } from 'react-native-paper'
 
 import ProductDetails from './ProductDetails'
+import CartContext from '../../../list-cart/cart-context'
 import ListContext from '../../../list-cart/list-context'
 
 const ListProduct = ({ product }) => {
     const [showDetails, setShowDetails] = useState(false)
 
     const list = useContext(ListContext)
+    const cart = useContext(CartContext)
 
     return (
         <>
@@ -23,13 +25,14 @@ const ListProduct = ({ product }) => {
                         onDismiss={() => {
                             setShowDetails(false)
                         }}
+                        caller="list"
                         product={product}
                     />
                 </Modal>
             </Portal>
-
             <Card
-                style={styles.card}
+                style={product.InCart ? styles.disabledcard : styles.card}
+                disabled={product.InCart}
                 onPress={() => {
                     setShowDetails(true)
                 }}
@@ -44,7 +47,16 @@ const ListProduct = ({ product }) => {
                         <Text variant="headlineMedium">
                             {(product.Pieces * list.getShopPrice(product, product.ShopID)).toLocaleString()} Ft
                         </Text>
-                        <IconButton onPress={() => {}} icon="cart-plus" size={30} mode="contained-tonal" />
+                        <IconButton
+                            onPress={() => {
+                                list.updateProduct(product, product.Pieces, product.ShopID, true)
+                                cart.addProduct({ ...product, InCart: true })
+                            }}
+                            disabled={product.InCart}
+                            icon="cart-plus"
+                            size={30}
+                            mode="contained-tonal"
+                        />
                     </View>
                 </Card.Content>
             </Card>
@@ -53,6 +65,11 @@ const ListProduct = ({ product }) => {
 }
 
 const styles = StyleSheet.create({
+    disabledcard: {
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        margin: 5,
+        padding: 3,
+    },
     card: {
         margin: 5,
         padding: 3,

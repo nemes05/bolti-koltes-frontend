@@ -8,7 +8,7 @@ import ListProduct from '../UI/Product/ListProduct'
 
 const ListScreen = (props) => {
     const panGesture = Gesture.Pan()
-        .activeOffsetX(-150)
+        .activeOffsetX(-80)
         .onEnd(() => {
             props.listSwipeHandler('list')
         })

@@ -2,11 +2,11 @@ import * as React from 'react'
 import { StyleSheet } from 'react-native'
 import { Appbar } from 'react-native-paper'
 
-const TopNavBar = (props) => {
+const TopNavBar = ({ title }) => {
     return (
         <Appbar.Header elevated style={styles.header}>
             <Appbar.Action icon="menu" size={35} />
-            <Appbar.Content title={props.title} style={styles.title} />
+            <Appbar.Content title={title} style={styles.title} />
             <Appbar.Action icon="account-circle" size={35} />
         </Appbar.Header>
     )

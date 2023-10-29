@@ -27,6 +27,7 @@ const listReducer = (state, action) => {
                         Pieces: +item.Pieces + +action.product.Pieces,
                         ShopID: action.product.ShopID,
                         Price: action.product.Price,
+                        InCart: action.product.InCart,
                     }
                 }
             })
@@ -44,8 +45,7 @@ const ListProvider = (props) => {
     const [list, dispatch] = useReducer(listReducer, [])
 
     const addProductHandler = (product) => {
-        console.log(product)
-        dispatch({ type: 'ADD_OR_UPDATE', product })
+        dispatch({ type: 'ADD_OR_UPDATE', product: { ...product, InCart: false } })
         saveItemHandler(product)
     }
 
@@ -54,13 +54,14 @@ const ListProvider = (props) => {
         removeItemHandler(barcode)
     }
 
-    const updateProductHandler = (product, newPieces, newShopID) => {
-        const newProduct = { ...product, Pieces: newPieces - product.Pieces, ShopID: newShopID }
+    const updateProductHandler = (product, newPieces, newShopID, inCart) => {
+        const newProduct = { ...product, Pieces: newPieces - product.Pieces, ShopID: newShopID, InCart: inCart }
         dispatch({ type: 'UPDATE', product: newProduct })
-        updateItemHandler(newProduct)
+        updateItemHandler({ ...newProduct, Pieces: newPieces })
     }
 
     const saveItemHandler = (product) => {
+        console.log(product.Pieces)
         AsyncStorage.setItem(`@list:${product.Barcode}`, JSON.stringify(product)).catch((err) => {
             console.log(err.message)
         })
@@ -89,9 +90,8 @@ const ListProvider = (props) => {
         return price
     }
 
-    const loadListHandler = async () => {
+    const initListHandler = async () => {
         let keys = await AsyncStorage.getAllKeys()
-        console.log(keys)
         keys = keys.filter((element) => element.includes('@list'))
         const list = await AsyncStorage.multiGet(keys)
         const localList = []
@@ -110,7 +110,7 @@ const ListProvider = (props) => {
         getContentPrice: getContentPriceHandler,
         updateProduct: updateProductHandler,
         removeProduct: removeProductHandler,
-        initLoad: loadListHandler,
+        initList: initListHandler,
         getShopPrice: getShopPriceHandler,
         list,
     }

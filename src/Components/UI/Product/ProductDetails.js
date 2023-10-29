@@ -3,12 +3,14 @@ import { View, StyleSheet } from 'react-native'
 import { Card, Text, Button, Divider, TextInput, IconButton, useTheme } from 'react-native-paper'
 
 import ApiContext from '../../../api/api-context'
+import CartContext from '../../../list-cart/cart-context'
 import ListContext from '../../../list-cart/list-context'
 import Dropdown from '../Dropdown'
 
-const ProductDetails = ({ onDismiss, product }) => {
+const ProductDetails = ({ onDismiss, product, caller }) => {
     const api = useContext(ApiContext)
     const list = useContext(ListContext)
+    const cart = useContext(CartContext)
     const theme = useTheme()
 
     const [newPrice, setNewPrice] = useState(list.getShopPrice(product, product.ShopID))
@@ -27,11 +29,26 @@ const ProductDetails = ({ onDismiss, product }) => {
         if (validInput('price', newPrice) && validInput('piece', newPiece)) {
             const shop = product.Price.filter((data) => data.ShopID === newShop)[0]
             product.Price[product.Price.indexOf(shop)].Price = newPrice
-            list.updateProduct(product, newPiece, newShop)
+            if (caller === 'list') {
+                list.updateProduct(product, newPiece, newShop, product.InCart)
+            } else if (caller === 'cart') {
+                list.updateProduct(product, newPiece, newShop, product.InCart)
+                cart.updateProduct(product, newPiece, newShop, product.InCart)
+            }
             onDismiss()
         } else {
             setShowError(true)
         }
+    }
+
+    const customButtonHandler = () => {
+        if (caller === 'cart') {
+            list.updateProduct(product, product.Pieces, product.ShopID, false)
+            cart.removeProduct(product.Barcode)
+        } else if (caller === 'list') {
+            list.removeProduct(product.Barcode)
+        }
+        onDismiss()
     }
 
     return (
@@ -86,15 +103,14 @@ const ProductDetails = ({ onDismiss, product }) => {
                         <Card.Actions>
                             <View style={styles.cardactionscontainer}>
                                 <IconButton
-                                    icon="close"
+                                    icon={caller === 'cart' ? 'cart-arrow-up' : 'close'}
                                     size={30}
                                     style={styles.iconbutton}
                                     mode="outlined"
                                     iconColor={theme.colors.error}
                                     borderColor={theme.colors.error}
                                     onPress={() => {
-                                        list.removeProduct(product.Barcode)
-                                        onDismiss()
+                                        customButtonHandler()
                                     }}
                                 />
                                 <Button
