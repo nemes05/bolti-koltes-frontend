@@ -61,19 +61,19 @@ const ListProvider = (props) => {
     }
 
     const saveItemHandler = (product) => {
-        AsyncStorage.setItem(product.Barcode, JSON.stringify(product)).catch((err) => {
+        AsyncStorage.setItem(`@list:${product.Barcode}`, JSON.stringify(product)).catch((err) => {
             console.log(err.message)
         })
     }
 
     const removeItemHandler = (barcode) => {
-        AsyncStorage.removeItem(barcode).catch((err) => {
+        AsyncStorage.removeItem(`@list:${barcode}`).catch((err) => {
             console.log(err.message)
         })
     }
 
     const updateItemHandler = (product) => {
-        AsyncStorage.mergeItem(product.Barcode, JSON.stringify(product)).catch((err) => {
+        AsyncStorage.mergeItem(`@list:${product.Barcode}`, JSON.stringify(product)).catch((err) => {
             console.log(err.message)
         })
     }
@@ -90,7 +90,9 @@ const ListProvider = (props) => {
     }
 
     const loadListHandler = async () => {
-        const keys = await AsyncStorage.getAllKeys()
+        let keys = await AsyncStorage.getAllKeys()
+        console.log(keys)
+        keys = keys.filter((element) => element.includes('@list'))
         const list = await AsyncStorage.multiGet(keys)
         const localList = []
         list.forEach((element) => {
