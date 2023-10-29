@@ -109,7 +109,7 @@ const ListProvider = (props) => {
         addProduct: addProductHandler,
         updateProduct: updateProductHandler,
         removeProduct: removeProductHandler,
-        getContentPrice: getContentPriceHandler,
+        getListPrice: getContentPriceHandler,
         getShopPrice: getShopPriceHandler,
         initList: initListHandler,
         list,

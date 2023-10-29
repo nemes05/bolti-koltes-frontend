@@ -4,7 +4,7 @@ const ListContext = React.createContext({
     addProduct: (product) => {},
     removeProduct: (barcode) => {},
     updateProduct: (product, newPieces, newShopID, inCart) => {},
-    getContentPrice: () => {},
+    getListPrice: () => {},
     initList: async () => {},
     getShopPrice: (product, shopID) => {},
     list: [],

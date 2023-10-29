@@ -11,7 +11,7 @@ const PriceContainer = ({ screen }) => {
 
     const getTotalPrice = () => {
         if (screen === 'list') {
-            return list.getContentPrice().toLocaleString()
+            return list.getListPrice().toLocaleString()
         } else {
             return cart.getCartPrice().toLocaleString()
         }
