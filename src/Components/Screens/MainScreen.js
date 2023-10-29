@@ -6,6 +6,7 @@ import PriceContainer from '../UI/PriceContainer'
 
 const MainScreen = (props) => {
     const [screen, setScreen] = useState('list')
+
     return (
         <>
             <TopNavBar title={<PriceContainer screen={screen} />} />

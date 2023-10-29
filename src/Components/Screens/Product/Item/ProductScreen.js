@@ -13,15 +13,15 @@ const ProductScreen = (props) => {
     const prodDetails = props.route.params.details
     const parent = props.navigation.getParent()
 
+    const api = useContext(ApiContext)
+    const list = useContext(ListContext)
+    const cart = useContext(CartContext)
+
     const [value, setValue] = useState(undefined)
     const [price, setPrice] = useState(0)
     const [pieces, setPieces] = useState(1)
     const [showModal, setShowModal] = useState(false)
     const [showSnackBar, setShowSnackBar] = useState(false)
-
-    const api = useContext(ApiContext)
-    const list = useContext(ListContext)
-    const cart = useContext(CartContext)
 
     const shopNames = api.shops.map((item) => item.ShopName)
 
@@ -49,6 +49,12 @@ const ProductScreen = (props) => {
             })
             setShowSnackBar(true)
         }
+    }
+
+    const dropDownSelectHandler = (item) => {
+        const shop = api.shops.find((element) => element.ShopName === item)
+        setValue(shop.ShopID)
+        setPrice(list.getShopPrice(prodDetails, shop.ShopID))
     }
 
     return (
@@ -132,9 +138,7 @@ const ProductScreen = (props) => {
                                 placeholder="Válasszon egy boltot"
                                 data={shopNames}
                                 onSelect={(item) => {
-                                    const shop = api.shops.find((element) => element.ShopName === item)
-                                    setValue(shop.ShopID)
-                                    setPrice(list.getShopPrice(prodDetails, shop.ShopID))
+                                    dropDownSelectHandler(item)
                                 }}
                             />
                         </View>

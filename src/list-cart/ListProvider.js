@@ -107,13 +107,14 @@ const ListProvider = (props) => {
 
     const listContext = {
         addProduct: addProductHandler,
-        getContentPrice: getContentPriceHandler,
         updateProduct: updateProductHandler,
         removeProduct: removeProductHandler,
-        initList: initListHandler,
+        getContentPrice: getContentPriceHandler,
         getShopPrice: getShopPriceHandler,
+        initList: initListHandler,
         list,
     }
+
     return <ListContext.Provider value={listContext}>{props.children}</ListContext.Provider>
 }
 export default ListProvider

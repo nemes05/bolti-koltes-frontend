@@ -51,6 +51,12 @@ const ProductDetails = ({ onDismiss, product, caller }) => {
         onDismiss()
     }
 
+    const dropDownSelectHandler = (item) => {
+        const shop = api.shops.find((element) => element.ShopName === item)
+        setNewShop(shop.ShopID)
+        setNewPrice(list.getShopPrice(product, shop.ShopID))
+    }
+
     return (
         <>
             {!showError && (
@@ -93,9 +99,7 @@ const ProductDetails = ({ onDismiss, product, caller }) => {
                                     data={shopNames}
                                     defaultValue={api.shops.findIndex((shop) => shop.ShopID === product.ShopID)}
                                     onSelect={(item) => {
-                                        const shop = api.shops.find((element) => element.ShopName === item)
-                                        setNewShop(shop.ShopID)
-                                        setNewPrice(list.getShopPrice(product, shop.ShopID))
+                                        dropDownSelectHandler(item)
                                     }}
                                 />
                             </View>

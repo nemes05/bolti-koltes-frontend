@@ -7,10 +7,10 @@ import CartContext from '../../../list-cart/cart-context'
 import ListContext from '../../../list-cart/list-context'
 
 const ListProduct = ({ product }) => {
-    const [showDetails, setShowDetails] = useState(false)
-
     const list = useContext(ListContext)
     const cart = useContext(CartContext)
+
+    const [showDetails, setShowDetails] = useState(false)
 
     return (
         <>
@@ -30,6 +30,7 @@ const ListProduct = ({ product }) => {
                     />
                 </Modal>
             </Portal>
+
             <Card
                 style={product.InCart ? styles.disabledcard : styles.card}
                 disabled={product.InCart}

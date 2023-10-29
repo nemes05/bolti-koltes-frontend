@@ -7,10 +7,11 @@ import CartContext from '../../../list-cart/cart-context'
 import ListContext from '../../../list-cart/list-context'
 
 const CartProduct = ({ product }) => {
-    const [showDetails, setShowDetails] = useState(false)
     const cart = useContext(CartContext)
     const list = useContext(ListContext)
     const theme = useTheme()
+
+    const [showDetails, setShowDetails] = useState(false)
 
     return (
         <>
