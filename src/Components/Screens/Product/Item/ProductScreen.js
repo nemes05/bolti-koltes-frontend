@@ -62,34 +62,32 @@ const ProductScreen = (props) => {
             {showModal && (
                 <Portal>
                     <Modal
+                        style={styles.centerview}
                         visible={showModal}
                         onDismiss={() => {
                             setShowModal(false)
                         }}
                     >
-                        <View style={styles.centerview}>
-                            <Card style={styles.modalcard}>
-                                <Card.Content>
-                                    <View style={styles.centerview}>
-                                        <Text variant="headlineSmall" style={styles.modaltext}>
-                                            Válasszon egy boltot!
-                                        </Text>
-                                    </View>
-                                </Card.Content>
-                                <Card.Actions>
-                                    <View style={styles.centercontainer}>
-                                        <Button
-                                            mode="outlined"
-                                            onPress={() => {
-                                                setShowModal(false)
-                                            }}
-                                        >
-                                            Vissza
-                                        </Button>
-                                    </View>
-                                </Card.Actions>
-                            </Card>
-                        </View>
+                        <Card style={styles.modalcard}>
+                            <Card.Content>
+                                <View style={styles.centerview}>
+                                    <Text variant="headlineSmall">Válasszon egy boltot!</Text>
+                                </View>
+                            </Card.Content>
+                            <Card.Actions>
+                                <View style={styles.centercontainer}>
+                                    <Button
+                                        style={styles.button}
+                                        mode="outlined"
+                                        onPress={() => {
+                                            setShowModal(false)
+                                        }}
+                                    >
+                                        Vissza
+                                    </Button>
+                                </View>
+                            </Card.Actions>
+                        </Card>
                     </Modal>
                 </Portal>
             )}
@@ -126,50 +124,46 @@ const ProductScreen = (props) => {
 
             <Card style={styles.card}>
                 <Card.Content>
-                    <View style={styles.productcardimagebox}>
+                    <View style={styles.rowflexbox}>
                         <Card.Cover source={{ uri: prodDetails.ImageLink }} style={styles.productimage} />
                         <Text variant="titleMedium" style={styles.productname}>
                             {prodDetails.Name}
                         </Text>
                     </View>
-                    <Card.Actions>
-                        <View style={styles.centercontainer}>
-                            <Dropdown
-                                placeholder="Válasszon egy boltot"
-                                data={shopNames}
-                                onSelect={(item) => {
-                                    dropDownSelectHandler(item)
-                                }}
-                            />
-                        </View>
-                        <IconButton
-                            icon="star-outline"
-                            onPress={() => {
-                                console.log('Kedvencekhez')
+                </Card.Content>
+                <Card.Actions>
+                    <View style={styles.centercontainer}>
+                        <Dropdown
+                            placeholder="Válasszon egy boltot"
+                            data={shopNames}
+                            onSelect={(item) => {
+                                dropDownSelectHandler(item)
                             }}
                         />
-                    </Card.Actions>
-                </Card.Content>
+                    </View>
+                    <IconButton
+                        icon="star-outline"
+                        onPress={() => {
+                            console.log('Kedvencekhez')
+                        }}
+                    />
+                </Card.Actions>
             </Card>
 
             <Card style={styles.card}>
                 <Card.Actions>
-                    <View style={styles.pricecardinputcontainer}>
-                        <View style={styles.pricecardinputcontainerbox}>
-                            <TextInput
-                                mode="outlined"
-                                editable
-                                style={styles.priceinput}
-                                value={price.toString()}
-                                onChangeText={(inputPrice) => {
-                                    setPrice(inputPrice)
-                                }}
-                                keyboardType="numeric"
-                            />
-                            <Text variant="titleMedium" style={styles.centerview}>
-                                Ft/db
-                            </Text>
-                        </View>
+                    <View style={styles.actionscontainer}>
+                        <TextInput
+                            mode="outlined"
+                            editable
+                            style={styles.priceinput}
+                            value={price.toString()}
+                            onChangeText={(inputPrice) => {
+                                setPrice(inputPrice)
+                            }}
+                            keyboardType="numeric"
+                        />
+                        <Text variant="titleMedium">Ft/db</Text>
                         <NumericInput
                             onChange={(value) => {
                                 setPieces(value)
@@ -177,10 +171,11 @@ const ProductScreen = (props) => {
                             value={pieces}
                             minValue={1}
                             maxValue={100}
+                            containerStyle={{ width: '70%' }}
                             rounded="true"
                         />
                     </View>
-                    <View style={styles.pricecardbuttoncontainer}>
+                    <View style={styles.actionbuttonscontainer}>
                         <View>
                             <Button
                                 mode="contained"
@@ -208,7 +203,7 @@ const ProductScreen = (props) => {
             <View style={styles.centercontainer}>
                 <Button
                     mode="contained"
-                    style={styles.newbutton}
+                    style={styles.navigationbutton}
                     onPress={() => {
                         parent.replace('scan')
                     }}
@@ -217,7 +212,7 @@ const ProductScreen = (props) => {
                 </Button>
                 <Button
                     mode="contained"
-                    style={styles.mainpagebutton}
+                    style={styles.navigationbutton}
                     onPress={() => {
                         parent.navigate('main')
                     }}
@@ -235,8 +230,27 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    productcardimagebox: {
+    rowflexbox: {
+        display: 'flex',
         flexDirection: 'row',
+        alignItems: 'center',
+    },
+    actionbuttonscontainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        flexWrap: 'wrap',
+    },
+    actionscontainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        gap: 10,
+        width: '56%',
+    },
+    centerview: {
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     productimage: {
         width: 80,
@@ -245,60 +259,16 @@ const styles = StyleSheet.create({
     },
     productname: {
         flex: 1,
-        verticalAlign: 'top',
-        textAlign: 'justify',
-    },
-    pricecardinputcontainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '52%',
-    },
-    pricecardinputcontainerbox: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    centerview: {
-        justifyContent: 'center',
-        alignItems: 'center',
+        flexWrap: 'wrap',
     },
     priceinput: {
-        margin: 10,
-        width: '80%',
+        width: '70%',
         height: 60,
         fontSize: 30,
-    },
-    pricecardbuttoncontainer: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-    },
-    newbutton: {
-        width: '50%',
-        margin: 10,
-    },
-    button: {
-        margin: 10,
     },
     card: {
         margin: 10,
         padding: 5,
-    },
-    dropdown: {
-        height: 50,
-        borderColor: 'gray',
-        borderWidth: 0.5,
-        borderRadius: 10,
-        paddingHorizontal: 8,
-        margin: 5,
-        width: '100%',
-    },
-    placeholderStyle: {
-        fontSize: 16,
-    },
-    selectedTextStyle: {
-        fontSize: 16,
     },
     modalcard: {
         width: '90%',
@@ -308,32 +278,12 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         margin: 10,
     },
-    mainpagebutton: {
-        width: '50%',
+    button: {
         margin: 10,
     },
-    dropdownBtnStyle: {
-        height: 50,
-        width: '100%',
-        backgroundColor: '#FFF',
-        borderRadius: 5,
-        borderWidth: 1,
-        borderColor: '#444',
-    },
-    dropdown1BtnTxtStyle: {
-        color: '#444',
-        textAlign: 'left',
-    },
-    dropdown1DropdownStyle: {
-        backgroundColor: '#EFEFEF',
-    },
-    dropdown1RowStyle: {
-        backgroundColor: '#EFEFEF',
-        borderBottomColor: '#C5C5C5',
-    },
-    dropdown1RowTxtStyle: {
-        color: '#444',
-        textAlign: 'left',
+    navigationbutton: {
+        width: '50%',
+        margin: 10,
     },
 })
 
