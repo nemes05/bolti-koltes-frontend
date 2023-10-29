@@ -47,7 +47,7 @@ const CartProduct = ({ product }) => {
                     </View>
                     <View style={styles.bottomcontainer}>
                         <Card.Cover source={{ uri: product.ImageLink }} style={styles.productimage} />
-                        <Text style={styles.productprice} variant="headlineMedium">
+                        <Text variant="headlineMedium">
                             {(product.Pieces * cart.getShopPrice(product, product.ShopID)).toLocaleString()} Ft
                         </Text>
                         <IconButton
@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
         height: 70,
         marginRight: 5,
     },
-    productprice: {},
     iconbutton: {
         margin: 0,
         padding: 0,

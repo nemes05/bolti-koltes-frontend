@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
-import { Card, Divider, IconButton, Modal, Portal, Text } from 'react-native-paper'
+import { Card, Divider, IconButton, Modal, Portal, Text, useTheme } from 'react-native-paper'
 
 import ProductDetails from './ProductDetails'
 import CartContext from '../../../list-cart/cart-context'
@@ -9,8 +9,20 @@ import ListContext from '../../../list-cart/list-context'
 const ListProduct = ({ product }) => {
     const list = useContext(ListContext)
     const cart = useContext(CartContext)
+    const theme = useTheme()
 
     const [showDetails, setShowDetails] = useState(false)
+
+    const customButtonHandler = () => {
+        list.updateProduct(product, product.Pieces, product.ShopID, true)
+        cart.addProduct({ ...product, InCart: true })
+    }
+
+    const disabledcard = {
+        backgroundColor: theme.colors.secondary,
+        margin: 5,
+        padding: 3,
+    }
 
     return (
         <>
@@ -32,26 +44,28 @@ const ListProduct = ({ product }) => {
             </Portal>
 
             <Card
-                style={product.InCart ? styles.disabledcard : styles.card}
+                style={product.InCart ? disabledcard : styles.card}
                 disabled={product.InCart}
                 onPress={() => {
                     setShowDetails(true)
                 }}
             >
                 <Card.Content>
-                    <Text variant="labelLarge" style={{ textAlign: 'center', marginBottom: 5 }}>
-                        {product.Name}
-                    </Text>
-                    <Divider horizontalInset="true" bold="true" />
-                    <View style={styles.cardbottom}>
+                    <View style={styles.topcontainer}>
+                        <Text style={styles.productname} variant="labelLarge">
+                            {product.Name}
+                        </Text>
+                        <Divider horizontalInset="true" bold="true" />
+                    </View>
+                    <View style={styles.bottomcontainer}>
                         <Card.Cover source={{ uri: product.ImageLink }} style={styles.productimage} />
                         <Text variant="headlineMedium">
-                            {(product.Pieces * list.getShopPrice(product, product.ShopID)).toLocaleString()} Ft
+                            {(product.Pieces * cart.getShopPrice(product, product.ShopID)).toLocaleString()} Ft
                         </Text>
                         <IconButton
+                            style={styles.iconbutton}
                             onPress={() => {
-                                list.updateProduct(product, product.Pieces, product.ShopID, true)
-                                cart.addProduct({ ...product, InCart: true })
+                                customButtonHandler()
                             }}
                             disabled={product.InCart}
                             icon="cart-plus"
@@ -67,7 +81,6 @@ const ListProduct = ({ product }) => {
 
 const styles = StyleSheet.create({
     disabledcard: {
-        backgroundColor: 'rgba(0,0,0,0.5)',
         margin: 5,
         padding: 3,
     },
@@ -75,15 +88,30 @@ const styles = StyleSheet.create({
         margin: 5,
         padding: 3,
     },
-    cardbottom: {
+    topcontainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+    },
+    bottomcontainer: {
+        display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         marginTop: 10,
     },
+    productname: {
+        textAlign: 'center',
+        marginBottom: 5,
+    },
     productimage: {
         width: 70,
         height: 70,
+        marginRight: 5,
+    },
+    iconbutton: {
+        margin: 0,
+        padding: 0,
     },
 })
 
