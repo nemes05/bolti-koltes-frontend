@@ -5,18 +5,21 @@ import { Button, Text, Portal, Modal, Card } from 'react-native-paper'
 
 import ApiContext from '../../api/api-context'
 import TopNavBar from '../Navigation/TopNavBar'
+import LoadIndicator from '../UI/LoadIndicator'
 
 const ScanScreen = (props) => {
+    const api = useContext(ApiContext)
+
     const [hasPermission, setHasPermission] = useState(null)
     const [scanned, setScanned] = useState(false)
     const [error, setError] = useState({ hasError: false, msg: '' })
-    const api = useContext(ApiContext)
+
+    const getBarCodeScannerPermissions = async () => {
+        const { status } = await BarCodeScanner.requestPermissionsAsync()
+        setHasPermission(status === 'granted')
+    }
 
     useEffect(() => {
-        const getBarCodeScannerPermissions = async () => {
-            const { status } = await BarCodeScanner.requestPermissionsAsync()
-            setHasPermission(status === 'granted')
-        }
         getBarCodeScannerPermissions()
     }, [])
 
@@ -24,7 +27,7 @@ const ScanScreen = (props) => {
         props.navigation.replace('main')
     }
 
-    const handleBarCodeScanned = ({ type, data }) => {
+    const handleBarCodeScanned = ({ data }) => {
         setScanned(true)
         api.getProduct(data)
             .then((details) => {
@@ -40,16 +43,25 @@ const ScanScreen = (props) => {
 
     if (hasPermission === null) {
         return (
-            <View style={styles.permissioncontainer}>
-                <Text>Requesting for camera permission</Text>
+            <View style={styles.centeredcontainer}>
+                <LoadIndicator title="Kamera hozzáférés kérése..." />
             </View>
         )
     }
 
     if (hasPermission === false) {
         return (
-            <View style={styles.permissioncontainer}>
-                <Text>No access for camera</Text>
+            <View style={styles.centeredcontainer}>
+                <Text variant="labelMedium" style={styles.text}>
+                    Nincs hozzáférés a kamerához
+                </Text>
+                <Button
+                    onPress={() => {
+                        getBarCodeScannerPermissions()
+                    }}
+                >
+                    Engedély adása
+                </Button>
             </View>
         )
     }
@@ -62,15 +74,25 @@ const ScanScreen = (props) => {
                         <Card style={styles.modalcard}>
                             <Card.Content>
                                 <View style={styles.centerview}>
-                                    <Text variant="headlineSmall" style={styles.modaltext}>
+                                    <Text variant="headlineSmall" style={styles.text}>
                                         {error.msg}
                                     </Text>
                                 </View>
                             </Card.Content>
                             <Card.Actions>
-                                <View style={styles.modalbuttonbox}>
-                                    <Button mode="outlined" onPress={handleNavigation}>
+                                <View style={styles.centeredcontainer}>
+                                    <Button mode="outlined" style={styles.button} onPress={handleNavigation}>
                                         Vissza a főoldalra
+                                    </Button>
+                                    <Button
+                                        mode="outlined"
+                                        style={styles.button}
+                                        onPress={() => {
+                                            setScanned(false)
+                                            setError({ hasError: false, msg: '' })
+                                        }}
+                                    >
+                                        Új beolvasás
                                     </Button>
                                 </View>
                             </Card.Actions>
@@ -79,46 +101,50 @@ const ScanScreen = (props) => {
                 </Modal>
             </Portal>
 
-            <TopNavBar />
-            <View style={styles.container}>
-                <View style={styles.barcodebox}>
-                    <BarCodeScanner
-                        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-                        style={styles.barcodescanner}
-                    />
+            {!scanned && (
+                <>
+                    <TopNavBar />
+                    <View style={styles.container}>
+                        <View style={styles.barcodebox}>
+                            <BarCodeScanner
+                                onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+                                style={styles.barcodescanner}
+                            />
+                        </View>
+                    </View>
+                    <View style={styles.centerview}>
+                        <Button mode="contained" style={styles.button}>
+                            Manuális bevitel
+                        </Button>
+                        <Button mode="contained" style={styles.button} onPress={handleNavigation}>
+                            Mégse{' '}
+                        </Button>
+                    </View>
+                </>
+            )}
+
+            {scanned && (
+                <View style={styles.centeredcontainer}>
+                    <LoadIndicator title="Adatok lekérése..." />
                 </View>
-            </View>
-            <View style={styles.buttonbox}>
-                <Button mode="contained" style={styles.button}>
-                    Manuális bevitel
-                </Button>
-                <Button mode="contained" style={styles.button} onPress={handleNavigation}>
-                    Mégse{' '}
-                </Button>
-            </View>
+            )}
         </>
     )
 }
 
 const styles = StyleSheet.create({
-    permissioncontainer: {
-        alignItems: 'center',
+    centeredcontainer: {
+        flex: 1,
         justifyContent: 'center',
-        height: 100,
-        padding: 20,
+        alignItems: 'center',
+    },
+    text: {
+        textAlign: 'center',
+        margin: 20,
     },
     modalcard: {
         width: '90%',
         padding: 15,
-    },
-    modaltext: {
-        textAlign: 'center',
-        margin: 10,
-    },
-    modalbuttonbox: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
     },
     centerview: {
         justifyContent: 'center',
@@ -145,13 +171,9 @@ const styles = StyleSheet.create({
         height: 600,
         width: 400,
     },
-    buttonbox: {
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     button: {
         width: '75%',
-        margin: 10,
+        margin: 7,
     },
 })
 
