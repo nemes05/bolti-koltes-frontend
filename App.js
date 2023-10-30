@@ -16,8 +16,8 @@ export default function App() {
 
     return (
         <ApiProvider>
-            <CartProvider>
-                <ListProvider>
+            <ListProvider>
+                <CartProvider>
                     <NavigationContainer>
                         <PaperProvider>
                             <GestureHandlerRootView style={{ flex: 1 }}>
@@ -34,8 +34,8 @@ export default function App() {
                             </GestureHandlerRootView>
                         </PaperProvider>
                     </NavigationContainer>
-                </ListProvider>
-            </CartProvider>
+                </CartProvider>
+            </ListProvider>
         </ApiProvider>
     )
 }

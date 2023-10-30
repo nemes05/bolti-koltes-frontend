@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useReducer } from 'react'
+import { useContext, useReducer } from 'react'
 
 import CartContext from './cart-context'
+import ListContext from './list-context'
 
 const cartReducer = (state, action) => {
     if (action.type === 'ADD_OR_UPDATE') {
@@ -43,6 +44,7 @@ const cartReducer = (state, action) => {
 
 const CartProvider = (props) => {
     const [cart, dispatch] = useReducer(cartReducer, [])
+    const list = useContext(ListContext)
 
     const addProductHandler = (product) => {
         dispatch({ type: 'ADD_OR_UPDATE', product })
@@ -58,6 +60,13 @@ const CartProvider = (props) => {
         const newProduct = { ...product, Pieces: newPieces - product.Pieces, ShopID: newShopID, InCart: inCart }
         dispatch({ type: 'UPDATE', product: newProduct })
         updateItemHandler({ ...newProduct, Pieces: newPieces })
+    }
+
+    const emptyCartHandler = () => {
+        cart.forEach((item) => {
+            removeProductHandler(item.Barcode)
+            list.removeProduct(item.Barcode)
+        })
     }
 
     const saveItemHandler = (product) => {
@@ -110,6 +119,7 @@ const CartProvider = (props) => {
         updateProduct: updateProductHandler,
         getShopPrice: getShopPriceHandler,
         getCartPrice: getCartPriceHandler,
+        emptyCart: emptyCartHandler,
         initCart: initCartHandler,
         cart,
     }

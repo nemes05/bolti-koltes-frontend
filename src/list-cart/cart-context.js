@@ -6,6 +6,7 @@ const CartContext = React.createContext({
     updateProduct: (product, newPieces, newShopID, inCart) => {},
     getCartPrice: () => {},
     getShopPrice: (product, shopID) => {},
+    emptyCart: () => {},
     initCart: () => {},
     cart: [],
 })

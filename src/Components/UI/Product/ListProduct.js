@@ -64,13 +64,13 @@ const ListProduct = ({ product }) => {
                         </Text>
                         <IconButton
                             style={styles.iconbutton}
-                            onPress={() => {
-                                customButtonHandler()
-                            }}
                             disabled={product.InCart}
                             icon="cart-plus"
                             size={30}
                             mode="contained-tonal"
+                            onPress={() => {
+                                customButtonHandler()
+                            }}
                         />
                     </View>
                 </Card.Content>

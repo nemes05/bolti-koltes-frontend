@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { Card, Text, IconButton, useTheme, Divider, Portal, Modal } from 'react-native-paper'
+import { Card, Text, IconButton, Divider, Portal, Modal, Button } from 'react-native-paper'
 
 import ProductDetails from './ProductDetails'
 import CartContext from '../../../list-cart/cart-context'
@@ -9,9 +9,17 @@ import ListContext from '../../../list-cart/list-context'
 const CartProduct = ({ product }) => {
     const cart = useContext(CartContext)
     const list = useContext(ListContext)
-    const theme = useTheme()
 
     const [showDetails, setShowDetails] = useState(false)
+
+    const customButtonHandler = () => {
+        list.updateProduct(product, product.Pieces, product.ShopID, false)
+        cart.removeProduct(product.Barcode)
+    }
+
+    const getProductPrice = () => {
+        return (product.Pieces * cart.getShopPrice(product, product.ShopID)).toLocaleString()
+    }
 
     return (
         <>
@@ -47,19 +55,14 @@ const CartProduct = ({ product }) => {
                     </View>
                     <View style={styles.bottomcontainer}>
                         <Card.Cover source={{ uri: product.ImageLink }} style={styles.productimage} />
-                        <Text variant="headlineMedium">
-                            {(product.Pieces * cart.getShopPrice(product, product.ShopID)).toLocaleString()} Ft
-                        </Text>
+                        <Text variant="headlineMedium">{getProductPrice()} Ft</Text>
                         <IconButton
-                            icon="close"
+                            icon="cart-arrow-up"
                             size={30}
                             style={styles.iconbutton}
-                            mode="outlined"
-                            iconColor={theme.colors.error}
-                            borderColor={theme.colors.error}
+                            mode="contained-tonal"
                             onPress={() => {
-                                list.removeProduct(product.Barcode)
-                                cart.removeProduct(product.Barcode)
+                                customButtonHandler()
                             }}
                         />
                     </View>

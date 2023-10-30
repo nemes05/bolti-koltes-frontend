@@ -43,7 +43,7 @@ const ProductDetails = ({ onDismiss, product, caller }) => {
 
     const customButtonHandler = () => {
         if (caller === 'cart') {
-            list.updateProduct(product, product.Pieces, product.ShopID, false)
+            list.removeProduct(product.Barcode)
             cart.removeProduct(product.Barcode)
         } else if (caller === 'list') {
             list.removeProduct(product.Barcode)
@@ -107,7 +107,7 @@ const ProductDetails = ({ onDismiss, product, caller }) => {
                         <Card.Actions>
                             <View style={styles.cardactionscontainer}>
                                 <IconButton
-                                    icon={caller === 'cart' ? 'cart-arrow-up' : 'close'}
+                                    icon="close"
                                     size={30}
                                     style={styles.iconbutton}
                                     mode="outlined"
