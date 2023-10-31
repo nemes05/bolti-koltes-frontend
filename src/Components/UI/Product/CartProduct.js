@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { Card, Text, IconButton, Divider, Portal, Modal, Button } from 'react-native-paper'
+import { Card, Text, IconButton, Divider, Portal, Modal } from 'react-native-paper'
 
 import ProductDetails from './ProductDetails'
 import CartContext from '../../../list-cart/cart-context'
