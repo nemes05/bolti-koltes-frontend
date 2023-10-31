@@ -1,3 +1,7 @@
+/**
+ * A component for showing loading state
+ * @param {string}  title   The text that should appear during the loading.
+ */
 import { StyleSheet } from 'react-native'
 import { ActivityIndicator, Text } from 'react-native-paper'
 
