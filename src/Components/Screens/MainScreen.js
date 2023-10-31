@@ -9,7 +9,7 @@ const MainScreen = (props) => {
 
     return (
         <>
-            <TopNavBar title={<PriceContainer screen={screen} />} />
+            <TopNavBar navigation={props.navigation} title={<PriceContainer screen={screen} />} />
             <BottomNavBar
                 navigateToScanScreen={() => props.navigation.navigate('scan')}
                 onScreenChange={(screen) => {
