@@ -2,15 +2,15 @@ import { StyleSheet } from 'react-native'
 import { FAB } from 'react-native-paper'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-const CustomIconButton = (props) => {
+const CustomIconButton = ({ icon, handlePress }) => {
     const insets = useSafeAreaInsets()
 
     return (
         <FAB
-            icon={props.icon}
+            icon={icon}
             style={[styles.fab, { bottom: insets.bottom + 40 }]}
             onPress={() => {
-                props.handlePress()
+                handlePress()
             }}
         />
     )
