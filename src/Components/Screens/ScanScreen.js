@@ -27,6 +27,11 @@ const ScanScreen = (props) => {
         props.navigation.replace('main')
     }
 
+    const dismissError = () => {
+        setScanned(false)
+        setError({ hasError: false, msg: '' })
+    }
+
     const handleBarCodeScanned = ({ data }) => {
         setScanned(true)
         api.getProduct(data)
@@ -55,13 +60,7 @@ const ScanScreen = (props) => {
                 <Text variant="labelMedium" style={styles.text}>
                     Nincs hozzáférés a kamerához
                 </Text>
-                <Button
-                    onPress={() => {
-                        getBarCodeScannerPermissions()
-                    }}
-                >
-                    Engedély adása
-                </Button>
+                <Button onPress={getBarCodeScannerPermissions}>Engedély adása</Button>
             </View>
         )
     }
@@ -84,14 +83,7 @@ const ScanScreen = (props) => {
                                     <Button mode="outlined" style={styles.button} onPress={handleNavigation}>
                                         Vissza a főoldalra
                                     </Button>
-                                    <Button
-                                        mode="outlined"
-                                        style={styles.button}
-                                        onPress={() => {
-                                            setScanned(false)
-                                            setError({ hasError: false, msg: '' })
-                                        }}
-                                    >
+                                    <Button mode="outlined" style={styles.button} onPress={dismissError}>
                                         Új beolvasás
                                     </Button>
                                 </View>

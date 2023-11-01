@@ -16,6 +16,10 @@ const LoginScreen = ({ navigation }) => {
     const [error, setError] = useState({ err: false, msg: '' })
     const [authenticate, setAuthenticate] = useState(false)
 
+    const navigationHandler = () => {
+        parent.navigate('main')
+    }
+
     const validateEmail = (email) => {
         return String(email)
             .toLowerCase()
@@ -83,22 +87,10 @@ const LoginScreen = ({ navigation }) => {
                                 secureTextEntry
                                 onChangeText={(value) => setPassword(value)}
                             />
-                            <Button
-                                style={styles.button}
-                                mode="contained"
-                                onPress={() => {
-                                    submit()
-                                }}
-                            >
+                            <Button style={styles.button} mode="contained" onPress={submit}>
                                 Bejelentkezek!
                             </Button>
-                            <Button
-                                onPress={() => {
-                                    parent.navigate('main')
-                                }}
-                            >
-                                Átugrás
-                            </Button>
+                            <Button onPress={navigationHandler}>Átugrás</Button>
                         </Card.Content>
                     </Card>
                 </View>

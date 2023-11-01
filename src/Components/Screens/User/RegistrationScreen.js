@@ -89,12 +89,7 @@ const RegistrationScreen = ({ navigation }) => {
                             </Text>
                             <Card.Actions>
                                 <View style={styles.actioncontainer}>
-                                    <Button
-                                        mode="contained"
-                                        onPress={() => {
-                                            navigationHandler()
-                                        }}
-                                    >
+                                    <Button mode="contained" onPress={navigationHandler}>
                                         Tovább az appra
                                     </Button>
                                 </View>
@@ -133,22 +128,10 @@ const RegistrationScreen = ({ navigation }) => {
                                 secureTextEntry
                                 onChangeText={(value) => setPasswordAgain(value)}
                             />
-                            <Button
-                                style={styles.button}
-                                mode="contained"
-                                onPress={() => {
-                                    submit()
-                                }}
-                            >
+                            <Button style={styles.button} mode="contained" onPress={submit}>
                                 Regisztrálok!
                             </Button>
-                            <Button
-                                onPress={() => {
-                                    parent.navigate('main')
-                                }}
-                            >
-                                Ugrás az appba regisztráció nélkül!
-                            </Button>
+                            <Button onPress={navigationHandler}>Ugrás az appba regisztráció nélkül!</Button>
                         </Card.Content>
                     </Card>
                 </View>

@@ -2,6 +2,7 @@ import { useState, useContext } from 'react'
 import { View, StyleSheet } from 'react-native'
 import NumericInput from 'react-native-numeric-input'
 import { Button, Card, IconButton, TextInput, Text, Portal, Modal, Snackbar } from 'react-native-paper'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import ApiContext from '../../../../api/api-context'
 import CartContext from '../../../../list-cart/cart-context'
@@ -9,10 +10,7 @@ import ListContext from '../../../../list-cart/list-context'
 import TopNavBar from '../../../Navigation/TopNavBar'
 import Dropdown from '../../../UI/Dropdown'
 
-const ProductScreen = (props) => {
-    const prodDetails = props.route.params.details
-    const parent = props.navigation.getParent()
-
+const ProductScreen = ({ navigation, route }) => {
     const api = useContext(ApiContext)
     const list = useContext(ListContext)
     const cart = useContext(CartContext)
@@ -23,6 +21,9 @@ const ProductScreen = (props) => {
     const [showModal, setShowModal] = useState(false)
     const [showSnackBar, setShowSnackBar] = useState(false)
 
+    const prodDetails = route.params.details
+    const parent = navigation.getParent()
+    const inset = useSafeAreaInsets()
     const shopNames = api.shops.map((item) => item.ShopName)
 
     const addProductHandler = (source) => {
@@ -59,57 +60,58 @@ const ProductScreen = (props) => {
 
     return (
         <>
-            {showModal && (
-                <Portal>
-                    <Modal
-                        style={styles.centerview}
-                        visible={showModal}
-                        onDismiss={() => {
-                            setShowModal(false)
-                        }}
-                    >
-                        <Card style={styles.modalcard}>
-                            <Card.Content>
-                                <View style={styles.centerview}>
-                                    <Text variant="headlineSmall">Válasszon egy boltot!</Text>
-                                </View>
-                            </Card.Content>
-                            <Card.Actions>
-                                <View style={styles.centercontainer}>
-                                    <Button
-                                        style={styles.button}
-                                        mode="outlined"
-                                        onPress={() => {
-                                            setShowModal(false)
-                                        }}
-                                    >
-                                        Vissza
-                                    </Button>
-                                </View>
-                            </Card.Actions>
-                        </Card>
-                    </Modal>
-                </Portal>
-            )}
+            {/* The component which shows the errors */}
+            <Portal>
+                <Modal
+                    style={styles.centerview}
+                    visible={showModal}
+                    onDismiss={() => {
+                        setShowModal(false)
+                    }}
+                >
+                    <Card style={styles.modalcard}>
+                        <Card.Content>
+                            <View style={styles.centerview}>
+                                <Text variant="headlineSmall">Válasszon egy boltot!</Text>
+                            </View>
+                        </Card.Content>
+                        <Card.Actions>
+                            <View style={styles.centercontainer}>
+                                <Button
+                                    style={styles.button}
+                                    mode="outlined"
+                                    onPress={() => {
+                                        setShowModal(false)
+                                    }}
+                                >
+                                    Vissza
+                                </Button>
+                            </View>
+                        </Card.Actions>
+                    </Card>
+                </Modal>
+            </Portal>
 
+            {/* Snacbar shows if the product handling was succesfull */}
             <Snackbar
+                style={{ marginBottom: 20 }}
                 visible={showSnackBar}
                 duration={1000}
+                elevation={3}
+                icon="check"
                 onDismiss={() => {
                     setShowSnackBar(false)
                     parent.navigate('main')
                 }}
-                elevation={3}
-                icon="check"
                 onIconPress={() => {
                     setShowSnackBar(false)
                     parent.navigate('main')
                 }}
-                style={{ marginBottom: 20 }}
             >
                 Sikeresen hozzáadva
             </Snackbar>
 
+            {/* Top navigation bar */}
             <TopNavBar
                 title={
                     <IconButton
@@ -122,6 +124,7 @@ const ProductScreen = (props) => {
                 }
             />
 
+            {/* First card displays the product name, provides dropdown for shop selection and favourites button */}
             <Card style={styles.card}>
                 <Card.Content>
                     <View style={styles.rowflexbox}>
@@ -150,6 +153,7 @@ const ProductScreen = (props) => {
                 </Card.Actions>
             </Card>
 
+            {/* Second card displays the price (editable) and the quantity, buttons for add product to list or cart */}
             <Card style={styles.card}>
                 <Card.Actions>
                     <View style={styles.actionscontainer}>
@@ -200,10 +204,11 @@ const ProductScreen = (props) => {
                 </Card.Actions>
             </Card>
 
-            <View style={styles.centercontainer}>
+            {/* View that contains buttons for navigation */}
+            <View style={{ ...styles.navigationcontainer, bottom: inset.bottom + '10%' }}>
                 <Button
                     mode="contained"
-                    style={styles.navigationbutton}
+                    style={styles.button}
                     onPress={() => {
                         parent.replace('scan')
                     }}
@@ -212,7 +217,7 @@ const ProductScreen = (props) => {
                 </Button>
                 <Button
                     mode="contained"
-                    style={styles.navigationbutton}
+                    style={styles.button}
                     onPress={() => {
                         parent.navigate('main')
                     }}
@@ -225,6 +230,14 @@ const ProductScreen = (props) => {
 }
 
 const styles = StyleSheet.create({
+    navigationcontainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        position: 'absolute',
+    },
     centercontainer: {
         flex: 1,
         justifyContent: 'center',
@@ -279,10 +292,6 @@ const styles = StyleSheet.create({
         margin: 10,
     },
     button: {
-        margin: 10,
-    },
-    navigationbutton: {
-        width: '50%',
         margin: 10,
     },
 })
