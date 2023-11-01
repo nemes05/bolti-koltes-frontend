@@ -33,18 +33,27 @@ const ProductScreen = ({ navigation, route }) => {
         const shop = prodDetails.Price.filter((data) => data.ShopID === api.shops[value - 1].ShopID)[0]
         prodDetails.Price[prodDetails.Price.indexOf(shop)].Price = price
 
+        const product = {
+            ...prodDetails,
+            Pieces: pieces,
+            ShopID: api.shops[value - 1].ShopID,
+        }
+
         if (source === 'list') {
             list.addProduct({
-                ...prodDetails,
-                Pieces: pieces,
-                ShopID: api.shops[value - 1].ShopID,
+                ...product,
+                InCart: false,
             })
+            cart.removeProduct(product.Barcode)
             setShowSnackBar(true)
         } else if (source === 'cart') {
             cart.addProduct({
-                ...prodDetails,
-                Pieces: pieces,
-                ShopID: api.shops[value - 1].ShopID,
+                ...product,
+                InCart: true,
+            })
+            list.addProduct({
+                ...product,
+                InCart: true,
             })
             setShowSnackBar(true)
         }
