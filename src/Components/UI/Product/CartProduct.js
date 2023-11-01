@@ -10,9 +10,9 @@
  */
 import { useContext, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { Card, Text, IconButton, Divider, Portal, Modal } from 'react-native-paper'
+import { Card, Text, IconButton, Divider } from 'react-native-paper'
 
-import ProductDetails from './ProductDetails'
+import ProductDetailsModal from './ProductDetailsModal'
 import CartContext from '../../../list-cart/cart-context'
 import ListContext from '../../../list-cart/list-context'
 
@@ -33,22 +33,14 @@ const CartProduct = ({ product }) => {
 
     return (
         <>
-            <Portal>
-                <Modal
-                    visible={showDetails}
-                    onDismiss={() => {
-                        setShowDetails(false)
-                    }}
-                >
-                    <ProductDetails
-                        onDismiss={() => {
-                            setShowDetails(false)
-                        }}
-                        caller="cart"
-                        product={product}
-                    />
-                </Modal>
-            </Portal>
+            <ProductDetailsModal
+                caller="cart"
+                product={product}
+                visible={showDetails}
+                onDismiss={() => {
+                    setShowDetails(false)
+                }}
+            />
 
             <Card
                 style={styles.card}
@@ -71,9 +63,7 @@ const CartProduct = ({ product }) => {
                             size={30}
                             style={styles.iconbutton}
                             mode="contained-tonal"
-                            onPress={() => {
-                                customButtonHandler()
-                            }}
+                            onPress={customButtonHandler}
                         />
                     </View>
                 </Card.Content>
