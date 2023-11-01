@@ -1,3 +1,8 @@
+/**
+ * The component which is rendered for most screens. Responsible for displaying data and for navigation.
+ * @param {ReactComponent}  title       The parameter will be displayed in the middle of the navigation component
+ * @param {object}          navigation  The navigation object that contains the functions for navigating (passed down to children)
+ */
 import { useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { Appbar } from 'react-native-paper'

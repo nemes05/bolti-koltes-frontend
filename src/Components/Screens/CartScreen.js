@@ -4,7 +4,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { Portal, Modal, Card, Text, Button } from 'react-native-paper'
 
 import CartContext from '../../list-cart/cart-context'
-import CustomIconButton from '../Navigation/CustomIconButton'
+import CustomIconButton from '../UI/CustomIconButton'
 import CartProduct from '../UI/Product/CartProduct'
 
 const CartScreen = (props) => {

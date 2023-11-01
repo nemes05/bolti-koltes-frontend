@@ -1,3 +1,13 @@
+/**
+ * Reusable component for showing errors for the user
+ * @param {string}      message         The message that should appear in the modal.
+ * @param {string}      buttonText      The string that contains what should appear on the button.
+ * @param {boolean}     visible         The variable tells if the modal should be visible.
+ * @param {boolean}     [dismisable]    The variable declares if the modal can be dismissed.
+ * @param {function}    onDismiss       The function that should run when the modal is dismissed.
+ * @param {function}    onButtonPress   The function that gets called when the button is pressed in the modal.
+ */
+
 import { View, StyleSheet } from 'react-native'
 import { Card, Text, Button, Modal } from 'react-native-paper'
 

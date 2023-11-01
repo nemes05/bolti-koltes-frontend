@@ -1,3 +1,12 @@
+/**
+ * General description of the code:
+ * The app uses React Native Paper with custom styling for the UI design, there are additional components in the UI folder, that can be reused.
+ * For navigation it uses React Navigation, there are nested Screens inside the navigation folder, the folder structure follows the logic of the navigation. (The default header is not used)
+ * For gesture handling there's the React Native Gesture Handler library.
+ * The data is stored in different contexts and there's a separate context for the API.
+ * The code structure follows the basic priciples of React Native.
+ */
+
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
