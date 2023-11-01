@@ -1,7 +1,7 @@
 import { getNetworkStateAsync } from 'expo-network'
 import { useContext, useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { Text, Card, Button, Modal, Portal } from 'react-native-paper'
+import { Portal } from 'react-native-paper'
 
 import ApiContext from '../../api/api-context'
 import CartContext from '../../list-cart/cart-context'
@@ -14,41 +14,40 @@ const LoadScreen = (props) => {
     const cart = useContext(CartContext)
     const api = useContext(ApiContext)
 
-    const [error, setError] = useState(false)
+    const [error, setError] = useState({ err: false, msg: '' })
 
     const checkNetwork = async () => {
         const connection = await getNetworkStateAsync()
         if (!connection.isConnected) {
-            setError(true)
+            setError({ err: true, msg: 'Kapcsolja be az internetet!' })
         } else {
             loadContent()
         }
     }
 
-    const getShops = async () => {
-        await api.getShops()
+    const loadCart = () => {
+        cart.initCart().catch((err) => {
+            setError({ err: true, msg: err.msg })
+        })
     }
 
-    const loadContent = () => {
-        getShops()
-            .then(
-                list
-                    .initList()
-                    .then(
-                        cart
-                            .initCart()
-                            .then(props.navigation.replace('main'))
-                            .catch((err) => {
-                                console.log(err.message)
-                            })
-                    )
-                    .catch((err) => {
-                        console.log(err.message)
-                    })
-            )
-            .catch((err) => {
-                console.log(err)
-            })
+    const loadList = () => {
+        list.initList().catch((err) => {
+            setError({ err: true, msg: err.msg })
+        })
+    }
+
+    const getShops = () => {
+        api.getShops().catch((err) => {
+            setError({ err: true, msg: err.msg })
+        })
+    }
+
+    const loadContent = async () => {
+        await getShops()
+        await loadList()
+        await loadCart()
+        props.navigation.navigate('main')
     }
 
     useEffect(() => {
@@ -59,9 +58,9 @@ const LoadScreen = (props) => {
         <>
             <Portal>
                 <ErrorModal
-                    message="Kapcsolja be az internetet!"
+                    message={error.msg}
                     buttonText="Újratöltés"
-                    visible={error}
+                    visible={error.err}
                     dismisable={false}
                     onDismiss={() => {}}
                     onButtonPress={() => {

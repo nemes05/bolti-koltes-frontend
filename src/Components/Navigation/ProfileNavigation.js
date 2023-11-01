@@ -5,6 +5,25 @@ import Drawer from '../UI/Drawer'
 
 const ProfileNavigation = ({ navigation, visible, hide, position }) => {
     const theme = useTheme()
+
+    const navigationItem = (screen) => {
+        return (
+            <Pressable
+                style={({ pressed }) => [
+                    { backgroundColor: pressed ? theme.colors.secondaryContainer : undefined, borderRadius: 10 },
+                ]}
+                onPress={() => {
+                    hide()
+                    navigation.navigate('usernavigation', { screen })
+                }}
+            >
+                <Text variant="bodyLarge" style={styles.text}>
+                    {screen === 'login' ? 'Bejelentkezés' : 'Regisztráció'}
+                </Text>
+            </Pressable>
+        )
+    }
+
     return (
         <Drawer
             visible={visible}
@@ -15,32 +34,8 @@ const ProfileNavigation = ({ navigation, visible, hide, position }) => {
         >
             <Text variant="headlineSmall">Profil</Text>
             <Divider style={styles.divired} bold />
-            <Pressable
-                style={({ pressed }) => [
-                    { backgroundColor: pressed ? theme.colors.secondaryContainer : undefined, borderRadius: 10 },
-                ]}
-                onPress={() => {
-                    hide()
-                    navigation.navigate('usernavigation', { screen: 'login' })
-                }}
-            >
-                <Text variant="bodyLarge" style={styles.text}>
-                    Bejelentkezés
-                </Text>
-            </Pressable>
-            <Pressable
-                style={({ pressed }) => [
-                    { backgroundColor: pressed ? theme.colors.secondaryContainer : undefined, borderRadius: 10 },
-                ]}
-                onPress={() => {
-                    hide()
-                    navigation.navigate('usernavigation', { screen: 'register' })
-                }}
-            >
-                <Text variant="bodyLarge" style={styles.text}>
-                    Regisztráció
-                </Text>
-            </Pressable>
+            {navigationItem('login')}
+            {navigationItem('register')}
         </Drawer>
     )
 }

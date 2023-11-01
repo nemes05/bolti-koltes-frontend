@@ -66,8 +66,8 @@ const ScanScreen = (props) => {
         )
     }
 
-    return (
-        <>
+    if (error.hasError) {
+        return (
             <Portal>
                 <Modal visible={error.hasError} dismissable={false}>
                     <View style={styles.centerview}>
@@ -100,7 +100,11 @@ const ScanScreen = (props) => {
                     </View>
                 </Modal>
             </Portal>
+        )
+    }
 
+    return (
+        <>
             {!scanned && (
                 <>
                     <TopNavBar />
