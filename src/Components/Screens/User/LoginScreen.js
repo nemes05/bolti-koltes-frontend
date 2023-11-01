@@ -1,15 +1,20 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
-import { Card, TextInput, useTheme, Text, Button, Portal, Modal } from 'react-native-paper'
+import { Card, TextInput, useTheme, Text, Button, Portal } from 'react-native-paper'
+
+import ApiContext from '../../../api/api-context'
+import ErrorModal from '../../UI/ErrorModal'
+import LoadIndicator from '../../UI/LoadIndicator'
 
 const LoginScreen = ({ navigation }) => {
+    const api = useContext(ApiContext)
     const parent = navigation.getParent()
+    const theme = useTheme()
 
     const [email, setEmail] = useState()
     const [password, setPassword] = useState()
     const [error, setError] = useState({ err: false, msg: '' })
-
-    const theme = useTheme()
+    const [authenticate, setAuthenticate] = useState(false)
 
     const validateEmail = (email) => {
         return String(email)
@@ -20,113 +25,93 @@ const LoginScreen = ({ navigation }) => {
     }
 
     const submit = () => {
+        setAuthenticate(true)
+
         if (!validateEmail(email)) {
+            setAuthenticate(false)
             setError({ err: true, msg: 'Nem megfelelő az e-mail cím!' })
+            return
         }
 
-        const obj = {
-            email,
-            password,
-        }
-
-        console.log(obj)
+        api.login({ email, password })
+            .then(() => {
+                parent.navigate('main')
+            })
+            .catch((err) => {
+                setError({ err: true, msg: err.message })
+                setAuthenticate(false)
+            })
     }
 
     return (
         <>
             <Portal>
-                <Modal
+                <ErrorModal
+                    message={error.msg}
+                    buttonText="Vissza"
                     visible={error.err}
                     onDismiss={() => {
                         setError({ err: false, msg: '' })
                     }}
-                >
-                    <View style={styles.modalcardcontainer}>
-                        <Card style={styles.modalcard}>
-                            <Card.Content>
-                                <Text style={styles.cardtext} variant="headlineSmall">
-                                    {error.msg}
-                                </Text>
-                            </Card.Content>
-                            <Card.Actions>
-                                <View style={styles.actioncontainer}>
-                                    <Button
-                                        style={styles.modalbutton}
-                                        mode="outlined"
-                                        onPress={() => {
-                                            setError({ err: false, msg: '' })
-                                        }}
-                                    >
-                                        Vissza
-                                    </Button>
-                                </View>
-                            </Card.Actions>
-                        </Card>
-                    </View>
-                </Modal>
+                    onPress={() => {
+                        setError({ err: false, msg: '' })
+                    }}
+                />
             </Portal>
 
-            <View style={styles.cardcontainer}>
-                <Card style={{ ...styles.card, backgroundColor: theme.colors.secondaryContainer }}>
-                    <Card.Content style={styles.cardcontent}>
-                        <Text variant="headlineSmall">Bejelentkezés</Text>
-                        <TextInput
-                            mode="outlined"
-                            label="E-mail"
-                            autoComplete="email"
-                            keyboardType="email-address"
-                            onChangeText={(value) => setEmail(value)}
-                        />
-                        <TextInput
-                            mode="outlined"
-                            label="Jelszó"
-                            secureTextEntry
-                            onChangeText={(value) => setPassword(value)}
-                        />
-                        <Button
-                            style={styles.button}
-                            mode="contained"
-                            onPress={() => {
-                                submit()
-                            }}
-                        >
-                            Bejelentkezek!
-                        </Button>
-                        <Button
-                            onPress={() => {
-                                parent.navigate('main')
-                            }}
-                        >
-                            Átugrás
-                        </Button>
-                    </Card.Content>
-                </Card>
-            </View>
+            {authenticate && (
+                <View style={styles.actioncontainer}>
+                    <LoadIndicator title="Adatok hitelesítése folyamatban..." />
+                </View>
+            )}
+
+            {!authenticate && (
+                <View style={styles.cardcontainer}>
+                    <Card style={{ ...styles.card, backgroundColor: theme.colors.secondaryContainer }}>
+                        <Card.Content style={styles.cardcontent}>
+                            <Text variant="headlineSmall">Bejelentkezés</Text>
+                            <TextInput
+                                mode="outlined"
+                                label="E-mail"
+                                autoComplete="email"
+                                keyboardType="email-address"
+                                onChangeText={(value) => setEmail(value)}
+                            />
+                            <TextInput
+                                mode="outlined"
+                                label="Jelszó"
+                                secureTextEntry
+                                onChangeText={(value) => setPassword(value)}
+                            />
+                            <Button
+                                style={styles.button}
+                                mode="contained"
+                                onPress={() => {
+                                    submit()
+                                }}
+                            >
+                                Bejelentkezek!
+                            </Button>
+                            <Button
+                                onPress={() => {
+                                    parent.navigate('main')
+                                }}
+                            >
+                                Átugrás
+                            </Button>
+                        </Card.Content>
+                    </Card>
+                </View>
+            )}
         </>
     )
 }
 
 const styles = StyleSheet.create({
-    modalcardcontainer: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    modalcard: {
-        width: '90%',
-        padding: 15,
-    },
-    cardtext: {
-        textAlign: 'center',
-        margin: 10,
-    },
     actioncontainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    modalbutton: {
-        margin: 10,
     },
     cardcontainer: {
         display: 'flex',

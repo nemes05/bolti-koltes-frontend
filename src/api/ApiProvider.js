@@ -1,27 +1,32 @@
-import React, { useState } from 'react'
+import * as SecureStore from 'expo-secure-store'
+import { useState } from 'react'
 
 import ApiContext from './api-context'
 
+const API_URL = process.env.EXPO_PUBLIC_API_URL
+
 const ApiProvider = (props) => {
     const [shopList, setShopList] = useState([])
+    const [accessToken, setAccesToken] = useState(null)
 
     const getProductHandler = async (barcode) => {
         try {
-            const res = await fetch(`https://my-shopping-cart-5b67.onrender.com/${barcode}`, {
+            const res = await fetch(`${API_URL}/${barcode}`, {
                 method: 'GET',
                 cache: 'no-store',
                 headers: { 'Content-Type': 'application/json' },
             })
-            if (!res.ok) {
-                if (res.status === 400) {
-                    throw new Error('Nem találtuk a terméket!')
-                } else {
-                    throw new Error('Valami hiba történt!')
-                }
-            }
 
             if (res.status === 200) {
                 return res.json()
+            }
+
+            if (res.status === 400) {
+                throw new Error('Nem találtuk a terméket!')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
             }
         } catch (err) {
             throw err
@@ -30,18 +35,85 @@ const ApiProvider = (props) => {
 
     const getShopsHandler = async () => {
         try {
-            const res = await fetch('https://my-shopping-cart-5b67.onrender.com/shops', {
+            const res = await fetch(`${API_URL}/shops`, {
                 method: 'GET',
                 cache: 'no-store',
                 headers: { 'Content-Type': 'application/json' },
             })
+
+            if (res.status === 200) {
+                const resList = await res.json()
+                setShopList(resList)
+                return
+            }
+
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
             if (!res.ok) {
                 throw new Error('Valami hiba történt!')
             }
+        } catch (err) {
+            throw err
+        }
+    }
 
-            if (res.status === 200 || res.status === 304) {
-                const resList = await res.json()
-                setShopList(resList)
+    const registerHandler = async (registerData) => {
+        try {
+            const res = await fetch(`${API_URL}/register`, {
+                method: 'POST',
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(registerData),
+            })
+
+            if (res.status === 200) {
+                return
+            }
+
+            if (res.status === 409) {
+                throw new Error('Az e-mail már regisztrálva van!')
+            }
+
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
+            }
+        } catch (err) {
+            throw err
+        }
+    }
+
+    const loginHandler = async (loginData) => {
+        try {
+            const res = await fetch(`${API_URL}/login`, {
+                method: 'POST',
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(loginData),
+            })
+
+            if (res.status === 200) {
+                const tokens = await res.json()
+                setAccesToken(tokens.accessToken)
+                await SecureStore.setItemAsync('refreshToken', tokens.refreshToken)
+                return
+            }
+
+            if (res.status === 401) {
+                throw new Error('Nem megfelelő e-mail jelszó páros!')
+            }
+
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
             }
         } catch (err) {
             throw err
@@ -51,6 +123,8 @@ const ApiProvider = (props) => {
     const apiContext = {
         getProduct: getProductHandler,
         getShops: getShopsHandler,
+        register: registerHandler,
+        login: loginHandler,
         shops: shopList,
     }
 

@@ -1,17 +1,27 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
-import { Card, TextInput, useTheme, Text, Button, Portal, Modal } from 'react-native-paper'
+import { Card, TextInput, useTheme, Text, Button, Portal } from 'react-native-paper'
+
+import ApiContext from '../../../api/api-context'
+import ErrorModal from '../../UI/ErrorModal'
+import LoadIndicator from '../../UI/LoadIndicator'
 
 const RegistrationScreen = ({ navigation }) => {
+    const api = useContext(ApiContext)
     const parent = navigation.getParent()
+    const theme = useTheme()
 
     const [email, setEmail] = useState()
     const [userName, setUserName] = useState()
     const [password, setPassword] = useState()
     const [passwordAgain, setPasswordAgain] = useState()
     const [error, setError] = useState({ err: false, msg: '' })
+    const [submitting, setSubmitting] = useState(false)
+    const [registered, setRegistered] = useState(false)
 
-    const theme = useTheme()
+    const navigationHandler = () => {
+        parent.navigate('main')
+    }
 
     const validatePassword = (password, passwordAgain) => {
         return password === passwordAgain
@@ -26,103 +36,123 @@ const RegistrationScreen = ({ navigation }) => {
     }
 
     const submit = () => {
+        setSubmitting(true)
         if (!validateEmail(email)) {
+            setSubmitting(false)
             setError({ err: true, msg: 'Nem megfelelő az e-mail cím!' })
+            return
         } else if (!validatePassword(password, passwordAgain)) {
+            setSubmitting(false)
             setError({ err: true, msg: 'A két jelszó nem egyezik meg!' })
+            return
         }
 
-        const obj = {
-            email,
-            userName,
-            password,
-            passwordAgain,
-        }
-
-        console.log(obj)
+        api.register({ email, userName, password, passwordAgain })
+            .then(() => {
+                setSubmitting(false)
+                setRegistered(true)
+            })
+            .catch((err) => {
+                setSubmitting(false)
+                setError({ err: true, msg: err.message })
+            })
     }
 
     return (
         <>
             <Portal>
-                <Modal
+                <ErrorModal
+                    message={error.msg}
+                    buttonText="Vissza"
                     visible={error.err}
                     onDismiss={() => {
                         setError({ err: false, msg: '' })
                     }}
-                >
-                    <View style={styles.modalcardcontainer}>
-                        <Card style={styles.modalcard}>
-                            <Card.Content>
-                                <Text style={styles.cardtext} variant="headlineSmall">
-                                    {error.msg}
-                                </Text>
-                            </Card.Content>
+                    onPress={() => {
+                        setError({ err: false, msg: '' })
+                    }}
+                />
+            </Portal>
+
+            {submitting && (
+                <View style={styles.actioncontainer}>
+                    <LoadIndicator title="Regisztrációs adatok feldolgozása..." />
+                </View>
+            )}
+
+            {!submitting && registered && (
+                <View style={styles.cardcontainer}>
+                    <Card style={{ ...styles.card, backgroundColor: theme.colors.secondaryContainer }}>
+                        <Card.Content style={styles.cardcontent}>
+                            <Text variant="headlineSmall" style={styles.cardtext}>
+                                Sikeres regisztráció!
+                            </Text>
                             <Card.Actions>
                                 <View style={styles.actioncontainer}>
                                     <Button
-                                        style={styles.modalbutton}
-                                        mode="outlined"
+                                        mode="contained"
                                         onPress={() => {
-                                            setError({ err: false, msg: '' })
+                                            navigationHandler()
                                         }}
                                     >
-                                        Vissza
+                                        Tovább az appra
                                     </Button>
                                 </View>
                             </Card.Actions>
-                        </Card>
-                    </View>
-                </Modal>
-            </Portal>
+                        </Card.Content>
+                    </Card>
+                </View>
+            )}
 
-            <View style={styles.cardcontainer}>
-                <Card style={{ ...styles.card, backgroundColor: theme.colors.secondaryContainer }}>
-                    <Card.Content style={styles.cardcontent}>
-                        <Text variant="headlineSmall">Fiók létrehozása</Text>
-                        <TextInput
-                            mode="outlined"
-                            label="E-mail"
-                            autoComplete="email"
-                            keyboardType="email-address"
-                            onChangeText={(value) => setEmail(value)}
-                        />
-                        <TextInput
-                            mode="outlined"
-                            label="Felhasználónév"
-                            onChangeText={(value) => setUserName(value)}
-                        />
-                        <TextInput
-                            mode="outlined"
-                            label="Jelszó"
-                            secureTextEntry
-                            onChangeText={(value) => setPassword(value)}
-                        />
-                        <TextInput
-                            mode="outlined"
-                            label="Jelszó mégegyszer"
-                            secureTextEntry
-                            onChangeText={(value) => setPasswordAgain(value)}
-                        />
-                        <Button
-                            style={styles.button}
-                            mode="contained"
-                            onPress={() => {
-                                submit()
-                            }}
-                        >
-                            Regisztrálok!
-                        </Button>
-                        <Button
-                            onPress={() => {
-                                parent.navigate('main')
-                            }}
-                        >
-                            Ugrás az appba regisztráció nélkül!
-                        </Button>
-                    </Card.Content>
-                </Card>
-            </View>
+            {!submitting && !registered && (
+                <View style={styles.cardcontainer}>
+                    <Card style={{ ...styles.card, backgroundColor: theme.colors.secondaryContainer }}>
+                        <Card.Content style={styles.cardcontent}>
+                            <Text variant="headlineSmall">Fiók létrehozása</Text>
+                            <TextInput
+                                mode="outlined"
+                                label="E-mail"
+                                autoComplete="email"
+                                keyboardType="email-address"
+                                onChangeText={(value) => setEmail(value)}
+                            />
+                            <TextInput
+                                mode="outlined"
+                                label="Felhasználónév"
+                                onChangeText={(value) => setUserName(value)}
+                            />
+                            <TextInput
+                                mode="outlined"
+                                label="Jelszó"
+                                secureTextEntry
+                                onChangeText={(value) => setPassword(value)}
+                            />
+                            <TextInput
+                                mode="outlined"
+                                label="Jelszó mégegyszer"
+                                secureTextEntry
+                                onChangeText={(value) => setPasswordAgain(value)}
+                            />
+                            <Button
+                                style={styles.button}
+                                mode="contained"
+                                onPress={() => {
+                                    submit()
+                                }}
+                            >
+                                Regisztrálok!
+                            </Button>
+                            <Button
+                                onPress={() => {
+                                    parent.navigate('main')
+                                }}
+                            >
+                                Ugrás az appba regisztráció nélkül!
+                            </Button>
+                        </Card.Content>
+                    </Card>
+                </View>
+            )}
         </>
     )
 }
