@@ -6,6 +6,7 @@ import { Text, Card, Button, Modal, Portal } from 'react-native-paper'
 import ApiContext from '../../api/api-context'
 import CartContext from '../../list-cart/cart-context'
 import ListContext from '../../list-cart/list-context'
+import ErrorModal from '../UI/ErrorModal'
 import LoadIndicator from '../UI/LoadIndicator'
 
 const LoadScreen = (props) => {
@@ -56,48 +57,29 @@ const LoadScreen = (props) => {
 
     return (
         <>
+            <Portal>
+                <ErrorModal
+                    message="Kapcsolja be az internetet!"
+                    buttonText="Újratöltés"
+                    visible={error}
+                    dismisable={false}
+                    onDismiss={() => {}}
+                    onButtonPress={() => {
+                        setError(false)
+                    }}
+                />
+            </Portal>
+
             {!error && (
                 <View style={styles.centercontainer}>
                     <LoadIndicator title="Loading..." />
                 </View>
-            )}
-            {error && (
-                <Portal>
-                    <Modal visible={error} dismissable={false}>
-                        <View style={styles.centerview}>
-                            <Card style={styles.card}>
-                                <Card.Content>
-                                    <Text variant="headlineSmall">Kapcsolja be az internetet</Text>
-                                </Card.Content>
-                                <Card.Actions>
-                                    <View style={styles.centercontainer}>
-                                        <Button
-                                            onPress={() => {
-                                                setError(false)
-                                            }}
-                                        >
-                                            Újratöltés
-                                        </Button>
-                                    </View>
-                                </Card.Actions>
-                            </Card>
-                        </View>
-                    </Modal>
-                </Portal>
             )}
         </>
     )
 }
 
 const styles = StyleSheet.create({
-    card: {
-        width: '90%',
-        padding: 15,
-    },
-    centerview: {
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     centercontainer: {
         flex: 1,
         justifyContent: 'center',

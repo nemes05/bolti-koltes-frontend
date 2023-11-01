@@ -53,7 +53,7 @@ const LoginScreen = ({ navigation }) => {
                     onDismiss={() => {
                         setError({ err: false, msg: '' })
                     }}
-                    onPress={() => {
+                    onButtonPress={() => {
                         setError({ err: false, msg: '' })
                     }}
                 />

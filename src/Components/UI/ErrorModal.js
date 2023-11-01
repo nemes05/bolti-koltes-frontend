@@ -1,12 +1,13 @@
 import { View, StyleSheet } from 'react-native'
 import { Card, Text, Button, Modal } from 'react-native-paper'
 
-const ErrorModal = ({ message, buttonText, visible, onDismiss, onPress }) => {
+const ErrorModal = ({ message, buttonText, visible, dismisable, onDismiss, onButtonPress }) => {
     return (
         <Modal
             visible={visible}
-            onDismiss={(data) => {
-                onDismiss(data)
+            dismissable={dismisable}
+            onDismiss={() => {
+                onDismiss()
             }}
         >
             <View style={styles.modalcardcontainer}>
@@ -22,7 +23,7 @@ const ErrorModal = ({ message, buttonText, visible, onDismiss, onPress }) => {
                                 style={styles.modalbutton}
                                 mode="outlined"
                                 onPress={() => {
-                                    onPress()
+                                    onButtonPress()
                                 }}
                             >
                                 {buttonText}
