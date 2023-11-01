@@ -28,7 +28,8 @@
     "react-native-select-dropdown": "^3.4.0",
     "react-native-vector-icons": "^9.2.0",
     "readme-md-generator": "^1.0.0",
-    "expo-network": "~5.4.0"
+    "expo-network": "~5.4.0",
+    "expo-secure-store": "~12.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
