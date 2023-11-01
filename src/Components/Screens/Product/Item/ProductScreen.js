@@ -2,7 +2,6 @@ import { useState, useContext } from 'react'
 import { View, StyleSheet } from 'react-native'
 import NumericInput from 'react-native-numeric-input'
 import { Button, Card, IconButton, TextInput, Text, Portal, Modal, Snackbar } from 'react-native-paper'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import ApiContext from '../../../../api/api-context'
 import CartContext from '../../../../list-cart/cart-context'
@@ -23,7 +22,6 @@ const ProductScreen = ({ navigation, route }) => {
 
     const prodDetails = route.params.details
     const parent = navigation.getParent()
-    const inset = useSafeAreaInsets()
     const shopNames = api.shops.map((item) => item.ShopName)
 
     const addProductHandler = (source) => {
@@ -205,7 +203,7 @@ const ProductScreen = ({ navigation, route }) => {
             </Card>
 
             {/* View that contains buttons for navigation */}
-            <View style={{ ...styles.navigationcontainer, bottom: inset.bottom + '10%' }}>
+            <View style={styles.navigationcontainer}>
                 <Button
                     mode="contained"
                     style={styles.button}
@@ -235,8 +233,8 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        width: '100%',
-        position: 'absolute',
+        position: 'relative',
+        top: '10%',
     },
     centercontainer: {
         flex: 1,

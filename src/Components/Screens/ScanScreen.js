@@ -60,7 +60,9 @@ const ScanScreen = (props) => {
                 <Text variant="labelMedium" style={styles.text}>
                     Nincs hozzáférés a kamerához
                 </Text>
-                <Button onPress={getBarCodeScannerPermissions}>Engedély adása</Button>
+                <Button onPress={getBarCodeScannerPermissions} mode="contained">
+                    Engedély adása
+                </Button>
             </View>
         )
     }
