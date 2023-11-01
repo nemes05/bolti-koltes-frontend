@@ -7,6 +7,7 @@ import LoadScreen from './src/Components/Screens/LoadScreen'
 import MainScreen from './src/Components/Screens/MainScreen'
 import ProductNavigationScreen from './src/Components/Screens/Product/ProductNavigationScreen'
 import ScanScreen from './src/Components/Screens/ScanScreen'
+import UserNavigationScreen from './src/Components/Screens/User/UserNavigationScreen'
 import ApiProvider from './src/api/ApiProvider'
 import CartProvider from './src/list-cart/CartProvider'
 import ListProvider from './src/list-cart/ListProvider'
@@ -30,6 +31,7 @@ export default function App() {
                                         component={ProductNavigationScreen}
                                         initialParams={{ key: 'Stack' }}
                                     />
+                                    <Stack.Screen name="usernavigation" component={UserNavigationScreen} />
                                 </Stack.Navigator>
                             </GestureHandlerRootView>
                         </PaperProvider>

@@ -1,3 +1,7 @@
+/**
+ * Component for displaying the price of the cart or the list
+ * @param {string}  screen  The string that tells wich price should the appear, could be 'list' or 'cart'.
+ */
 import { useContext } from 'react'
 import { Text, useTheme } from 'react-native-paper'
 
@@ -12,7 +16,7 @@ const PriceContainer = ({ screen }) => {
     const getTotalPrice = () => {
         if (screen === 'list') {
             return list.getListPrice().toLocaleString()
-        } else {
+        } else if (screen === 'cart') {
             return cart.getCartPrice().toLocaleString()
         }
     }

@@ -1,3 +1,15 @@
+/**
+ * A modal for displaying and editing the details of a product.
+ * @param {Object}      product             The product object wich contains the details.
+ * @param {string}      product.ImageLink   A link for an image of the product.
+ * @param {string}      product.Name        The name of the product.
+ * @param {Array}       product.Price       An array that contains the price of the product for different shops.
+ * @param {number}      product.Pieces      The number of the product in the cart.
+ * @param {boolean}     product.InCart      The variable that shows if the specified product is in the cart.
+ * @param {number}      product.ShopID      The ID for the shop from which the product will be bought.
+ * @param {function}    onDismiss           The function that could be called for hiding the details.
+ * @param {string}      caller              The caller determines what content should be rendered, could be 'list' or 'cart'.
+ */
 import { useContext, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Card, Text, Button, Divider, TextInput, IconButton, useTheme } from 'react-native-paper'

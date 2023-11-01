@@ -1,14 +1,35 @@
-import * as React from 'react'
+import { useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { Appbar } from 'react-native-paper'
 
-const TopNavBar = ({ title }) => {
+import ProfileNavigation from './ProfileNavigation'
+
+const TopNavBar = ({ title, navigation }) => {
+    const [showCard, setShowCard] = useState()
+
     return (
-        <Appbar.Header elevated style={styles.header}>
-            <Appbar.Action icon="menu" size={35} />
-            <Appbar.Content title={title} style={styles.title} />
-            <Appbar.Action icon="account-circle" size={35} />
-        </Appbar.Header>
+        <>
+            <ProfileNavigation
+                position="right"
+                navigation={navigation}
+                visible={showCard}
+                hide={() => {
+                    setShowCard(false)
+                }}
+            />
+
+            <Appbar.Header elevated style={styles.header}>
+                <Appbar.Action icon="menu" size={35} />
+                <Appbar.Content title={title} style={styles.title} />
+                <Appbar.Action
+                    icon="account-circle"
+                    size={35}
+                    onPress={() => {
+                        setShowCard(true)
+                    }}
+                />
+            </Appbar.Header>
+        </>
     )
 }
 
