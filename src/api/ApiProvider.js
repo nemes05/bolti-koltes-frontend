@@ -8,6 +8,7 @@ const API_URL = process.env.EXPO_PUBLIC_API_URL
 const ApiProvider = (props) => {
     const [shopList, setShopList] = useState([])
     const [accessToken, setAccesToken] = useState(null)
+    const [userLoggedIn, setUserLoggedIn] = useState(false)
 
     const getProductHandler = async (barcode) => {
         try {
@@ -101,6 +102,7 @@ const ApiProvider = (props) => {
                 const tokens = await res.json()
                 setAccesToken(tokens.accessToken)
                 await SecureStore.setItemAsync('refreshToken', tokens.refreshToken)
+                setUserLoggedIn(true)
                 return
             }
 
@@ -120,11 +122,20 @@ const ApiProvider = (props) => {
         }
     }
 
+    const logoutHandler = async () => {
+        setUserLoggedIn(false)
+        setAccesToken(undefined)
+        await SecureStore.deleteItemAsync('refreshToken')
+        //Needs a query for deleting the access token in database
+    }
+
     const apiContext = {
         getProduct: getProductHandler,
         getShops: getShopsHandler,
         register: registerHandler,
         login: loginHandler,
+        logout: logoutHandler,
+        userStatus: userLoggedIn,
         shops: shopList,
     }
 
