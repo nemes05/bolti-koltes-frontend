@@ -21,34 +21,37 @@ import UserNavigationScreen from './src/Components/Screens/User/UserNavigationSc
 import ApiProvider from './src/Contexts/api/ApiProvider'
 import CartProvider from './src/Contexts/cart/CartProvider'
 import ListProvider from './src/Contexts/list/ListProvider'
+import PreferencesProvider from './src/Contexts/preferences/PreferencesProvider'
 
 export default function App() {
     const Stack = createNativeStackNavigator()
 
     return (
         <ApiProvider>
-            <ListProvider>
-                <CartProvider>
-                    <NavigationContainer>
-                        <PaperProvider>
-                            <GestureHandlerRootView style={{ flex: 1 }}>
-                                <Stack.Navigator screenOptions={{ headerShown: false }}>
-                                    <Stack.Screen name="load" component={LoadScreen} />
-                                    <Stack.Screen name="main" component={MainScreen} />
-                                    <Stack.Screen name="scan" component={ScanScreen} />
-                                    <Stack.Screen name="settings" component={SettingsScreen} />
-                                    <Stack.Screen
-                                        name="productnavigation"
-                                        component={ProductNavigationScreen}
-                                        initialParams={{ key: 'Stack' }}
-                                    />
-                                    <Stack.Screen name="usernavigation" component={UserNavigationScreen} />
-                                </Stack.Navigator>
-                            </GestureHandlerRootView>
-                        </PaperProvider>
-                    </NavigationContainer>
-                </CartProvider>
-            </ListProvider>
+            <PreferencesProvider>
+                <ListProvider>
+                    <CartProvider>
+                        <NavigationContainer>
+                            <PaperProvider>
+                                <GestureHandlerRootView style={{ flex: 1 }}>
+                                    <Stack.Navigator screenOptions={{ headerShown: false }}>
+                                        <Stack.Screen name="load" component={LoadScreen} />
+                                        <Stack.Screen name="main" component={MainScreen} />
+                                        <Stack.Screen name="scan" component={ScanScreen} />
+                                        <Stack.Screen name="settings" component={SettingsScreen} />
+                                        <Stack.Screen
+                                            name="productnavigation"
+                                            component={ProductNavigationScreen}
+                                            initialParams={{ key: 'Stack' }}
+                                        />
+                                        <Stack.Screen name="usernavigation" component={UserNavigationScreen} />
+                                    </Stack.Navigator>
+                                </GestureHandlerRootView>
+                            </PaperProvider>
+                        </NavigationContainer>
+                    </CartProvider>
+                </ListProvider>
+            </PreferencesProvider>
         </ApiProvider>
     )
 }
