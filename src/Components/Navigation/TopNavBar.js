@@ -14,8 +14,6 @@ const TopNavBar = ({ title, navigation }) => {
     const [showUser, setShowUser] = useState(false)
     const [showMenu, setShowMenu] = useState(false)
 
-    console.log(navigation)
-
     return (
         <>
             <ProfileNavigation
