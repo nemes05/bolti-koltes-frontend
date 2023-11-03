@@ -120,6 +120,7 @@ const ProductScreen = ({ navigation, route }) => {
 
             {/* Top navigation bar */}
             <TopNavBar
+                navigation={parent.navigation}
                 title={
                     <IconButton
                         icon="home"

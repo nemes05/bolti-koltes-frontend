@@ -16,6 +16,7 @@ import LoadScreen from './src/Components/Screens/LoadScreen'
 import MainScreen from './src/Components/Screens/MainScreen'
 import ProductNavigationScreen from './src/Components/Screens/Product/ProductNavigationScreen'
 import ScanScreen from './src/Components/Screens/ScanScreen'
+import SettingsScreen from './src/Components/Screens/SettingsScreen'
 import UserNavigationScreen from './src/Components/Screens/User/UserNavigationScreen'
 import ApiProvider from './src/api/ApiProvider'
 import CartProvider from './src/list-cart/CartProvider'
@@ -35,6 +36,7 @@ export default function App() {
                                     <Stack.Screen name="load" component={LoadScreen} />
                                     <Stack.Screen name="main" component={MainScreen} />
                                     <Stack.Screen name="scan" component={ScanScreen} />
+                                    <Stack.Screen name="settings" component={SettingsScreen} />
                                     <Stack.Screen
                                         name="productnavigation"
                                         component={ProductNavigationScreen}
