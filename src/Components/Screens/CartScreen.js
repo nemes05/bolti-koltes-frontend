@@ -3,7 +3,7 @@ import { FlatList, View, StyleSheet } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { Portal, Modal, Card, Text, Button } from 'react-native-paper'
 
-import CartContext from '../../list-cart/cart-context'
+import CartContext from '../../Contexts/cart/cart-context'
 import CustomIconButton from '../UI/CustomIconButton'
 import CartProduct from '../UI/Product/CartProduct'
 import SimplifiedCartProduct from '../UI/Product/SimplifiedCartProduct'

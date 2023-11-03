@@ -14,9 +14,9 @@ import { useContext, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Card, Text, Button, Divider, TextInput, IconButton, useTheme } from 'react-native-paper'
 
-import ApiContext from '../../../api/api-context'
-import CartContext from '../../../list-cart/cart-context'
-import ListContext from '../../../list-cart/list-context'
+import ApiContext from '../../../Contexts/api/api-context'
+import CartContext from '../../../Contexts/cart/cart-context'
+import ListContext from '../../../Contexts/list/list-context'
 import Dropdown from '../Dropdown'
 
 const ProductDetails = ({ onDismiss, product, caller }) => {

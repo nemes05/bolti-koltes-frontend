@@ -9,7 +9,7 @@ import { useContext } from 'react'
 import { StyleSheet } from 'react-native'
 import { Divider, Text } from 'react-native-paper'
 
-import ApiContext from '../../api/api-context'
+import ApiContext from '../../Contexts/api/api-context'
 import Drawer from '../UI/Drawer/Drawer'
 import DrawerItem from '../UI/Drawer/DrawerItem'
 

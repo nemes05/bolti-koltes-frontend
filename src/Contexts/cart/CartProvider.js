@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useContext, useReducer } from 'react'
 
 import CartContext from './cart-context'
-import ListContext from './list-context'
+import ListContext from '../list/list-context'
 
 const cartReducer = (state, action) => {
     if (action.type === 'ADD_OR_UPDATE') {

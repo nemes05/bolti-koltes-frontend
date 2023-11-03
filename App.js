@@ -18,9 +18,9 @@ import ProductNavigationScreen from './src/Components/Screens/Product/ProductNav
 import ScanScreen from './src/Components/Screens/ScanScreen'
 import SettingsScreen from './src/Components/Screens/SettingsScreen'
 import UserNavigationScreen from './src/Components/Screens/User/UserNavigationScreen'
-import ApiProvider from './src/api/ApiProvider'
-import CartProvider from './src/list-cart/CartProvider'
-import ListProvider from './src/list-cart/ListProvider'
+import ApiProvider from './src/Contexts/api/ApiProvider'
+import CartProvider from './src/Contexts/cart/CartProvider'
+import ListProvider from './src/Contexts/list/ListProvider'
 
 export default function App() {
     const Stack = createNativeStackNavigator()

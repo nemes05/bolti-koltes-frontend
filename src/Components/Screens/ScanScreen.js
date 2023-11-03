@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Button, Text, Portal, Modal, Card } from 'react-native-paper'
 
-import ApiContext from '../../api/api-context'
+import ApiContext from '../../Contexts/api/api-context'
 import LoadIndicator from '../UI/LoadIndicator'
 
 const ScanScreen = (props) => {

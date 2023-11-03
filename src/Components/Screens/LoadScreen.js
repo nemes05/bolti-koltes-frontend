@@ -3,9 +3,9 @@ import { useContext, useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { Portal } from 'react-native-paper'
 
-import ApiContext from '../../api/api-context'
-import CartContext from '../../list-cart/cart-context'
-import ListContext from '../../list-cart/list-context'
+import ApiContext from '../../Contexts/api/api-context'
+import CartContext from '../../Contexts/cart/cart-context'
+import ListContext from '../../Contexts/list/list-context'
 import ErrorModal from '../UI/ErrorModal'
 import LoadIndicator from '../UI/LoadIndicator'
 

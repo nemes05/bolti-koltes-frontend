@@ -5,8 +5,8 @@
 import { useContext } from 'react'
 import { Text, useTheme } from 'react-native-paper'
 
-import CartContext from '../../list-cart/cart-context'
-import ListContext from '../../list-cart/list-context'
+import CartContext from '../../Contexts/cart/cart-context'
+import ListContext from '../../Contexts/list/list-context'
 
 const PriceContainer = ({ screen }) => {
     const list = useContext(ListContext)

@@ -3,9 +3,9 @@ import { View, StyleSheet } from 'react-native'
 import NumericInput from 'react-native-numeric-input'
 import { Button, Card, IconButton, TextInput, Text, Portal, Modal, Snackbar } from 'react-native-paper'
 
-import ApiContext from '../../../../api/api-context'
-import CartContext from '../../../../list-cart/cart-context'
-import ListContext from '../../../../list-cart/list-context'
+import ApiContext from '../../../../Contexts/api/api-context'
+import CartContext from '../../../../Contexts/cart/cart-context'
+import ListContext from '../../../../Contexts/list/list-context'
 import TopNavBar from '../../../Navigation/TopNavBar'
 import Dropdown from '../../../UI/Dropdown'
 

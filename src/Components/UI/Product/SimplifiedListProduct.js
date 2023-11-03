@@ -13,8 +13,8 @@ import { StyleSheet } from 'react-native'
 import { Card, IconButton, Text, useTheme } from 'react-native-paper'
 
 import ProductDetailsModal from './ProductDetailsModal'
-import CartContext from '../../../list-cart/cart-context'
-import ListContext from '../../../list-cart/list-context'
+import CartContext from '../../../Contexts/cart/cart-context'
+import ListContext from '../../../Contexts/list/list-context'
 
 const SimplifiedListProduct = ({ product }) => {
     const list = useContext(ListContext)
