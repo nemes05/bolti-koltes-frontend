@@ -1,5 +1,5 @@
 /**
- * A component which displays a product on the list
+ * A component which displays a product on the list. Same as ListProduct but with simplified view.
  * @param {Object}  product             The product object wich contains the details.
  * @param {string}  product.ImageLink   A link for an image of the product.
  * @param {string}  product.Name        The name of the product.
@@ -9,14 +9,14 @@
  * @param {number}  product.ShopID      The ID for the shop from which the product will be bought.
  */
 import { useContext, useState } from 'react'
-import { View, StyleSheet } from 'react-native'
-import { Card, Divider, IconButton, Text, useTheme } from 'react-native-paper'
+import { StyleSheet } from 'react-native'
+import { Card, IconButton, Text, useTheme } from 'react-native-paper'
 
 import ProductDetailsModal from './ProductDetailsModal'
 import CartContext from '../../../list-cart/cart-context'
 import ListContext from '../../../list-cart/list-context'
 
-const ListProduct = ({ product }) => {
+const SimplifiedListProduct = ({ product }) => {
     const list = useContext(ListContext)
     const cart = useContext(CartContext)
     const theme = useTheme()
@@ -26,6 +26,10 @@ const ListProduct = ({ product }) => {
     const customButtonHandler = () => {
         list.updateProduct(product, product.Pieces, product.ShopID, true)
         cart.addProduct({ ...product, InCart: true })
+    }
+
+    const getProductPrice = () => {
+        return (product.Pieces * list.getShopPrice(product, product.ShopID)).toLocaleString()
     }
 
     const disabledcard = {
@@ -52,27 +56,19 @@ const ListProduct = ({ product }) => {
                     setShowDetails(true)
                 }}
             >
-                <Card.Content>
-                    <View style={styles.topcontainer}>
-                        <Text style={styles.productname} variant="labelLarge">
-                            {product.Name}
-                        </Text>
-                        <Divider horizontalInset="true" bold="true" />
-                    </View>
-                    <View style={styles.bottomcontainer}>
-                        <Card.Cover source={{ uri: product.ImageLink }} style={styles.productimage} />
-                        <Text variant="headlineMedium">
-                            {(product.Pieces * cart.getShopPrice(product, product.ShopID)).toLocaleString()} Ft
-                        </Text>
-                        <IconButton
-                            style={styles.iconbutton}
-                            disabled={product.InCart}
-                            icon="cart-plus"
-                            size={30}
-                            mode="contained-tonal"
-                            onPress={customButtonHandler}
-                        />
-                    </View>
+                <Card.Content style={styles.cardcontent}>
+                    <Text style={styles.productname} numberOfLines={2} variant="labelLarge">
+                        {product.Name}
+                    </Text>
+                    <Text variant="headlineMedium">{getProductPrice()} Ft</Text>
+                    <IconButton
+                        disabled={product.InCart}
+                        icon="cart-arrow-up"
+                        size={30}
+                        style={styles.iconbutton}
+                        mode="contained-tonal"
+                        onPress={customButtonHandler}
+                    />
                 </Card.Content>
             </Card>
         </>
@@ -80,39 +76,25 @@ const ListProduct = ({ product }) => {
 }
 
 const styles = StyleSheet.create({
-    disabledcard: {
-        margin: 5,
-        padding: 3,
-    },
     card: {
         margin: 5,
         padding: 3,
     },
-    topcontainer: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-    },
-    bottomcontainer: {
+    cardcontent: {
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'space-evenly',
         alignItems: 'center',
-        marginTop: 10,
-    },
-    productname: {
-        textAlign: 'center',
-        marginBottom: 5,
-    },
-    productimage: {
-        width: 70,
-        height: 70,
-        marginRight: 5,
+        gap: 20,
     },
     iconbutton: {
         margin: 0,
         padding: 0,
     },
+    productname: {
+        flex: 1,
+        flexWrap: 'wrap',
+    },
 })
 
-export default ListProduct
+export default SimplifiedListProduct

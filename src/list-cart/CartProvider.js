@@ -9,6 +9,8 @@ const cartReducer = (state, action) => {
         const newProd = state.find((element) => element.Barcode === action.product.Barcode)
         if (newProd !== undefined) {
             action.type = 'UPDATE'
+        } else if (action.inList) {
+            action.type = 'ADD_IN_LIST'
         } else {
             action.type = 'ADD'
         }
@@ -33,6 +35,9 @@ const cartReducer = (state, action) => {
                 }
             })
         }
+        case 'ADD_IN_LIST': {
+            return [...state, { ...action.product, Pieces: +action.product.Pieces + +action.inList.Pieces }]
+        }
         case 'REMOVE': {
             return state.filter((item) => item.Barcode !== action.barcode)
         }
@@ -47,6 +52,15 @@ const CartProvider = (props) => {
     const list = useContext(ListContext)
 
     const addProductHandler = (product) => {
+        const inListProduct = list.list.find((item) => item.Barcode === product.Barcode)
+        if (inListProduct) {
+            dispatch({
+                type: 'ADD_OR_UPDATE',
+                inList: { Pieces: inListProduct.Pieces },
+                product,
+            })
+            return
+        }
         dispatch({ type: 'ADD_OR_UPDATE', product })
         saveItemHandler(product)
     }

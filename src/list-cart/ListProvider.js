@@ -45,7 +45,7 @@ const ListProvider = (props) => {
     const [list, dispatch] = useReducer(listReducer, [])
 
     const addProductHandler = (product) => {
-        dispatch({ type: 'ADD_OR_UPDATE', product: { ...product, InCart: false } })
+        dispatch({ type: 'ADD_OR_UPDATE', product })
         saveItemHandler(product)
     }
 
@@ -61,7 +61,6 @@ const ListProvider = (props) => {
     }
 
     const saveItemHandler = (product) => {
-        console.log(product.Pieces)
         AsyncStorage.setItem(`@list:${product.Barcode}`, JSON.stringify(product)).catch((err) => {
             console.log(err.message)
         })

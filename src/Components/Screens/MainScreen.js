@@ -11,7 +11,7 @@ const MainScreen = (props) => {
         <>
             <TopNavBar navigation={props.navigation} title={<PriceContainer screen={screen} />} />
             <BottomNavBar
-                navigateToScanScreen={() => props.navigation.navigate('scan')}
+                navigate={(screen) => props.navigation.navigate(screen)}
                 onScreenChange={(screen) => {
                     setScreen(screen)
                 }}

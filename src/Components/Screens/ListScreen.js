@@ -3,8 +3,9 @@ import { FlatList, View, StyleSheet } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 
 import ListContext from '../../list-cart/list-context'
-import CustomIconButton from '../Navigation/CustomIconButton'
+import CustomIconButton from '../UI/CustomIconButton'
 import ListProduct from '../UI/Product/ListProduct'
+import SimplifiedListProduct from '../UI/Product/SimplifiedListProduct'
 
 const ListScreen = (props) => {
     const panGesture = Gesture.Pan()

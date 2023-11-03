@@ -1,31 +1,55 @@
+/**
+ * The component which is rendered for most screens. Responsible for displaying data and for navigation.
+ * @param {ReactComponent}  title       The parameter will be displayed in the middle of the navigation component
+ * @param {object}          navigation  The navigation object that contains the functions for navigating (passed down to children)
+ */
 import { useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { Appbar } from 'react-native-paper'
 
+import MenuNavigation from './MenuNavigation'
 import ProfileNavigation from './ProfileNavigation'
 
 const TopNavBar = ({ title, navigation }) => {
-    const [showCard, setShowCard] = useState()
+    const [showUser, setShowUser] = useState(false)
+    const [showMenu, setShowMenu] = useState(false)
 
     return (
         <>
             <ProfileNavigation
                 position="right"
                 navigation={navigation}
-                visible={showCard}
+                visible={showUser}
                 hide={() => {
-                    setShowCard(false)
+                    setShowUser(false)
+                }}
+            />
+
+            <MenuNavigation
+                position="left"
+                navigation={navigation}
+                visible={showMenu}
+                hide={() => {
+                    setShowMenu(false)
                 }}
             />
 
             <Appbar.Header elevated style={styles.header}>
-                <Appbar.Action icon="menu" size={35} />
+                <Appbar.Action
+                    icon="menu"
+                    size={35}
+                    onPress={() => {
+                        setShowUser(false)
+                        setShowMenu(true)
+                    }}
+                />
                 <Appbar.Content title={title} style={styles.title} />
                 <Appbar.Action
                     icon="account-circle"
                     size={35}
                     onPress={() => {
-                        setShowCard(true)
+                        setShowMenu(false)
+                        setShowUser(true)
                     }}
                 />
             </Appbar.Header>

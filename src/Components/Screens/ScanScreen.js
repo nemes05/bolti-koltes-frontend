@@ -27,6 +27,11 @@ const ScanScreen = (props) => {
         props.navigation.replace('main')
     }
 
+    const dismissError = () => {
+        setScanned(false)
+        setError({ hasError: false, msg: '' })
+    }
+
     const handleBarCodeScanned = ({ data }) => {
         setScanned(true)
         api.getProduct(data)
@@ -55,19 +60,15 @@ const ScanScreen = (props) => {
                 <Text variant="labelMedium" style={styles.text}>
                     Nincs hozzáférés a kamerához
                 </Text>
-                <Button
-                    onPress={() => {
-                        getBarCodeScannerPermissions()
-                    }}
-                >
+                <Button onPress={getBarCodeScannerPermissions} mode="contained">
                     Engedély adása
                 </Button>
             </View>
         )
     }
 
-    return (
-        <>
+    if (error.hasError) {
+        return (
             <Portal>
                 <Modal visible={error.hasError} dismissable={false}>
                     <View style={styles.centerview}>
@@ -84,14 +85,7 @@ const ScanScreen = (props) => {
                                     <Button mode="outlined" style={styles.button} onPress={handleNavigation}>
                                         Vissza a főoldalra
                                     </Button>
-                                    <Button
-                                        mode="outlined"
-                                        style={styles.button}
-                                        onPress={() => {
-                                            setScanned(false)
-                                            setError({ hasError: false, msg: '' })
-                                        }}
-                                    >
+                                    <Button mode="outlined" style={styles.button} onPress={dismissError}>
                                         Új beolvasás
                                     </Button>
                                 </View>
@@ -100,7 +94,11 @@ const ScanScreen = (props) => {
                     </View>
                 </Modal>
             </Portal>
+        )
+    }
 
+    return (
+        <>
             {!scanned && (
                 <>
                     <TopNavBar />

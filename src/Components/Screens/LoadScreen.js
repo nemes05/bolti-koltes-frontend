@@ -1,11 +1,12 @@
 import { getNetworkStateAsync } from 'expo-network'
 import { useContext, useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { Text, Card, Button, Modal, Portal } from 'react-native-paper'
+import { Portal } from 'react-native-paper'
 
 import ApiContext from '../../api/api-context'
 import CartContext from '../../list-cart/cart-context'
 import ListContext from '../../list-cart/list-context'
+import ErrorModal from '../UI/ErrorModal'
 import LoadIndicator from '../UI/LoadIndicator'
 
 const LoadScreen = (props) => {
@@ -13,41 +14,40 @@ const LoadScreen = (props) => {
     const cart = useContext(CartContext)
     const api = useContext(ApiContext)
 
-    const [error, setError] = useState(false)
+    const [error, setError] = useState({ err: false, msg: '' })
 
     const checkNetwork = async () => {
         const connection = await getNetworkStateAsync()
         if (!connection.isConnected) {
-            setError(true)
+            setError({ err: true, msg: 'Kapcsolja be az internetet!' })
         } else {
             loadContent()
         }
     }
 
-    const getShops = async () => {
-        await api.getShops()
+    const loadCart = () => {
+        cart.initCart().catch((err) => {
+            setError({ err: true, msg: err.msg })
+        })
     }
 
-    const loadContent = () => {
-        getShops()
-            .then(
-                list
-                    .initList()
-                    .then(
-                        cart
-                            .initCart()
-                            .then(props.navigation.replace('main'))
-                            .catch((err) => {
-                                console.log(err.message)
-                            })
-                    )
-                    .catch((err) => {
-                        console.log(err.message)
-                    })
-            )
-            .catch((err) => {
-                console.log(err)
-            })
+    const loadList = () => {
+        list.initList().catch((err) => {
+            setError({ err: true, msg: err.msg })
+        })
+    }
+
+    const getShops = () => {
+        api.getShops().catch((err) => {
+            setError({ err: true, msg: err.msg })
+        })
+    }
+
+    const loadContent = async () => {
+        await getShops()
+        await loadList()
+        await loadCart()
+        props.navigation.navigate('main')
     }
 
     useEffect(() => {
@@ -56,48 +56,29 @@ const LoadScreen = (props) => {
 
     return (
         <>
+            <Portal>
+                <ErrorModal
+                    message={error.msg}
+                    buttonText="Újratöltés"
+                    visible={error.err}
+                    dismisable={false}
+                    onDismiss={() => {}}
+                    onButtonPress={() => {
+                        setError(false)
+                    }}
+                />
+            </Portal>
+
             {!error && (
                 <View style={styles.centercontainer}>
                     <LoadIndicator title="Loading..." />
                 </View>
-            )}
-            {error && (
-                <Portal>
-                    <Modal visible={error} dismissable={false}>
-                        <View style={styles.centerview}>
-                            <Card style={styles.card}>
-                                <Card.Content>
-                                    <Text variant="headlineSmall">Kapcsolja be az internetet</Text>
-                                </Card.Content>
-                                <Card.Actions>
-                                    <View style={styles.centercontainer}>
-                                        <Button
-                                            onPress={() => {
-                                                setError(false)
-                                            }}
-                                        >
-                                            Újratöltés
-                                        </Button>
-                                    </View>
-                                </Card.Actions>
-                            </Card>
-                        </View>
-                    </Modal>
-                </Portal>
             )}
         </>
     )
 }
 
 const styles = StyleSheet.create({
-    card: {
-        width: '90%',
-        padding: 15,
-    },
-    centerview: {
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     centercontainer: {
         flex: 1,
         justifyContent: 'center',
