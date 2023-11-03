@@ -25,7 +25,7 @@ const ListProduct = ({ product }) => {
 
     const customButtonHandler = () => {
         list.updateProduct(product, product.Pieces, product.ShopID, true)
-        cart.addProduct({ ...product, InCart: true })
+        cart.addProduct({ ...product, InCart: true }, 'list_screen')
     }
 
     const disabledcard = {

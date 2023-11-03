@@ -7,14 +7,15 @@ import ListContext from '../list/list-context'
 const cartReducer = (state, action) => {
     if (action.type === 'ADD_OR_UPDATE') {
         const newProd = state.find((element) => element.Barcode === action.product.Barcode)
-        if (newProd !== undefined) {
-            action.type = 'UPDATE'
-        } else if (action.inList) {
-            action.type = 'ADD_IN_LIST'
-        } else {
+        if (newProd === undefined && action.inList === undefined) {
             action.type = 'ADD'
+        } else if (newProd !== undefined) {
+            action.type = 'UPDATE'
+        } else {
+            action.type = 'ADD_IN_LIST'
         }
     }
+    console.log(action.type)
 
     switch (action.type) {
         case 'ADD': {
@@ -51,7 +52,12 @@ const CartProvider = (props) => {
     const [cart, dispatch] = useReducer(cartReducer, [])
     const list = useContext(ListContext)
 
-    const addProductHandler = (product) => {
+    const addProductHandler = (product, caller) => {
+        if (caller === 'list_screen') {
+            dispatch({ type: 'ADD_OR_UPDATE', product })
+            return
+        }
+
         const inListProduct = list.list.find((item) => item.Barcode === product.Barcode)
         if (inListProduct) {
             dispatch({
@@ -61,6 +67,7 @@ const CartProvider = (props) => {
             })
             return
         }
+
         dispatch({ type: 'ADD_OR_UPDATE', product })
         saveItemHandler(product)
     }

@@ -47,10 +47,13 @@ const ProductScreen = ({ navigation, route }) => {
             cart.removeProduct(product.Barcode)
             setShowSnackBar(true)
         } else if (source === 'cart') {
-            cart.addProduct({
-                ...product,
-                InCart: true,
-            })
+            cart.addProduct(
+                {
+                    ...product,
+                    InCart: true,
+                },
+                'prod_details'
+            )
             list.addProduct({
                 ...product,
                 InCart: true,
