@@ -15,7 +15,6 @@ const cartReducer = (state, action) => {
             action.type = 'ADD_IN_LIST'
         }
     }
-    console.log(action.type)
 
     switch (action.type) {
         case 'ADD': {
