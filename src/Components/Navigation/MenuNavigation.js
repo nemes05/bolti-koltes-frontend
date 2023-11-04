@@ -11,6 +11,7 @@ const MenuNavigation = ({ navigation, visible, hide, position }) => {
             <Divider style={styles.divired} bold />
             <DrawerItem
                 title="Beállítások"
+                icon="cog"
                 onPress={() => {
                     hide()
                     navigation.navigate('settings')

@@ -1,7 +1,7 @@
-import { Pressable, StyleSheet } from 'react-native'
-import { useTheme, Text } from 'react-native-paper'
+import { Pressable, StyleSheet, View } from 'react-native'
+import { useTheme, Text, IconButton } from 'react-native-paper'
 
-const DrawerItem = ({ title, onPress }) => {
+const DrawerItem = ({ title, onPress, icon }) => {
     const theme = useTheme()
 
     const pressablestyle = (pressed) => {
@@ -9,11 +9,16 @@ const DrawerItem = ({ title, onPress }) => {
     }
 
     return (
-        <Pressable style={({ pressed }) => pressablestyle(pressed)} onPress={onPress}>
-            <Text variant="bodyLarge" style={styles.text}>
-                {title}
-            </Text>
-        </Pressable>
+        <>
+            <Pressable style={({ pressed }) => pressablestyle(pressed)} onPress={onPress}>
+                <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                    {icon && <IconButton icon={icon} />}
+                    <Text variant="titleMedium" style={styles.text}>
+                        {title}
+                    </Text>
+                </View>
+            </Pressable>
+        </>
     )
 }
 
