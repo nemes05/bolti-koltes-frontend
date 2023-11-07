@@ -38,8 +38,6 @@ const PreferencesProvider = (props) => {
 
     const loadPreferencesHandler = async () => {
         const preferences = JSON.parse(await AsyncStorage.getItem('@preferences'))
-        const log = await FileSystem.readAsStringAsync(FileSystem.documentDirectory + 'error.txt')
-        console.log(log)
         if (preferences.cardSize) setCardSize(preferences.cardSize)
     }
 
