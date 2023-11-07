@@ -12,7 +12,7 @@ const RegistrationScreen = ({ navigation }) => {
     const theme = useTheme()
 
     const [email, setEmail] = useState()
-    const [userName, setUserName] = useState()
+    const [username, setUsername] = useState()
     const [password, setPassword] = useState()
     const [passwordAgain, setPasswordAgain] = useState()
     const [error, setError] = useState({ err: false, msg: '' })
@@ -47,7 +47,7 @@ const RegistrationScreen = ({ navigation }) => {
             return
         }
 
-        api.register({ email, userName, password, passwordAgain })
+        api.register({ email, username, password })
             .then(() => {
                 setSubmitting(false)
                 setRegistered(true)
@@ -114,7 +114,7 @@ const RegistrationScreen = ({ navigation }) => {
                             <TextInput
                                 mode="outlined"
                                 label="Felhasználónév"
-                                onChangeText={(value) => setUserName(value)}
+                                onChangeText={(value) => setUsername(value)}
                             />
                             <TextInput
                                 mode="outlined"

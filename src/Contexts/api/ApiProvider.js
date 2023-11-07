@@ -7,7 +7,7 @@ const API_URL = process.env.EXPO_PUBLIC_API_URL
 
 const ApiProvider = (props) => {
     const [shopList, setShopList] = useState([])
-    const [accessToken, setAccesToken] = useState(null)
+    const [token, setToken] = useState({ access: null, refresh: null })
     const [userLoggedIn, setUserLoggedIn] = useState(false)
 
     const getProductHandler = async (barcode) => {
@@ -100,7 +100,7 @@ const ApiProvider = (props) => {
 
             if (res.status === 200) {
                 const tokens = await res.json()
-                setAccesToken(tokens.accessToken)
+                setToken({ access: tokens.accessToken, refresh: tokens.refreshToken })
                 await SecureStore.setItemAsync('refreshToken', tokens.refreshToken)
                 setUserLoggedIn(true)
                 return
@@ -123,10 +123,31 @@ const ApiProvider = (props) => {
     }
 
     const logoutHandler = async () => {
-        setUserLoggedIn(false)
-        setAccesToken(undefined)
-        await SecureStore.deleteItemAsync('refreshToken')
-        //Needs a query for deleting the access token in database
+        try {
+            const res = await fetch(`${API_URL}/logout`, {
+                method: 'DELETE',
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ refreshToken: token.refresh }),
+            })
+
+            if (res.status === 200) {
+                await SecureStore.deleteItemAsync('refreshToken')
+                setUserLoggedIn(false)
+                setToken({ access: null, refresh: null })
+                return
+            }
+
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
+            }
+        } catch (err) {
+            throw err
+        }
     }
 
     const apiContext = {
