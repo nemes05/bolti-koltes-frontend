@@ -9,6 +9,11 @@ import ListContext from '../../../../Contexts/list/list-context'
 import TopNavBar from '../../../Navigation/TopNavBar'
 import Dropdown from '../../../UI/Dropdown'
 
+/**
+ * The component for showing the product after scanning it.
+ * @param {object}  navigation  The navigation object that contains the functions for navigating. (passed down automatically)
+ * @param {object}  route       The object that contains the the parameters for the screen. (passed down automatically)
+ */
 const ProductScreen = ({ navigation, route }) => {
     const api = useContext(ApiContext)
     const list = useContext(ListContext)

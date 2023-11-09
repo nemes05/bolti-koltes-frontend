@@ -1,10 +1,3 @@
-/**
- * Component that renders the content for the user drawer.
- * @param {object}      navigation  The object that contains the functions for the navigation
- * @param {boolean}     visible     The variable that determines if the drawer should be visible (passed down to the Drawer component)
- * @param {function}    hide        The function for hiding the drawer (passed down to the Drawer component)
- * @param {string}      position    The string determines where should the drawer appear (passed down to the Drawer component)
- */
 import { useContext, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { Divider, Text, Portal } from 'react-native-paper'
@@ -14,6 +7,13 @@ import Drawer from '../UI/Drawer/Drawer'
 import DrawerItem from '../UI/Drawer/DrawerItem'
 import ErrorModal from '../UI/ErrorModal'
 
+/**
+ * Component that renders the content for the user drawer.
+ * @param {object}      navigation  The object that contains the functions for the navigation
+ * @param {boolean}     visible     The variable that determines if the drawer should be visible (passed down to the Drawer component)
+ * @param {function}    hide        The function for hiding the drawer (passed down to the Drawer component)
+ * @param {string}      position    The string determines where should the drawer appear (passed down to the Drawer component)
+ */
 const ProfileNavigation = ({ navigation, visible, hide, position }) => {
     const api = useContext(ApiContext)
     const [error, setError] = useState({ err: false, msg: '' })

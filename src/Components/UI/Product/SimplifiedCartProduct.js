@@ -1,3 +1,11 @@
+import { useContext, useState } from 'react'
+import { StyleSheet } from 'react-native'
+import { Card, IconButton, Text } from 'react-native-paper'
+
+import ProductDetailsModal from './ProductDetailsModal'
+import CartContext from '../../../Contexts/cart/cart-context'
+import ListContext from '../../../Contexts/list/list-context'
+
 /**
  * A component which displays a product on the cart. Same as CartProduct but with simplified view.
  * @param {Object}  product             The product object wich contains the details.
@@ -8,14 +16,6 @@
  * @param {boolean} product.InCart      The variable that shows if the specified product is in the cart.
  * @param {number}  product.ShopID      The ID for the shop from which the product will be bought.
  */
-import { useContext, useState } from 'react'
-import { StyleSheet } from 'react-native'
-import { Card, IconButton, Text } from 'react-native-paper'
-
-import ProductDetailsModal from './ProductDetailsModal'
-import CartContext from '../../../Contexts/cart/cart-context'
-import ListContext from '../../../Contexts/list/list-context'
-
 const SimplifiedCartProduct = ({ product }) => {
     const cart = useContext(CartContext)
     const list = useContext(ListContext)

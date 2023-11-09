@@ -5,6 +5,10 @@ import { Card, Divider, IconButton, RadioButton, Text } from 'react-native-paper
 import PreferencesContext from '../../Contexts/preferences/preferences-context'
 import TopNavBar from '../Navigation/TopNavBar'
 
+/**
+ * The screen where the user can change their settings.
+ * @param {object}  navigation  The navigation object that contains the functions for navigating. (passed down automatically)
+ */
 const SettingsScreen = ({ navigation }) => {
     const preferences = useContext(PreferencesContext)
 

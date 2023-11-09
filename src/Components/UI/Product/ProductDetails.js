@@ -1,3 +1,12 @@
+import { useContext, useState } from 'react'
+import { View, StyleSheet } from 'react-native'
+import { Card, Text, Button, Divider, TextInput, IconButton, useTheme } from 'react-native-paper'
+
+import ApiContext from '../../../Contexts/api/api-context'
+import CartContext from '../../../Contexts/cart/cart-context'
+import ListContext from '../../../Contexts/list/list-context'
+import Dropdown from '../Dropdown'
+
 /**
  * A modal for displaying and editing the details of a product.
  * @param {Object}      product             The product object wich contains the details.
@@ -10,15 +19,6 @@
  * @param {function}    onDismiss           The function that could be called for hiding the details.
  * @param {string}      caller              The caller determines what content should be rendered, could be 'list' or 'cart'.
  */
-import { useContext, useState } from 'react'
-import { View, StyleSheet } from 'react-native'
-import { Card, Text, Button, Divider, TextInput, IconButton, useTheme } from 'react-native-paper'
-
-import ApiContext from '../../../Contexts/api/api-context'
-import CartContext from '../../../Contexts/cart/cart-context'
-import ListContext from '../../../Contexts/list/list-context'
-import Dropdown from '../Dropdown'
-
 const ProductDetails = ({ onDismiss, product, caller }) => {
     const api = useContext(ApiContext)
     const list = useContext(ListContext)

@@ -1,6 +1,12 @@
 import { Pressable, StyleSheet, View } from 'react-native'
 import { useTheme, Text, IconButton } from 'react-native-paper'
 
+/**
+ * The component which can be used in the custom Drawer.
+ * @param {string}      title   The name of the item.
+ * @param {function}    onPress The function that gets called if the item has been pressed.
+ * @param {string}      icon    The name of the icon which we want to display before the title. (optional)
+ */
 const DrawerItem = ({ title, onPress, icon }) => {
     const theme = useTheme()
 

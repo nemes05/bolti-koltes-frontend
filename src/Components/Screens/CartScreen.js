@@ -9,11 +9,15 @@ import CustomIconButton from '../UI/CustomIconButton'
 import CartProduct from '../UI/Product/CartProduct'
 import SimplifiedCartProduct from '../UI/Product/SimplifiedCartProduct'
 
-const CartScreen = (props) => {
+/**
+ * The screen that renders the cart items.
+ * @param {function}    cartSwipeHandler    The function that gets called if a swipe is detected on the screen.
+ */
+const CartScreen = ({ cartSwipeHandler }) => {
     const panGesture = Gesture.Pan()
         .activeOffsetX(80)
         .onEnd(() => {
-            props.cartSwipeHandler('cart')
+            cartSwipeHandler('cart')
         })
 
     const cart = useContext(CartContext)

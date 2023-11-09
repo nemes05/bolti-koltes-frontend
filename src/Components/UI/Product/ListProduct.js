@@ -1,3 +1,11 @@
+import { useContext, useState } from 'react'
+import { View, StyleSheet } from 'react-native'
+import { Card, Divider, IconButton, Text, useTheme } from 'react-native-paper'
+
+import ProductDetailsModal from './ProductDetailsModal'
+import CartContext from '../../../Contexts/cart/cart-context'
+import ListContext from '../../../Contexts/list/list-context'
+
 /**
  * A component which displays a product on the list
  * @param {Object}  product             The product object wich contains the details.
@@ -8,14 +16,6 @@
  * @param {boolean} product.InCart      The variable that shows if the specified product is in the cart.
  * @param {number}  product.ShopID      The ID for the shop from which the product will be bought.
  */
-import { useContext, useState } from 'react'
-import { View, StyleSheet } from 'react-native'
-import { Card, Divider, IconButton, Text, useTheme } from 'react-native-paper'
-
-import ProductDetailsModal from './ProductDetailsModal'
-import CartContext from '../../../Contexts/cart/cart-context'
-import ListContext from '../../../Contexts/list/list-context'
-
 const ListProduct = ({ product }) => {
     const list = useContext(ListContext)
     const cart = useContext(CartContext)

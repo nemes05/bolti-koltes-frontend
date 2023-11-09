@@ -8,11 +8,16 @@ import CustomIconButton from '../UI/CustomIconButton'
 import ListProduct from '../UI/Product/ListProduct'
 import SimplifiedListProduct from '../UI/Product/SimplifiedListProduct'
 
-const ListScreen = (props) => {
+/**
+ * The screen that renders the list items.
+ * @param {function}    listSwipeHandler    The function that gets called if a swipe is detected on the screen.
+ * @param {function}    handleAddButton     The function that gets called if the plus button is pressed on the screen.
+ */
+const ListScreen = ({ listSwipeHandler, handleAddButton }) => {
     const panGesture = Gesture.Pan()
         .activeOffsetX(-80)
         .onEnd(() => {
-            props.listSwipeHandler('list')
+            listSwipeHandler('list')
         })
 
     const list = useContext(ListContext)
@@ -30,7 +35,7 @@ const ListScreen = (props) => {
                 <CustomIconButton
                     icon="plus"
                     handlePress={() => {
-                        props.handleAddButton()
+                        handleAddButton()
                     }}
                 />
             </View>

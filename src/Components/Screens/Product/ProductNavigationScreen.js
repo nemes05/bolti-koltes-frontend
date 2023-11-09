@@ -3,6 +3,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import ManualInputScreen from './Item/ManualInputScreen'
 import ProductScreen from './Item/ProductScreen'
 
+/**
+ * The screen that responsible for navigation for product related screens.
+ */
 const ProductNavigationScreen = () => {
     const Stack = createNativeStackNavigator()
 

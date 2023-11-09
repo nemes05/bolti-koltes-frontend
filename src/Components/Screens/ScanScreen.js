@@ -6,7 +6,11 @@ import { Button, Text, Portal, Modal, Card } from 'react-native-paper'
 import ApiContext from '../../Contexts/api/api-context'
 import LoadIndicator from '../UI/LoadIndicator'
 
-const ScanScreen = (props) => {
+/**
+ * The component that is responsible for the Barcode scanning.
+ * @param {object}  navigation  The navigation object that contains the functions for navigating. (passed down automatically)
+ */
+const ScanScreen = ({ navigation }) => {
     const api = useContext(ApiContext)
 
     const [hasPermission, setHasPermission] = useState(null)
@@ -23,7 +27,7 @@ const ScanScreen = (props) => {
     }, [])
 
     const handleNavigation = () => {
-        props.navigation.replace('main')
+        navigation.replace('main')
     }
 
     const dismissError = () => {
@@ -35,7 +39,7 @@ const ScanScreen = (props) => {
         setScanned(true)
         api.getProduct(data)
             .then((details) => {
-                props.navigation.replace('productnavigation', {
+                navigation.replace('productnavigation', {
                     screen: 'productpage',
                     params: { details },
                 })

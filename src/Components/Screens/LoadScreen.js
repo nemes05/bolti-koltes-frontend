@@ -10,7 +10,11 @@ import PreferencesContext from '../../Contexts/preferences/preferences-context'
 import ErrorModal from '../UI/ErrorModal'
 import LoadIndicator from '../UI/LoadIndicator'
 
-const LoadScreen = (props) => {
+/**
+ * The screen that is visible during the initial load.
+ * @param {object}  navigation  The navigation object that contains the functions for navigating. (passed down automatically)
+ */
+const LoadScreen = ({ navigation }) => {
     const list = useContext(ListContext)
     const cart = useContext(CartContext)
     const api = useContext(ApiContext)
@@ -24,7 +28,7 @@ const LoadScreen = (props) => {
             setError({ err: true, msg: 'Kapcsolja be az internetet!' })
         } else {
             loadContent().then(() => {
-                props.navigation.navigate('main')
+                navigation.navigate('main')
             })
         }
     }
