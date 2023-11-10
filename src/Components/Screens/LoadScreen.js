@@ -27,9 +27,13 @@ const LoadScreen = ({ navigation }) => {
         if (!connection.isConnected) {
             setError({ err: true, msg: 'Kapcsolja be az internetet!' })
         } else {
-            loadContent().then(() => {
-                navigation.navigate('main')
-            })
+            loadContent()
+                .catch((err) => {
+                    setError({ err: true, msg: err.msg })
+                })
+                .then(() => {
+                    navigation.navigate('main')
+                })
         }
     }
 
