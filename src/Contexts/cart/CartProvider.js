@@ -54,7 +54,7 @@ const cartReducer = (state, action) => {
 }
 
 /**
- * Context providet that declares the functions for maneging the cart items.
+ * Context provider that declares the functions for maneging the cart items.
  * @param {ReactComponent}   children    The parameter for the children of the element.
  */
 const CartProvider = ({ children }) => {

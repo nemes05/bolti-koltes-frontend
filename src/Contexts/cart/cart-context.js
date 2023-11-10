@@ -57,6 +57,6 @@ const emptyCartHandler = () => {}
  * The function reads the cart items from Async Storage.
  * (Should be called when the app starts)
  */
-const initCartHandler = () => {}
+const initCartHandler = async () => {}
 
 export default CartContext
