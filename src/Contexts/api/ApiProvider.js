@@ -7,7 +7,7 @@ const API_URL = process.env.EXPO_PUBLIC_API_URL
 
 /**
  * The component for declardeclaring the the fuctions for using the api.
- *@param {ReactComponent}   children    The parameter for the children of the element.
+ * @param {ReactComponent}   children    The parameter for the children of the element.
  */
 const ApiProvider = ({ children }) => {
     const [shopList, setShopList] = useState([])
