@@ -3,19 +3,25 @@ import { FlatList, View, StyleSheet } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { Portal, Modal, Card, Text, Button } from 'react-native-paper'
 
-import CartContext from '../../list-cart/cart-context'
+import CartContext from '../../Contexts/cart/cart-context'
+import PreferencesContext from '../../Contexts/preferences/preferences-context'
 import CustomIconButton from '../UI/CustomIconButton'
 import CartProduct from '../UI/Product/CartProduct'
 import SimplifiedCartProduct from '../UI/Product/SimplifiedCartProduct'
 
-const CartScreen = (props) => {
+/**
+ * The screen that renders the cart items.
+ * @param {function}    cartSwipeHandler    The function that gets called if a swipe is detected on the screen.
+ */
+const CartScreen = ({ cartSwipeHandler }) => {
     const panGesture = Gesture.Pan()
         .activeOffsetX(80)
         .onEnd(() => {
-            props.cartSwipeHandler('cart')
+            cartSwipeHandler('cart')
         })
 
     const cart = useContext(CartContext)
+    const preferences = useContext(PreferencesContext)
     const [deleteCart, setDeleteCart] = useState(false)
 
     return (
@@ -62,7 +68,15 @@ const CartScreen = (props) => {
 
             <GestureDetector gesture={panGesture}>
                 <View style={styles.cartcontainer}>
-                    <FlatList data={cart.cart} renderItem={({ item }) => <CartProduct product={item} />} />
+                    {preferences.cardSize === 'small' && (
+                        <FlatList
+                            data={cart.cart}
+                            renderItem={({ item }) => <SimplifiedCartProduct product={item} />}
+                        />
+                    )}
+                    {preferences.cardSize === 'big' && (
+                        <FlatList data={cart.cart} renderItem={({ item }) => <CartProduct product={item} />} />
+                    )}
                     <CustomIconButton
                         icon="cash-multiple"
                         handlePress={() => {

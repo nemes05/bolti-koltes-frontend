@@ -3,16 +3,22 @@ import { useContext, useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { Portal } from 'react-native-paper'
 
-import ApiContext from '../../api/api-context'
-import CartContext from '../../list-cart/cart-context'
-import ListContext from '../../list-cart/list-context'
+import ApiContext from '../../Contexts/api/api-context'
+import CartContext from '../../Contexts/cart/cart-context'
+import ListContext from '../../Contexts/list/list-context'
+import PreferencesContext from '../../Contexts/preferences/preferences-context'
 import ErrorModal from '../UI/ErrorModal'
 import LoadIndicator from '../UI/LoadIndicator'
 
-const LoadScreen = (props) => {
+/**
+ * The screen that is visible during the initial load.
+ * @param {object}  navigation  The navigation object that contains the functions for navigating. (passed down automatically)
+ */
+const LoadScreen = ({ navigation }) => {
     const list = useContext(ListContext)
     const cart = useContext(CartContext)
     const api = useContext(ApiContext)
+    const preferences = useContext(PreferencesContext)
 
     const [error, setError] = useState({ err: false, msg: '' })
 
@@ -22,32 +28,56 @@ const LoadScreen = (props) => {
             setError({ err: true, msg: 'Kapcsolja be az internetet!' })
         } else {
             loadContent()
+                .catch((err) => {
+                    setError({ err: true, msg: err.msg })
+                })
+                .then(() => {
+                    navigation.navigate('main')
+                })
         }
     }
 
-    const loadCart = () => {
-        cart.initCart().catch((err) => {
+    const loadCart = async () => {
+        try {
+            await cart.initCart()
+        } catch (err) {
             setError({ err: true, msg: err.msg })
-        })
+        }
     }
 
-    const loadList = () => {
-        list.initList().catch((err) => {
+    const loadList = async () => {
+        try {
+            list.initList()
+        } catch (err) {
             setError({ err: true, msg: err.msg })
-        })
+        }
     }
 
-    const getShops = () => {
-        api.getShops().catch((err) => {
+    const getShops = async () => {
+        try {
+            await api.getShops()
+        } catch (err) {
             setError({ err: true, msg: err.msg })
-        })
+        }
+    }
+
+    const loadPreferences = async () => {
+        try {
+            preferences.loadPreferences()
+        } catch (err) {
+            setError({ err: true, msg: err.msg })
+        }
     }
 
     const loadContent = async () => {
-        await getShops()
-        await loadList()
-        await loadCart()
-        props.navigation.navigate('main')
+        try {
+            await loadPreferences()
+            await getShops()
+            await loadList()
+            await loadCart()
+        } catch (err) {
+            setError({ err: true, msg: err.msg })
+        }
     }
 
     useEffect(() => {
@@ -69,7 +99,7 @@ const LoadScreen = (props) => {
                 />
             </Portal>
 
-            {!error && (
+            {!error.err && (
                 <View style={styles.centercontainer}>
                     <LoadIndicator title="Loading..." />
                 </View>

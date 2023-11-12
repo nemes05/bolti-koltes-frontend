@@ -2,17 +2,21 @@ import { useContext, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Card, TextInput, useTheme, Text, Button, Portal } from 'react-native-paper'
 
-import ApiContext from '../../../api/api-context'
+import ApiContext from '../../../Contexts/api/api-context'
 import ErrorModal from '../../UI/ErrorModal'
 import LoadIndicator from '../../UI/LoadIndicator'
 
+/**
+ * The screen for user register handling.
+ * @param {object} navigation    The navigation object that contains the functions for navigating. (passed down automatically)
+ */
 const RegistrationScreen = ({ navigation }) => {
     const api = useContext(ApiContext)
     const parent = navigation.getParent()
     const theme = useTheme()
 
     const [email, setEmail] = useState()
-    const [userName, setUserName] = useState()
+    const [username, setUsername] = useState()
     const [password, setPassword] = useState()
     const [passwordAgain, setPasswordAgain] = useState()
     const [error, setError] = useState({ err: false, msg: '' })
@@ -47,7 +51,7 @@ const RegistrationScreen = ({ navigation }) => {
             return
         }
 
-        api.register({ email, userName, password, passwordAgain })
+        api.register({ email, username, password })
             .then(() => {
                 setSubmitting(false)
                 setRegistered(true)
@@ -114,7 +118,7 @@ const RegistrationScreen = ({ navigation }) => {
                             <TextInput
                                 mode="outlined"
                                 label="Felhasználónév"
-                                onChangeText={(value) => setUserName(value)}
+                                onChangeText={(value) => setUsername(value)}
                             />
                             <TextInput
                                 mode="outlined"

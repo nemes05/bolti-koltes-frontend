@@ -7,32 +7,38 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "docs": "esdoc"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.18.2",
     "@react-navigation/native-stack": "^6.9.14",
+    "esdoc-jsx-plugin": "^1.0.0",
     "expo": "~49.0.12",
     "expo-barcode-scanner": "~12.5.3",
     "expo-constants": "~14.4.2",
+    "expo-file-system": "~15.4.4",
     "expo-linking": "~5.0.2",
+    "expo-network": "~5.4.0",
     "expo-router": "^2.0.0",
+    "expo-secure-store": "~12.3.1",
     "expo-status-bar": "~1.6.0",
     "react": "18.2.0",
     "react-native": "0.72.6",
     "react-native-gesture-handler": "~2.12.0",
+    "react-native-logs": "^5.0.1",
     "react-native-numeric-input": "^1.9.1",
     "react-native-paper": "^5.10.6",
     "react-native-safe-area-context": "4.6.3",
     "react-native-screens": "~3.22.0",
     "react-native-select-dropdown": "^3.4.0",
     "react-native-vector-icons": "^9.2.0",
-    "readme-md-generator": "^1.0.0",
-    "expo-network": "~5.4.0",
-    "expo-secure-store": "~12.3.1"
+    "readme-md-generator": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "esdoc": "^1.1.0",
+    "esdoc-standard-plugin": "^1.0.0",
     "eslint": "^8.50.0",
     "eslint-config-universe": "^12.0.0",
     "eslint-plugin-prettier": "^5.0.0"

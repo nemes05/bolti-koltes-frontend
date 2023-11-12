@@ -3,11 +3,14 @@ import { useState, useEffect, useContext } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Button, Text, Portal, Modal, Card } from 'react-native-paper'
 
-import ApiContext from '../../api/api-context'
-import TopNavBar from '../Navigation/TopNavBar'
+import ApiContext from '../../Contexts/api/api-context'
 import LoadIndicator from '../UI/LoadIndicator'
 
-const ScanScreen = (props) => {
+/**
+ * The component that is responsible for the Barcode scanning.
+ * @param {object}  navigation  The navigation object that contains the functions for navigating. (passed down automatically)
+ */
+const ScanScreen = ({ navigation }) => {
     const api = useContext(ApiContext)
 
     const [hasPermission, setHasPermission] = useState(null)
@@ -24,7 +27,7 @@ const ScanScreen = (props) => {
     }, [])
 
     const handleNavigation = () => {
-        props.navigation.replace('main')
+        navigation.replace('main')
     }
 
     const dismissError = () => {
@@ -36,7 +39,7 @@ const ScanScreen = (props) => {
         setScanned(true)
         api.getProduct(data)
             .then((details) => {
-                props.navigation.replace('productnavigation', {
+                navigation.replace('productnavigation', {
                     screen: 'productpage',
                     params: { details },
                 })
@@ -100,25 +103,20 @@ const ScanScreen = (props) => {
     return (
         <>
             {!scanned && (
-                <>
-                    <TopNavBar />
-                    <View style={styles.container}>
-                        <View style={styles.barcodebox}>
-                            <BarCodeScanner
-                                onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-                                style={styles.barcodescanner}
-                            />
-                        </View>
+                <View style={styles.maincontainer}>
+                    <View style={styles.barcodebox}>
+                        <BarCodeScanner
+                            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+                            style={styles.barcodescanner}
+                        />
                     </View>
-                    <View style={styles.centerview}>
-                        <Button mode="contained" style={styles.button}>
-                            Manuális bevitel
-                        </Button>
-                        <Button mode="contained" style={styles.button} onPress={handleNavigation}>
-                            Mégse{' '}
-                        </Button>
-                    </View>
-                </>
+                    <Button mode="contained" style={styles.button}>
+                        Manuális bevitel
+                    </Button>
+                    <Button mode="contained" style={styles.button} onPress={handleNavigation}>
+                        Mégse{' '}
+                    </Button>
+                </View>
             )}
 
             {scanned && (
@@ -131,6 +129,15 @@ const ScanScreen = (props) => {
 }
 
 const styles = StyleSheet.create({
+    maincontainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 10,
+        height: '100%',
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     centeredcontainer: {
         flex: 1,
         justifyContent: 'center',
@@ -163,14 +170,14 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         borderRadius: 30,
         backgroundColor: 'tomato',
-        marginBottom: 20,
+        marginBottom: 50,
     },
     barcodescanner: {
         height: 600,
         width: 400,
     },
     button: {
-        width: '75%',
+        width: '60%',
         margin: 7,
     },
 })

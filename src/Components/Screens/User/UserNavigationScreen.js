@@ -3,6 +3,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import LoginScreen from './LoginScreen'
 import RegistrationScreen from './RegistrationScreen'
 
+/**
+ * The screen that responsible for the navigation of user authentication related screens.
+ */
 const UserNavigationScreen = () => {
     const Stack = createNativeStackNavigator()
 

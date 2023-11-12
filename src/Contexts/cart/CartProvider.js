@@ -2,17 +2,23 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useContext, useReducer } from 'react'
 
 import CartContext from './cart-context'
-import ListContext from './list-context'
+import ListContext from '../list/list-context'
 
+/**
+ * Reducer function for managing the cart.
+ * @param   {object} state    The previous state of the cart.
+ * @param   {object} action   Specifies the action that should occure and can hold payload.
+ * @returns {object}          New state.
+ */
 const cartReducer = (state, action) => {
     if (action.type === 'ADD_OR_UPDATE') {
         const newProd = state.find((element) => element.Barcode === action.product.Barcode)
-        if (newProd !== undefined) {
-            action.type = 'UPDATE'
-        } else if (action.inList) {
-            action.type = 'ADD_IN_LIST'
-        } else {
+        if (newProd === undefined && action.inList === undefined) {
             action.type = 'ADD'
+        } else if (newProd !== undefined) {
+            action.type = 'UPDATE'
+        } else {
+            action.type = 'ADD_IN_LIST'
         }
     }
 
@@ -47,11 +53,26 @@ const cartReducer = (state, action) => {
     }
 }
 
-const CartProvider = (props) => {
+/**
+ * Context provider that declares the functions for maneging the cart items.
+ * @param {ReactComponent}   children    The parameter for the children of the element.
+ */
+const CartProvider = ({ children }) => {
     const [cart, dispatch] = useReducer(cartReducer, [])
     const list = useContext(ListContext)
 
-    const addProductHandler = (product) => {
+    /**
+     * The function for adding products to the cart, also can handle updating.
+     * (This function should be called if we don't know if the product is already in the cart.)
+     * @param {object}  product A product object that should be added to the cart.
+     * @param {string}  caller  The name of the screen that called the function.
+     */
+    const addProductHandler = (product, caller) => {
+        if (caller === 'list_screen') {
+            dispatch({ type: 'ADD_OR_UPDATE', product })
+            return
+        }
+
         const inListProduct = list.list.find((item) => item.Barcode === product.Barcode)
         if (inListProduct) {
             dispatch({
@@ -61,21 +82,36 @@ const CartProvider = (props) => {
             })
             return
         }
+
         dispatch({ type: 'ADD_OR_UPDATE', product })
         saveItemHandler(product)
     }
 
+    /**
+     * The function for removing products from the cart.
+     * @param {string}  barcode  The barcode of the product.
+     */
     const removeProductHandler = (barcode) => {
         dispatch({ type: 'REMOVE', barcode })
         removeItemHandler(barcode)
     }
 
+    /**
+     * The function for updating products in the cart.
+     * @param {object}  product     The barcode of the product.
+     * @param {number}  newPieces   The new quantity of the product
+     * @param {number}  newShopID   The ShopID of the shop from which we want to buy the product.
+     * @param {boolean} InCart      The variable determines if the product should be in the cart or not.
+     */
     const updateProductHandler = (product, newPieces, newShopID, inCart) => {
         const newProduct = { ...product, Pieces: newPieces - product.Pieces, ShopID: newShopID, InCart: inCart }
         dispatch({ type: 'UPDATE', product: newProduct })
         updateItemHandler({ ...newProduct, Pieces: newPieces })
     }
 
+    /**
+     * The function that removes all the products from the cart.
+     */
     const emptyCartHandler = () => {
         cart.forEach((item) => {
             removeProductHandler(item.Barcode)
@@ -83,24 +119,40 @@ const CartProvider = (props) => {
         })
     }
 
+    /**
+     * The function saves the product to Async Storage
+     * @param {object} product  The product object which should be saved.
+     */
     const saveItemHandler = (product) => {
         AsyncStorage.setItem(`@cart:${product.Barcode}`, JSON.stringify(product)).catch((err) => {
             console.log(err.message)
         })
     }
 
+    /**
+     * The function deletes the specified product from the Async Storage.
+     * @param {string} barcode  The barcode of the product which should be removed.
+     */
     const removeItemHandler = (barcode) => {
         AsyncStorage.removeItem(`@cart:${barcode}`).catch((err) => {
             console.log(err.message)
         })
     }
 
+    /**
+     * The function updates the specified product in Async Storage
+     * @param {object} product
+     */
     const updateItemHandler = (product) => {
         AsyncStorage.mergeItem(`@list:${product.Barcode}`, JSON.stringify(product)).catch((err) => {
             console.log(err.message)
         })
     }
 
+    /**
+     * The function reads the cart items from Async Storage.
+     * (Should be called when the app starts)
+     */
     const initCartHandler = async () => {
         let keys = await AsyncStorage.getAllKeys()
         keys = keys.filter((element) => element.includes('@cart'))
@@ -112,6 +164,10 @@ const CartProvider = (props) => {
         dispatch({ type: 'INIT_LOAD', cart: localCart })
     }
 
+    /**
+     * The function returns the value of the cart.
+     * @returns {number}    The value of the cart with all the products.
+     */
     const getCartPriceHandler = () => {
         let price = 0
         cart.forEach(
@@ -123,6 +179,12 @@ const CartProvider = (props) => {
         return price
     }
 
+    /**
+     * The function returns the price of the product in the specified shop.
+     * @param {object} product  The product which we want to know the price.
+     * @param {number} shopID   The ID of the shop from which we want to know the price.
+     * @returns {number}        The price of the product.
+     */
     const getShopPriceHandler = (product, shopID) => {
         return product.Price[product.Price.findIndex((shop) => shop.ShopID === shopID)].Price
     }
@@ -137,6 +199,6 @@ const CartProvider = (props) => {
         initCart: initCartHandler,
         cart,
     }
-    return <CartContext.Provider value={carContext}>{props.children}</CartContext.Provider>
+    return <CartContext.Provider value={carContext}>{children}</CartContext.Provider>
 }
 export default CartProvider

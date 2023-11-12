@@ -1,3 +1,6 @@
+import { View, StyleSheet } from 'react-native'
+import { Card, Text, Button, Modal } from 'react-native-paper'
+
 /**
  * Reusable component for showing errors for the user
  * @param {string}      message         The message that should appear in the modal.
@@ -7,10 +10,6 @@
  * @param {function}    onDismiss       The function that should run when the modal is dismissed.
  * @param {function}    onButtonPress   The function that gets called when the button is pressed in the modal.
  */
-
-import { View, StyleSheet } from 'react-native'
-import { Card, Text, Button, Modal } from 'react-native-paper'
-
 const ErrorModal = ({ message, buttonText, visible, dismisable, onDismiss, onButtonPress }) => {
     return (
         <Modal

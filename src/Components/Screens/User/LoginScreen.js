@@ -2,10 +2,14 @@ import { useContext, useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Card, TextInput, useTheme, Text, Button, Portal } from 'react-native-paper'
 
-import ApiContext from '../../../api/api-context'
+import ApiContext from '../../../Contexts/api/api-context'
 import ErrorModal from '../../UI/ErrorModal'
 import LoadIndicator from '../../UI/LoadIndicator'
 
+/**
+ * The screen for user login handling.
+ * @param {object} navigation    The navigation object that contains the functions for navigating. (passed down automatically)
+ */
 const LoginScreen = ({ navigation }) => {
     const api = useContext(ApiContext)
     const parent = navigation.getParent()

@@ -1,3 +1,6 @@
+import { StyleSheet } from 'react-native'
+import SelectDropdown from 'react-native-select-dropdown'
+
 /**
  * Reusable dropdown component
  *@param {string}   placeholder     The initial text for the dropdown before an item is selected.
@@ -5,10 +8,6 @@
  *@param {function} onSelect        A function that gets called if an item has been selected.
  *@param {number}   [defaultValue]  The default value that's selected by index.
  */
-
-import { StyleSheet } from 'react-native'
-import SelectDropdown from 'react-native-select-dropdown'
-
 const Dropdown = ({ placeholder, data, onSelect, defaultValue }) => {
     return (
         <SelectDropdown

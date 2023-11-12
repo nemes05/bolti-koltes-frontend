@@ -1,10 +1,10 @@
+import { StyleSheet, View } from 'react-native'
+import { ActivityIndicator, Text } from 'react-native-paper'
+
 /**
  * A component for showing loading state
  * @param {string}  title   The text that should appear during the loading.
  */
-import { StyleSheet, View } from 'react-native'
-import { ActivityIndicator, Text } from 'react-native-paper'
-
 const LoadIndicator = ({ title }) => {
     return (
         <View style={styles.container}>
