@@ -1,3 +1,5 @@
+//eslint error handling
+/* global AbortController */
 import * as SecureStore from 'expo-secure-store'
 import { useState } from 'react'
 
@@ -21,11 +23,20 @@ const ApiProvider = ({ children }) => {
      */
     const getProductHandler = async (barcode) => {
         try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
             const res = await fetch(`${API_URL}/${barcode}`, {
                 method: 'GET',
+                signal: controller.signal,
                 cache: 'no-store',
                 headers: { 'Content-Type': 'application/json' },
             })
+
+            clearTimeout(timeoutID)
 
             if (res.status === 200) {
                 return res.json()
@@ -39,6 +50,7 @@ const ApiProvider = ({ children }) => {
                 throw new Error('Valami hiba történt!')
             }
         } catch (err) {
+            if (err.name === 'AbortError') throw new Error('Nem értük el a szolgáltatót!')
             throw err
         }
     }
@@ -48,11 +60,20 @@ const ApiProvider = ({ children }) => {
      */
     const getShopsHandler = async () => {
         try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
             const res = await fetch(`${API_URL}/shops`, {
                 method: 'GET',
+                signal: controller.signal,
                 cache: 'no-store',
                 headers: { 'Content-Type': 'application/json' },
             })
+
+            clearTimeout(timeoutID)
 
             if (res.status === 200) {
                 const resList = await res.json()
@@ -81,12 +102,21 @@ const ApiProvider = ({ children }) => {
      */
     const registerHandler = async (registerData) => {
         try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
             const res = await fetch(`${API_URL}/register`, {
                 method: 'POST',
+                signal: controller.signal,
                 cache: 'no-store',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(registerData),
             })
+
+            clearTimeout(timeoutID)
 
             if (res.status === 200) {
                 return
@@ -116,12 +146,21 @@ const ApiProvider = ({ children }) => {
      */
     const loginHandler = async (loginData) => {
         try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
             const res = await fetch(`${API_URL}/login`, {
                 method: 'POST',
+                signal: controller.signal,
                 cache: 'no-store',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(loginData),
             })
+
+            clearTimeout(timeoutID)
 
             if (res.status === 200) {
                 const tokens = await res.json()
@@ -152,12 +191,21 @@ const ApiProvider = ({ children }) => {
      */
     const logoutHandler = async () => {
         try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
             const res = await fetch(`${API_URL}/logout`, {
                 method: 'DELETE',
+                signal: controller.signal,
                 cache: 'no-store',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ refreshToken: token.refresh }),
             })
+
+            clearTimeout(timeoutID)
 
             if (res.status === 200) {
                 await SecureStore.deleteItemAsync('refreshToken')
