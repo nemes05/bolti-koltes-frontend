@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useReducer } from 'react'
+import { useContext, useReducer } from 'react'
 
 import ListContext from './list-context'
+import ApiContext from '../api/api-context'
 
 /**
  * Reducer function for handing the list.
@@ -53,6 +54,7 @@ const listReducer = (state, action) => {
  */
 const ListProvider = (props) => {
     const [list, dispatch] = useReducer(listReducer, [])
+    const api = useContext(ApiContext)
 
     /**
      * The function that adds the product to the cart.
@@ -60,6 +62,11 @@ const ListProvider = (props) => {
      */
     const addProductHandler = (product) => {
         dispatch({ type: 'ADD_OR_UPDATE', product })
+        api.saveItem(product)
+            .then(() => {})
+            .catch((err) => {
+                console.log(err.message)
+            })
         saveItemHandler(product)
     }
 
@@ -70,6 +77,11 @@ const ListProvider = (props) => {
     const removeProductHandler = (barcode) => {
         dispatch({ type: 'REMOVE', barcode })
         removeItemHandler(barcode)
+        api.removeItem(barcode)
+            .then(() => {})
+            .catch((err) => {
+                console.log(err.message)
+            })
     }
 
     /**
@@ -82,6 +94,11 @@ const ListProvider = (props) => {
     const updateProductHandler = (product, newPieces, newShopID, inCart) => {
         const newProduct = { ...product, Pieces: newPieces - product.Pieces, ShopID: newShopID, InCart: inCart }
         dispatch({ type: 'UPDATE', product: newProduct })
+        api.updateItem({ ...newProduct, Pieces: newPieces })
+            .then(() => {})
+            .catch((err) => {
+                console.log(err.message)
+            })
         updateItemHandler({ ...newProduct, Pieces: newPieces })
     }
 

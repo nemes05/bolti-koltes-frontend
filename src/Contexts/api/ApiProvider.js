@@ -1,6 +1,8 @@
 //eslint error handling
 /* global AbortController */
+import { decode } from 'base-64'
 import * as SecureStore from 'expo-secure-store'
+import { jwtDecode } from 'jwt-decode'
 import { useState } from 'react'
 
 import ApiContext from './api-context'
@@ -15,6 +17,7 @@ const ApiProvider = ({ children }) => {
     const [shopList, setShopList] = useState([])
     const [token, setToken] = useState({ access: null, refresh: null })
     const [userLoggedIn, setUserLoggedIn] = useState(false)
+    global.atob = decode
 
     /**
      * The function returns the details for the specified product
@@ -226,12 +229,208 @@ const ApiProvider = ({ children }) => {
         }
     }
 
+    const saveItemHandler = async (product) => {
+        const priceIndex = product.Price.findIndex((element) => element.ShopID === product.ShopID)
+
+        const listItem = {
+            Barcode: product.Barcode,
+            CurrentPrice: product.Price[priceIndex].Price,
+            ShopID: product.ShopID,
+            Quantity: product.Pieces,
+            InCart: product.InCart,
+        }
+
+        const controller = new AbortController()
+
+        const timeoutID = setTimeout(() => {
+            controller.abort()
+        }, 30000)
+
+        // const decode = jwtDecode(token.access)
+        // if (decode.exp * 1000 < Date.now()) {
+        //     const token = await refreshToken()
+        //     if (!token) {
+        //         throw new Error('Token is invalid')
+        //     }
+        // }
+
+        const res = await fetch(`${API_URL}/list/add`, {
+            method: 'POST',
+            signal: controller.signal,
+            cache: 'no-store',
+            headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token.access },
+            body: JSON.stringify(listItem),
+        })
+
+        clearTimeout(timeoutID)
+
+        if (res.status === 200) {
+            console.log('saved')
+            return
+        }
+
+        if (res.status === 401) {
+        }
+    }
+
+    const removeItemHandler = async (barcode) => {
+        const controller = new AbortController()
+
+        const timeoutID = setTimeout(() => {
+            controller.abort()
+        }, 30000)
+
+        const res = await fetch(`${API_URL}/list/remove`, {
+            method: 'DELETE',
+            signal: controller.signal,
+            cache: 'no-store',
+            headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token.access },
+            body: JSON.stringify({ Barcode: barcode }),
+        })
+
+        clearTimeout(timeoutID)
+
+        if (res.status === 200) {
+            console.log('deleted')
+            return
+        }
+
+        if (res.status === 401) {
+        }
+    }
+
+    const updateItemHandler = async (product) => {
+        const priceIndex = product.Price.findIndex((element) => element.ShopID === product.ShopID)
+
+        const listItem = {
+            Barcode: product.Barcode,
+            CurrentPrice: product.Price[priceIndex].Price,
+            ShopID: product.ShopID,
+            Quantity: product.Pieces,
+            InCart: product.InCart,
+        }
+
+        const controller = new AbortController()
+
+        const timeoutID = setTimeout(() => {
+            controller.abort()
+        }, 30000)
+
+        const res = await fetch(`${API_URL}/list/modify`, {
+            method: 'POST',
+            signal: controller.signal,
+            cache: 'no-store',
+            headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token.access },
+            body: JSON.stringify(listItem),
+        })
+
+        clearTimeout(timeoutID)
+
+        if (res.status === 200) {
+            console.log('saved')
+            return
+        }
+
+        if (res.status === 403) {
+        }
+
+        if (res.status === 401) {
+        }
+    }
+
+    const refreshToken = async () => {
+        const controller = new AbortController()
+
+        const timeoutID = setTimeout(() => {
+            controller.abort()
+        }, 30000)
+
+        const res = await fetch(`${API_URL}/token`, {
+            method: 'POST',
+            signal: controller.signal,
+            cache: 'no-store',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refreshToken: token.refresh }),
+        })
+
+        clearTimeout(timeoutID)
+
+        if (res.status === 200) {
+            const resData = await res.json()
+            setToken((prevState) => {
+                return { access: resData.accessToken, refresh: prevState.refresh }
+            })
+            return true
+        }
+
+        if (res.status === 401) {
+            throw new Error('Jelentkezzen be újra!')
+        }
+
+        if (res.status === 403) {
+            throw new Error('Jelentkezzen be újra!')
+        }
+
+        if (!res.ok) {
+            throw new Error('Jelentkezzen be újra!')
+        }
+    }
+
+    /**
+     * The function the gets the users list from the database.
+     * @returns {Array} The array of the product objects
+     */
+    const getListHandler = async () => {
+        try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
+            const res = await fetch(`${API_URL}/list`, {
+                method: 'GET',
+                signal: controller.signal,
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token.access },
+            })
+
+            clearTimeout(timeoutID)
+
+            if (res.status === 200) {
+                return res.json()
+            }
+
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (res.status === 401) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (res.status === 403) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
+            }
+        } catch (err) {
+            throw err
+        }
+    }
+
     const apiContext = {
         getProduct: getProductHandler,
         getShops: getShopsHandler,
         register: registerHandler,
         login: loginHandler,
         logout: logoutHandler,
+        getList: getListHandler,
+        saveItem: saveItemHandler,
+        removeItem: removeItemHandler,
+        updateItem: updateItemHandler,
         userStatus: userLoggedIn,
         shops: shopList,
     }
