@@ -13,6 +13,7 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.18.2",
     "@react-navigation/native-stack": "^6.9.14",
+    "base-64": "^1.0.0",
     "esdoc-jsx-plugin": "^1.0.0",
     "expo": "~49.0.12",
     "expo-barcode-scanner": "~12.5.3",
@@ -23,6 +24,7 @@
     "expo-router": "^2.0.0",
     "expo-secure-store": "~12.3.1",
     "expo-status-bar": "~1.6.0",
+    "jwt-decode": "^4.0.0",
     "react": "18.2.0",
     "react-native": "0.72.6",
     "react-native-gesture-handler": "~2.12.0",
