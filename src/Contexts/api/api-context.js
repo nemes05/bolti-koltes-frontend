@@ -5,10 +5,10 @@ const ApiContext = React.createContext({
     getShops: getShopsHandler,
     login: loginHandler,
     logout: logoutHandler,
-    getList: async () => {},
-    saveItem: async (product) => {},
-    removeItem: async (barcode) => {},
-    updateItem: async (product) => {},
+    getList: getListHandler,
+    saveItem: saveItemHandler,
+    removeItem: removeItemHandler,
+    updateItem: updateItemHandler,
     register: registerHandler,
     userStatus: Boolean,
     shops: [],
@@ -47,5 +47,29 @@ const logoutHandler = () => {}
  * @param {string}  registerData.password   The password of the user.
  */
 const registerHandler = (registerData) => {}
+
+/**
+ * The function the gets the users list from the database.
+ * @returns {Array} The array of the product objects
+ */
+const getListHandler = async () => {}
+
+/**
+ * Saves an item to the remote storage.
+ * @param {object} product  The product which should be added.
+ */
+const saveItemHandler = async (product) => {}
+
+/**
+ * Removes an item from the list in the remote storage.
+ * @param {string} barcode
+ */
+const removeItemHandler = async (barcode) => {}
+
+/**
+ * Updates an item in the remote storage.
+ * @param {objetc}  product  The product object with the new values.
+ */
+const updateItemHandler = async (product) => {}
 
 export default ApiContext

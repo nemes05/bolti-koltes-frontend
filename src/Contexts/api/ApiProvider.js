@@ -229,6 +229,10 @@ const ApiProvider = ({ children }) => {
         }
     }
 
+    /**
+     * Saves an item to the remote storage.
+     * @param {object} product  The product which should be added.
+     */
     const saveItemHandler = async (product) => {
         const priceIndex = product.Price.findIndex((element) => element.ShopID === product.ShopID)
 
@@ -273,6 +277,10 @@ const ApiProvider = ({ children }) => {
         }
     }
 
+    /**
+     * Removes an item from the list in the remote storage.
+     * @param {string} barcode
+     */
     const removeItemHandler = async (barcode) => {
         const controller = new AbortController()
 
@@ -299,6 +307,10 @@ const ApiProvider = ({ children }) => {
         }
     }
 
+    /**
+     * Updates an item in the remote storage.
+     * @param {objetc}  product  The product object with the new values.
+     */
     const updateItemHandler = async (product) => {
         const priceIndex = product.Price.findIndex((element) => element.ShopID === product.ShopID)
 
@@ -338,6 +350,9 @@ const ApiProvider = ({ children }) => {
         }
     }
 
+    /**
+     * Requests a new access token and sets it.
+     */
     const refreshToken = async () => {
         const controller = new AbortController()
 
