@@ -1,4 +1,8 @@
+//eslint error handling
+/* global AbortController */
+import { decode } from 'base-64'
 import * as SecureStore from 'expo-secure-store'
+import { jwtDecode } from 'jwt-decode'
 import { useState } from 'react'
 
 import ApiContext from './api-context'
@@ -13,6 +17,7 @@ const ApiProvider = ({ children }) => {
     const [shopList, setShopList] = useState([])
     const [token, setToken] = useState({ access: null, refresh: null })
     const [userLoggedIn, setUserLoggedIn] = useState(false)
+    global.atob = decode
 
     /**
      * The function returns the details for the specified product
@@ -21,11 +26,20 @@ const ApiProvider = ({ children }) => {
      */
     const getProductHandler = async (barcode) => {
         try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
             const res = await fetch(`${API_URL}/${barcode}`, {
                 method: 'GET',
+                signal: controller.signal,
                 cache: 'no-store',
                 headers: { 'Content-Type': 'application/json' },
             })
+
+            clearTimeout(timeoutID)
 
             if (res.status === 200) {
                 return res.json()
@@ -39,6 +53,7 @@ const ApiProvider = ({ children }) => {
                 throw new Error('Valami hiba történt!')
             }
         } catch (err) {
+            if (err.name === 'AbortError') throw new Error('Nem értük el a szolgáltatót!')
             throw err
         }
     }
@@ -48,11 +63,20 @@ const ApiProvider = ({ children }) => {
      */
     const getShopsHandler = async () => {
         try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
             const res = await fetch(`${API_URL}/shops`, {
                 method: 'GET',
+                signal: controller.signal,
                 cache: 'no-store',
                 headers: { 'Content-Type': 'application/json' },
             })
+
+            clearTimeout(timeoutID)
 
             if (res.status === 200) {
                 const resList = await res.json()
@@ -81,12 +105,21 @@ const ApiProvider = ({ children }) => {
      */
     const registerHandler = async (registerData) => {
         try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
             const res = await fetch(`${API_URL}/register`, {
                 method: 'POST',
+                signal: controller.signal,
                 cache: 'no-store',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(registerData),
             })
+
+            clearTimeout(timeoutID)
 
             if (res.status === 200) {
                 return
@@ -116,12 +149,21 @@ const ApiProvider = ({ children }) => {
      */
     const loginHandler = async (loginData) => {
         try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
             const res = await fetch(`${API_URL}/login`, {
                 method: 'POST',
+                signal: controller.signal,
                 cache: 'no-store',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(loginData),
             })
+
+            clearTimeout(timeoutID)
 
             if (res.status === 200) {
                 const tokens = await res.json()
@@ -152,12 +194,21 @@ const ApiProvider = ({ children }) => {
      */
     const logoutHandler = async () => {
         try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
             const res = await fetch(`${API_URL}/logout`, {
                 method: 'DELETE',
+                signal: controller.signal,
                 cache: 'no-store',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ refreshToken: token.refresh }),
             })
+
+            clearTimeout(timeoutID)
 
             if (res.status === 200) {
                 await SecureStore.deleteItemAsync('refreshToken')
@@ -178,12 +229,236 @@ const ApiProvider = ({ children }) => {
         }
     }
 
+    /**
+     * Saves an item to the remote storage.
+     * @param {object} product  The product which should be added.
+     */
+    const saveItemHandler = async (product) => {
+        const priceIndex = product.Price.findIndex((element) => element.ShopID === product.ShopID)
+
+        const listItem = {
+            Barcode: product.Barcode,
+            CurrentPrice: product.Price[priceIndex].Price,
+            ShopID: product.ShopID,
+            Quantity: product.Pieces,
+            InCart: product.InCart,
+        }
+
+        const controller = new AbortController()
+
+        const timeoutID = setTimeout(() => {
+            controller.abort()
+        }, 30000)
+
+        const accessToken = await getTokenHandler()
+
+        const res = await fetch(`${API_URL}/list/add`, {
+            method: 'POST',
+            signal: controller.signal,
+            cache: 'no-store',
+            headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
+            body: JSON.stringify(listItem),
+        })
+
+        clearTimeout(timeoutID)
+
+        if (res.status === 200) {
+            console.log('saved')
+            return
+        }
+
+        if (res.status === 401) {
+        }
+    }
+
+    /**
+     * Removes an item from the list in the remote storage.
+     * @param {string} barcode
+     */
+    const removeItemHandler = async (barcode) => {
+        const controller = new AbortController()
+
+        const timeoutID = setTimeout(() => {
+            controller.abort()
+        }, 30000)
+
+        const accessToken = await getTokenHandler()
+
+        const res = await fetch(`${API_URL}/list/remove`, {
+            method: 'DELETE',
+            signal: controller.signal,
+            cache: 'no-store',
+            headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
+            body: JSON.stringify({ Barcode: barcode }),
+        })
+
+        clearTimeout(timeoutID)
+
+        if (res.status === 200) {
+            console.log('deleted')
+            return
+        }
+
+        if (res.status === 401) {
+        }
+    }
+
+    /**
+     * Updates an item in the remote storage.
+     * @param {objetc}  product  The product object with the new values.
+     */
+    const updateItemHandler = async (product) => {
+        const priceIndex = product.Price.findIndex((element) => element.ShopID === product.ShopID)
+
+        const listItem = {
+            Barcode: product.Barcode,
+            CurrentPrice: product.Price[priceIndex].Price,
+            ShopID: product.ShopID,
+            Quantity: product.Pieces,
+            InCart: product.InCart,
+        }
+
+        const controller = new AbortController()
+
+        const timeoutID = setTimeout(() => {
+            controller.abort()
+        }, 30000)
+
+        const accessToken = await getTokenHandler()
+
+        const res = await fetch(`${API_URL}/list/modify`, {
+            method: 'POST',
+            signal: controller.signal,
+            cache: 'no-store',
+            headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
+            body: JSON.stringify(listItem),
+        })
+
+        clearTimeout(timeoutID)
+
+        if (res.status === 200) {
+            console.log('saved')
+            return
+        }
+
+        if (res.status === 403) {
+        }
+
+        if (res.status === 401) {
+        }
+    }
+
+    /**
+     * The function the gets the users list from the database.
+     * @returns {Array} The array of the product objects
+     */
+    const getListHandler = async () => {
+        try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
+            const accessToken = await getTokenHandler()
+
+            const res = await fetch(`${API_URL}/list`, {
+                method: 'GET',
+                signal: controller.signal,
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
+            })
+
+            clearTimeout(timeoutID)
+
+            if (res.status === 200) {
+                return res.json()
+            }
+
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (res.status === 401) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (res.status === 403) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
+            }
+        } catch (err) {
+            throw err
+        }
+    }
+
+    /**
+     * Requests a new access token and sets it.
+     * @returns {string}    The requested access token
+     */
+    const refreshToken = async () => {
+        const controller = new AbortController()
+
+        const timeoutID = setTimeout(() => {
+            controller.abort()
+        }, 30000)
+
+        const res = await fetch(`${API_URL}/token`, {
+            method: 'POST',
+            signal: controller.signal,
+            cache: 'no-store',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refreshToken: token.refresh }),
+        })
+
+        clearTimeout(timeoutID)
+
+        if (res.status === 200) {
+            const resData = await res.json()
+            setToken((prevState) => {
+                return { access: resData.accessToken, refresh: prevState.refresh }
+            })
+            return resData.accessToken
+        }
+
+        if (res.status === 401) {
+            throw new Error('Jelentkezzen be újra!')
+        }
+
+        if (res.status === 403) {
+            throw new Error('Jelentkezzen be újra!')
+        }
+
+        if (!res.ok) {
+            throw new Error('Jelentkezzen be újra!')
+        }
+    }
+
+    /**
+     * A function for managing the access token
+     * @returns {string}   Returns a valid access token.
+     */
+    const getTokenHandler = async () => {
+        const decode = jwtDecode(token.access)
+        if (decode.exp * 1000 < Date.now()) {
+            return await refreshToken()
+        }
+        return token.access
+    }
+
     const apiContext = {
         getProduct: getProductHandler,
         getShops: getShopsHandler,
         register: registerHandler,
         login: loginHandler,
         logout: logoutHandler,
+        getList: getListHandler,
+        saveItem: saveItemHandler,
+        removeItem: removeItemHandler,
+        updateItem: updateItemHandler,
         userStatus: userLoggedIn,
         shops: shopList,
     }

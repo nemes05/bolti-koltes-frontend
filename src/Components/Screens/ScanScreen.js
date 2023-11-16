@@ -85,10 +85,10 @@ const ScanScreen = ({ navigation }) => {
                             </Card.Content>
                             <Card.Actions>
                                 <View style={styles.centeredcontainer}>
-                                    <Button mode="outlined" style={styles.button} onPress={handleNavigation}>
+                                    <Button mode="outlined" style={styles.modalbutton} onPress={handleNavigation}>
                                         Vissza a főoldalra
                                     </Button>
-                                    <Button mode="outlined" style={styles.button} onPress={dismissError}>
+                                    <Button mode="outlined" style={styles.modalbutton} onPress={dismissError}>
                                         Új beolvasás
                                     </Button>
                                 </View>
@@ -178,6 +178,10 @@ const styles = StyleSheet.create({
     },
     button: {
         width: '60%',
+        margin: 7,
+    },
+    modalbutton: {
+        width: '80%',
         margin: 7,
     },
 })

@@ -49,7 +49,7 @@ const PreferencesProvider = ({ children }) => {
      */
     const loadPreferencesHandler = async () => {
         const preferences = JSON.parse(await AsyncStorage.getItem('@preferences'))
-        if (preferences.cardSize) setCardSize(preferences.cardSize)
+        if (preferences && preferences.cardSize) setCardSize(preferences.cardSize)
     }
 
     /**
