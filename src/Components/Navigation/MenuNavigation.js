@@ -24,6 +24,14 @@ const MenuNavigation = ({ navigation, visible, hide, position }) => {
                     navigation.navigate('settings')
                 }}
             />
+            <DrawerItem
+                title="Kedvencek"
+                icon="star"
+                onPress={() => {
+                    hide()
+                    navigation.navigate('favourites')
+                }}
+            />
         </Drawer>
     )
 }

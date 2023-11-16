@@ -8,6 +8,7 @@ import CartContext from '../../../../Contexts/cart/cart-context'
 import ListContext from '../../../../Contexts/list/list-context'
 import TopNavBar from '../../../Navigation/TopNavBar'
 import Dropdown from '../../../UI/Dropdown'
+import ErrorModal from '../../../UI/ErrorModal'
 
 /**
  * The component for showing the product after scanning it.
@@ -22,16 +23,17 @@ const ProductScreen = ({ navigation, route }) => {
     const [value, setValue] = useState(undefined)
     const [price, setPrice] = useState(0)
     const [pieces, setPieces] = useState(1)
-    const [showModal, setShowModal] = useState(false)
+    const [error, setError] = useState({ err: false, msg: '' })
     const [showSnackBar, setShowSnackBar] = useState(false)
 
     const prodDetails = route.params.details
+    console.log(route.params)
     const parent = navigation.getParent()
     const shopNames = api.shops.map((item) => item.ShopName)
 
     const addProductHandler = (source) => {
         if (value === undefined) {
-            setShowModal(true)
+            setError({ err: true, msg: 'Válasszon egy boltot!' })
             return
         }
 
@@ -67,6 +69,15 @@ const ProductScreen = ({ navigation, route }) => {
         }
     }
 
+    const addFavouriteHandler = () => {
+        if (!api.userStatus) {
+            setError({ err: true, msg: 'Ehhez a funkcióhoz be kell jelentkeznie!' })
+            //return
+        }
+
+        //api.addFavourite()
+    }
+
     const dropDownSelectHandler = (item) => {
         const shop = api.shops.find((element) => element.ShopName === item)
         setValue(shop.ShopID)
@@ -77,34 +88,18 @@ const ProductScreen = ({ navigation, route }) => {
         <>
             {/* The component which shows the errors */}
             <Portal>
-                <Modal
-                    style={styles.centerview}
-                    visible={showModal}
+                <ErrorModal
+                    message={error.msg}
+                    buttonText="Vissza"
+                    visible={error.err}
+                    dismissable
                     onDismiss={() => {
-                        setShowModal(false)
+                        setError({ err: false, msg: '' })
                     }}
-                >
-                    <Card style={styles.modalcard}>
-                        <Card.Content>
-                            <View style={styles.centerview}>
-                                <Text variant="headlineSmall">Válasszon egy boltot!</Text>
-                            </View>
-                        </Card.Content>
-                        <Card.Actions>
-                            <View style={styles.centercontainer}>
-                                <Button
-                                    style={styles.button}
-                                    mode="outlined"
-                                    onPress={() => {
-                                        setShowModal(false)
-                                    }}
-                                >
-                                    Vissza
-                                </Button>
-                            </View>
-                        </Card.Actions>
-                    </Card>
-                </Modal>
+                    onButtonPress={() => {
+                        setError({ err: false, msg: '' })
+                    }}
+                />
             </Portal>
 
             {/* Snacbar shows if the product handling was succesfull */}
@@ -160,12 +155,7 @@ const ProductScreen = ({ navigation, route }) => {
                             }}
                         />
                     </View>
-                    <IconButton
-                        icon="star-outline"
-                        onPress={() => {
-                            console.log('Kedvencekhez')
-                        }}
-                    />
+                    <IconButton icon="star-outline" onPress={addFavouriteHandler} />
                 </Card.Actions>
             </Card>
 
