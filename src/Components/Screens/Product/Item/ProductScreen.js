@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react'
 import { View, StyleSheet } from 'react-native'
 import NumericInput from 'react-native-numeric-input'
-import { Button, Card, IconButton, TextInput, Text, Portal, Modal, Snackbar } from 'react-native-paper'
+import { Button, Card, IconButton, TextInput, Text, Portal, Snackbar } from 'react-native-paper'
 
 import ApiContext from '../../../../Contexts/api/api-context'
 import CartContext from '../../../../Contexts/cart/cart-context'
@@ -27,7 +27,6 @@ const ProductScreen = ({ navigation, route }) => {
     const [showSnackBar, setShowSnackBar] = useState(false)
 
     const prodDetails = route.params.details
-    console.log(route.params)
     const parent = navigation.getParent()
     const shopNames = api.shops.map((item) => item.ShopName)
 
