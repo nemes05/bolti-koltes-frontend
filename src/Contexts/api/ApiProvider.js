@@ -397,6 +397,7 @@ const ApiProvider = ({ children }) => {
 
     /**
      * Requests a new access token and sets it.
+     * @returns {string}    The requested access token
      */
     const refreshToken = async () => {
         const controller = new AbortController()
@@ -436,10 +437,12 @@ const ApiProvider = ({ children }) => {
         }
     }
 
+    /**
+     * A function for managing the access token
+     * @returns {string}   Returns a valid access token.
+     */
     const getTokenHandler = async () => {
         const decode = jwtDecode(token.access)
-        console.log(new Date(decode.exp * 1000).toLocaleString())
-        console.log(new Date(Date.now()).toLocaleString())
         if (decode.exp * 1000 < Date.now()) {
             return await refreshToken()
         }
