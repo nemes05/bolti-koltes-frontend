@@ -250,19 +250,13 @@ const ApiProvider = ({ children }) => {
             controller.abort()
         }, 30000)
 
-        // const decode = jwtDecode(token.access)
-        // if (decode.exp * 1000 < Date.now()) {
-        //     const token = await refreshToken()
-        //     if (!token) {
-        //         throw new Error('Token is invalid')
-        //     }
-        // }
+        const accessToken = await getTokenHandler()
 
         const res = await fetch(`${API_URL}/list/add`, {
             method: 'POST',
             signal: controller.signal,
             cache: 'no-store',
-            headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token.access },
+            headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
             body: JSON.stringify(listItem),
         })
 
@@ -288,11 +282,13 @@ const ApiProvider = ({ children }) => {
             controller.abort()
         }, 30000)
 
+        const accessToken = await getTokenHandler()
+
         const res = await fetch(`${API_URL}/list/remove`, {
             method: 'DELETE',
             signal: controller.signal,
             cache: 'no-store',
-            headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token.access },
+            headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
             body: JSON.stringify({ Barcode: barcode }),
         })
 
@@ -328,11 +324,13 @@ const ApiProvider = ({ children }) => {
             controller.abort()
         }, 30000)
 
+        const accessToken = await getTokenHandler()
+
         const res = await fetch(`${API_URL}/list/modify`, {
             method: 'POST',
             signal: controller.signal,
             cache: 'no-store',
-            headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token.access },
+            headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
             body: JSON.stringify(listItem),
         })
 
@@ -347,6 +345,53 @@ const ApiProvider = ({ children }) => {
         }
 
         if (res.status === 401) {
+        }
+    }
+
+    /**
+     * The function the gets the users list from the database.
+     * @returns {Array} The array of the product objects
+     */
+    const getListHandler = async () => {
+        try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
+            const accessToken = await getTokenHandler()
+
+            const res = await fetch(`${API_URL}/list`, {
+                method: 'GET',
+                signal: controller.signal,
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
+            })
+
+            clearTimeout(timeoutID)
+
+            if (res.status === 200) {
+                return res.json()
+            }
+
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (res.status === 401) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (res.status === 403) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
+            }
+        } catch (err) {
+            throw err
         }
     }
 
@@ -375,7 +420,7 @@ const ApiProvider = ({ children }) => {
             setToken((prevState) => {
                 return { access: resData.accessToken, refresh: prevState.refresh }
             })
-            return true
+            return resData.accessToken
         }
 
         if (res.status === 401) {
@@ -391,49 +436,14 @@ const ApiProvider = ({ children }) => {
         }
     }
 
-    /**
-     * The function the gets the users list from the database.
-     * @returns {Array} The array of the product objects
-     */
-    const getListHandler = async () => {
-        try {
-            const controller = new AbortController()
-
-            const timeoutID = setTimeout(() => {
-                controller.abort()
-            }, 30000)
-
-            const res = await fetch(`${API_URL}/list`, {
-                method: 'GET',
-                signal: controller.signal,
-                cache: 'no-store',
-                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token.access },
-            })
-
-            clearTimeout(timeoutID)
-
-            if (res.status === 200) {
-                return res.json()
-            }
-
-            if (res.status === 400) {
-                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
-            }
-
-            if (res.status === 401) {
-                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
-            }
-
-            if (res.status === 403) {
-                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
-            }
-
-            if (!res.ok) {
-                throw new Error('Valami hiba történt!')
-            }
-        } catch (err) {
-            throw err
+    const getTokenHandler = async () => {
+        const decode = jwtDecode(token.access)
+        console.log(new Date(decode.exp * 1000).toLocaleString())
+        console.log(new Date(Date.now()).toLocaleString())
+        if (decode.exp * 1000 < Date.now()) {
+            return await refreshToken()
         }
+        return token.access
     }
 
     const apiContext = {
