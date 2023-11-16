@@ -29,7 +29,7 @@ const LoadScreen = ({ navigation }) => {
         } else {
             loadContent()
                 .catch((err) => {
-                    setError({ err: true, msg: err.msg })
+                    setError({ err: true, msg: err.message })
                 })
                 .then(() => {
                     navigation.navigate('main')
@@ -41,15 +41,15 @@ const LoadScreen = ({ navigation }) => {
         try {
             await cart.initCart()
         } catch (err) {
-            setError({ err: true, msg: err.msg })
+            setError({ err: true, msg: err.message })
         }
     }
 
     const loadList = async () => {
         try {
-            list.initList()
+            await list.initList()
         } catch (err) {
-            setError({ err: true, msg: err.msg })
+            setError({ err: true, msg: err.message })
         }
     }
 
@@ -57,26 +57,35 @@ const LoadScreen = ({ navigation }) => {
         try {
             await api.getShops()
         } catch (err) {
-            setError({ err: true, msg: err.msg })
+            setError({ err: true, msg: err.message })
         }
     }
 
     const loadPreferences = async () => {
         try {
-            preferences.loadPreferences()
+            await preferences.loadPreferences()
         } catch (err) {
-            setError({ err: true, msg: err.msg })
+            setError({ err: true, msg: err.message })
+        }
+    }
+
+    const loadUser = async () => {
+        try {
+            await api.initUser()
+        } catch (err) {
+            setError({ err: true, msg: err.message })
         }
     }
 
     const loadContent = async () => {
         try {
             await loadPreferences()
+            await loadUser()
             await getShops()
             await loadList()
             await loadCart()
         } catch (err) {
-            setError({ err: true, msg: err.msg })
+            setError({ err: true, msg: err.message })
         }
     }
 

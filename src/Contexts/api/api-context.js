@@ -10,6 +10,7 @@ const ApiContext = React.createContext({
     removeItem: removeItemHandler,
     updateItem: updateItemHandler,
     register: registerHandler,
+    initUser: initUserHandler,
     userStatus: Boolean,
     shops: [],
 })
@@ -71,5 +72,10 @@ const removeItemHandler = async (barcode) => {}
  * @param {objetc}  product  The product object with the new values.
  */
 const updateItemHandler = async (product) => {}
+
+/**
+ * The function that reads the refreshToken from the store and sets it.
+ */
+const initUserHandler = async () => {}
 
 export default ApiContext

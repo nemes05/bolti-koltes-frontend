@@ -326,6 +326,7 @@ const ApiProvider = ({ children }) => {
 
         const accessToken = await getTokenHandler()
 
+        console.log(accessToken)
         const res = await fetch(`${API_URL}/list/modify`, {
             method: 'POST',
             signal: controller.signal,
@@ -442,11 +443,26 @@ const ApiProvider = ({ children }) => {
      * @returns {string}   Returns a valid access token.
      */
     const getTokenHandler = async () => {
+        if (token.access === null) return await refreshToken()
+
         const decode = jwtDecode(token.access)
         if (decode.exp * 1000 < Date.now()) {
             return await refreshToken()
         }
+
         return token.access
+    }
+
+    /**
+     * The function that reads the refreshToken from the store and sets it.
+     */
+    const initUserHandler = async () => {
+        const refreshToken = await SecureStore.getItemAsync('refreshToken')
+        if (refreshToken !== null) {
+            setUserLoggedIn(true)
+            setToken({ access: null, refresh: refreshToken })
+            console.log(refreshToken)
+        }
     }
 
     const apiContext = {
@@ -459,6 +475,7 @@ const ApiProvider = ({ children }) => {
         saveItem: saveItemHandler,
         removeItem: removeItemHandler,
         updateItem: updateItemHandler,
+        initUser: initUserHandler,
         userStatus: userLoggedIn,
         shops: shopList,
     }
