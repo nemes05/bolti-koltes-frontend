@@ -326,7 +326,6 @@ const ApiProvider = ({ children }) => {
 
         const accessToken = await getTokenHandler()
 
-        console.log(accessToken)
         const res = await fetch(`${API_URL}/list/modify`, {
             method: 'POST',
             signal: controller.signal,
@@ -461,7 +460,6 @@ const ApiProvider = ({ children }) => {
         if (refreshToken !== null) {
             setUserLoggedIn(true)
             setToken({ access: null, refresh: refreshToken })
-            console.log(refreshToken)
         }
     }
 
