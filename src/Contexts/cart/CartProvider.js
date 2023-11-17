@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useContext, useReducer } from 'react'
+import { useContext, useReducer, useEffect } from 'react'
 
 import CartContext from './cart-context'
+import ApiContext from '../api/api-context'
 import ListContext from '../list/list-context'
 
 /**
@@ -60,6 +61,11 @@ const cartReducer = (state, action) => {
 const CartProvider = ({ children }) => {
     const [cart, dispatch] = useReducer(cartReducer, [])
     const list = useContext(ListContext)
+    const api = useContext(ApiContext)
+
+    useEffect(() => {
+        initCartHandler()
+    }, [api.userStatus])
 
     /**
      * The function for adding products to the cart, also can handle updating.
@@ -161,6 +167,18 @@ const CartProvider = ({ children }) => {
         cart.forEach((element) => {
             localCart.push(JSON.parse(element[1]))
         })
+
+        if (api.userStatus) {
+            const remoteCart = await api.getList()
+            remoteCart.forEach((product) => {
+                if (product.InCart === true) {
+                    const index = cart.findIndex((item) => item.Barcode === product.Barcode)
+                    if (index === -1) localCart.push(product)
+                    saveItemHandler(product)
+                }
+            })
+        }
+
         dispatch({ type: 'INIT_LOAD', cart: localCart })
     }
 

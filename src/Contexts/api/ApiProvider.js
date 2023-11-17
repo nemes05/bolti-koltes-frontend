@@ -594,8 +594,8 @@ const ApiProvider = ({ children }) => {
     const initUserHandler = async () => {
         const refreshToken = await SecureStore.getItemAsync('refreshToken')
         if (refreshToken !== null) {
-            setUserLoggedIn(true)
             setToken({ access: null, refresh: refreshToken })
+            setUserLoggedIn(true)
         }
     }
 
