@@ -9,12 +9,23 @@ const SimplifiedFavouriteProduct = ({ navigation, product }) => {
         })
     }
 
+    const removeFavouriteHandler = () => {
+        console.log('Törlés')
+    }
+
     return (
         <Card style={styles.card}>
             <Card.Content style={styles.cardcontent}>
                 <Text style={styles.productname} numberOfLines={2} variant="labelLarge">
                     {product.Name}
                 </Text>
+                <IconButton
+                    icon="trash-can-outline"
+                    size={30}
+                    style={styles.iconbutton}
+                    mode="contained-tonal"
+                    onPress={removeFavouriteHandler}
+                />
                 <IconButton
                     icon="plus"
                     size={30}

@@ -9,9 +9,8 @@ const FavouriteProduct = ({ navigation, product }) => {
         })
     }
 
-    const getPrice = () => {
-        if (!product.ShopID) return product.Price[0].Price
-        return product.Price[product.Price.findIndex((item) => item.ShopID === product.ShopID)].Price
+    const removeFavouriteHandler = () => {
+        console.log('Törlés')
     }
 
     return (
@@ -24,8 +23,14 @@ const FavouriteProduct = ({ navigation, product }) => {
                     <Divider horizontalInset="true" bold="true" />
                 </View>
                 <View style={styles.bottomcontainer}>
+                    <IconButton
+                        icon="trash-can-outline"
+                        size={30}
+                        style={styles.iconbutton}
+                        mode="contained-tonal"
+                        onPress={removeFavouriteHandler}
+                    />
                     <Card.Cover source={{ uri: product.ImageLink }} style={styles.productimage} />
-                    <Text variant="headlineMedium">{getPrice()} Ft</Text>
                     <IconButton
                         icon="plus"
                         size={30}
