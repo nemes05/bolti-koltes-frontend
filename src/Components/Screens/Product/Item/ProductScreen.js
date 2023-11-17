@@ -26,7 +26,7 @@ const ProductScreen = ({ navigation, route }) => {
     const [error, setError] = useState({ err: false, msg: '' })
     const [showSnackBar, setShowSnackBar] = useState(false)
 
-    const prodDetails = route.params.details
+    let prodDetails = route.params.details
     const parent = navigation.getParent()
     const shopNames = api.shops.map((item) => item.ShopName)
 
@@ -68,13 +68,18 @@ const ProductScreen = ({ navigation, route }) => {
         }
     }
 
-    const addFavouriteHandler = () => {
+    const addFavouriteHandler = async () => {
         if (!api.userStatus) {
             setError({ err: true, msg: 'Ehhez a funkcióhoz be kell jelentkeznie!' })
-            //return
+            return
         }
 
-        //api.addFavourite()
+        try {
+            await api.addFavourite(prodDetails.Barcode)
+            prodDetails = { ...prodDetails, Favourite: true }
+        } catch (err) {
+            setError({ err: true, msg: err.message })
+        }
     }
 
     const dropDownSelectHandler = (item) => {

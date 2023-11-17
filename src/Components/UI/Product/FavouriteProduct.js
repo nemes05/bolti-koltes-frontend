@@ -10,6 +10,7 @@ const FavouriteProduct = ({ navigation, product }) => {
     }
 
     const getPrice = () => {
+        if (!product.ShopID) return product.Price[0].Price
         return product.Price[product.Price.findIndex((item) => item.ShopID === product.ShopID)].Price
     }
 

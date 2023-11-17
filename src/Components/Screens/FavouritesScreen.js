@@ -1,6 +1,7 @@
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { View, FlatList, StyleSheet } from 'react-native'
 
+import ApiContext from '../../Contexts/api/api-context'
 import PreferencesContext from '../../Contexts/preferences/preferences-context'
 import TopNavBar from '../Navigation/TopNavBar'
 import FavouriteProduct from '../UI/Product/FavouriteProduct'
@@ -8,7 +9,21 @@ import SimplifiedFavouriteProduct from '../UI/Product/SimplifiedFavouriteProduct
 
 const FavouritesScreen = ({ navigation }) => {
     const preferences = useContext(PreferencesContext)
-    const favourites = []
+    const api = useContext(ApiContext)
+    const [favourites, setFavourites] = useState([])
+
+    useEffect(() => {
+        const getFavourites = async () => {
+            const favourites = await api.getFavourites()
+            setFavourites(favourites)
+        }
+
+        getFavourites()
+    }, [])
+
+    useEffect(() => {
+        console.log(favourites)
+    }, [favourites])
 
     return (
         <>
