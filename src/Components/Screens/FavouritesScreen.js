@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { View, FlatList, StyleSheet } from 'react-native'
+import { IconButton } from 'react-native-paper'
 
 import ApiContext from '../../Contexts/api/api-context'
 import PreferencesContext from '../../Contexts/preferences/preferences-context'
@@ -12,12 +13,12 @@ const FavouritesScreen = ({ navigation }) => {
     const api = useContext(ApiContext)
     const [favourites, setFavourites] = useState([])
 
-    useEffect(() => {
-        const getFavourites = async () => {
-            const favourites = await api.getFavourites()
-            setFavourites(favourites)
-        }
+    const getFavourites = async () => {
+        const favourites = await api.getFavourites()
+        setFavourites(favourites)
+    }
 
+    useEffect(() => {
         getFavourites()
     }, [])
 
@@ -27,18 +28,37 @@ const FavouritesScreen = ({ navigation }) => {
 
     return (
         <>
-            <TopNavBar navigation={navigation} />
+            <TopNavBar
+                navigation={navigation}
+                title={
+                    <IconButton
+                        icon="home"
+                        size={40}
+                        onPress={() => {
+                            navigation.navigate('main')
+                        }}
+                    />
+                }
+            />
             <View style={styles.cartcontainer}>
                 {preferences.cardSize === 'small' && (
                     <FlatList
                         data={favourites}
-                        renderItem={({ item }) => <SimplifiedFavouriteProduct navigation={navigation} product={item} />}
+                        renderItem={({ item }) => (
+                            <SimplifiedFavouriteProduct
+                                navigation={navigation}
+                                product={item}
+                                refresh={getFavourites}
+                            />
+                        )}
                     />
                 )}
                 {preferences.cardSize === 'big' && (
                     <FlatList
                         data={favourites}
-                        renderItem={({ item }) => <FavouriteProduct navigation={navigation} product={item} />}
+                        renderItem={({ item }) => (
+                            <FavouriteProduct navigation={navigation} product={item} refresh={getFavourites} />
+                        )}
                     />
                 )}
             </View>

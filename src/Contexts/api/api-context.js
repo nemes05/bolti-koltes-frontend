@@ -12,6 +12,7 @@ const ApiContext = React.createContext({
     register: registerHandler,
     getFavourites: getFavouritesHandler,
     addFavourite: addFavouriteHandler,
+    removeFavourite: removeFavouriteHandler,
     initUser: initUserHandler,
     userStatus: Boolean,
     shops: [],
@@ -79,7 +80,13 @@ const getFavouritesHandler = () => {}
  * The fuction adds a product to the favourites.
  * @param {string} barcode  The barcode of the product which we want to add to favourites.
  */
-const addFavouriteHandler = () => {}
+const addFavouriteHandler = async (barcode) => {}
+
+/**
+ * The function that removes a favourite item.
+ * @param {string} barcode  The barcode that specifies the item.
+ */
+const removeFavouriteHandler = async (barcode) => {}
 
 /**
  * Updates an item in the remote storage.

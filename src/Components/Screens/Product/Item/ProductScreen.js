@@ -23,10 +23,11 @@ const ProductScreen = ({ navigation, route }) => {
     const [value, setValue] = useState(undefined)
     const [price, setPrice] = useState(0)
     const [pieces, setPieces] = useState(1)
+    const [favourite, setFavourite] = useState(route.params.details.Favourite)
     const [error, setError] = useState({ err: false, msg: '' })
     const [showSnackBar, setShowSnackBar] = useState(false)
 
-    let prodDetails = route.params.details
+    const prodDetails = route.params.details
     const parent = navigation.getParent()
     const shopNames = api.shops.map((item) => item.ShopName)
 
@@ -43,6 +44,7 @@ const ProductScreen = ({ navigation, route }) => {
             ...prodDetails,
             Pieces: pieces,
             ShopID: api.shops[value - 1].ShopID,
+            Favourite: favourite,
         }
 
         if (source === 'list') {
@@ -68,17 +70,25 @@ const ProductScreen = ({ navigation, route }) => {
         }
     }
 
-    const addFavouriteHandler = async () => {
+    const chageFavouriteHandler = async () => {
         if (!api.userStatus) {
             setError({ err: true, msg: 'Ehhez a funkcióhoz be kell jelentkeznie!' })
             return
         }
-
-        try {
-            await api.addFavourite(prodDetails.Barcode)
-            prodDetails = { ...prodDetails, Favourite: true }
-        } catch (err) {
-            setError({ err: true, msg: err.message })
+        if (!favourite) {
+            try {
+                await api.addFavourite(prodDetails.Barcode)
+                setFavourite(true)
+            } catch (err) {
+                setError({ err: true, msg: err.message })
+            }
+        } else {
+            try {
+                await api.removeFavourite(prodDetails.Barcode)
+                setFavourite(false)
+            } catch (err) {
+                setError({ err: true, msg: err.message })
+            }
         }
     }
 
@@ -159,7 +169,7 @@ const ProductScreen = ({ navigation, route }) => {
                             }}
                         />
                     </View>
-                    <IconButton icon="star-outline" onPress={addFavouriteHandler} />
+                    <IconButton icon={favourite ? 'star' : 'star-outline'} onPress={chageFavouriteHandler} />
                 </Card.Actions>
             </Card>
 
