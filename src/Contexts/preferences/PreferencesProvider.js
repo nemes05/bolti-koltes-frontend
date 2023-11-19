@@ -26,6 +26,7 @@ const config = {
  */
 const PreferencesProvider = ({ children }) => {
     const [cardSize, setCardSize] = useState('big')
+    const [shopID, setShopID] = useState(undefined)
     const log = logger.createLogger(config)
 
     AppState.addEventListener('change', (state) => {
@@ -59,9 +60,19 @@ const PreferencesProvider = ({ children }) => {
         await AsyncStorage.setItem('@preferences', JSON.stringify({ cardSize }))
     }
 
+    /**
+     * Sets the previously selected shop when product was placed on the list.
+     * @param {Number} ShopID   The ID of the shop which was selected
+     */
+    const setShopHandler = (ShopID) => {
+        setShopID(ShopID)
+    }
+
     const preferencesContext = {
         chageCardSize: changeCardSizeHandler,
         loadPreferences: loadPreferencesHandler,
+        setShop: setShopHandler,
+        prevShopID: shopID,
         cardSize,
     }
     return <PreferencesContext.Provider value={preferencesContext}>{children}</PreferencesContext.Provider>
