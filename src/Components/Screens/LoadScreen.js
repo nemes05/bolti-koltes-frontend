@@ -80,12 +80,12 @@ const LoadScreen = ({ navigation }) => {
 
     const loadContent = async () => {
         try {
+            await getShops()
             const firstTime = await loadPreferences()
             if (firstTime) {
                 return 'tutorial'
             }
             await loadUser()
-            await getShops()
             return 'main'
         } catch (err) {
             setError({ err: true, msg: err.message })

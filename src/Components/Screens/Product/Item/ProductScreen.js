@@ -22,16 +22,18 @@ const ProductScreen = ({ navigation, route }) => {
     const cart = useContext(CartContext)
     const preferences = useContext(PreferencesContext)
 
+    const prodDetails = route.params.details
+    const parent = navigation.getParent()
+    const shopNames = api.shops.map((item) => item.ShopName)
+
     const [value, setValue] = useState(preferences.prevShopID)
-    const [price, setPrice] = useState(0)
     const [pieces, setPieces] = useState(1)
     const [favourite, setFavourite] = useState(route.params.details.Favourite)
     const [error, setError] = useState({ err: false, msg: '' })
     const [showSnackBar, setShowSnackBar] = useState(false)
-
-    const prodDetails = route.params.details
-    const parent = navigation.getParent()
-    const shopNames = api.shops.map((item) => item.ShopName)
+    const [price, setPrice] = useState(
+        preferences.prevShopID ? list.getShopPrice(prodDetails, preferences.prevShopID) : 0
+    )
 
     const addProductHandler = (source) => {
         if (value === undefined) {
