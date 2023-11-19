@@ -12,7 +12,6 @@ import LoadIndicator from '../../UI/LoadIndicator'
  */
 const RegistrationScreen = ({ navigation }) => {
     const api = useContext(ApiContext)
-    const parent = navigation.getParent()
     const theme = useTheme()
 
     const [email, setEmail] = useState()
@@ -24,7 +23,7 @@ const RegistrationScreen = ({ navigation }) => {
     const [registered, setRegistered] = useState(false)
 
     const navigationHandler = () => {
-        parent.navigate('main')
+        navigation.navigate('login')
     }
 
     const validatePassword = (password, passwordAgain) => {
@@ -135,7 +134,7 @@ const RegistrationScreen = ({ navigation }) => {
                             <Button style={styles.button} mode="contained" onPress={submit}>
                                 Regisztrálok!
                             </Button>
-                            <Button onPress={navigationHandler}>Ugrás az appba regisztráció nélkül!</Button>
+                            <Button onPress={navigationHandler}>Átugrás</Button>
                         </Card.Content>
                     </Card>
                 </View>

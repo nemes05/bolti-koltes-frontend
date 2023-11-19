@@ -50,7 +50,9 @@ const PreferencesProvider = ({ children }) => {
      */
     const loadPreferencesHandler = async () => {
         const preferences = JSON.parse(await AsyncStorage.getItem('@preferences'))
+        const firstTimeUser = JSON.parse(await AsyncStorage.getItem('@firstuser'))
         if (preferences && preferences.cardSize) setCardSize(preferences.cardSize)
+        return firstTimeUser === null
     }
 
     /**
