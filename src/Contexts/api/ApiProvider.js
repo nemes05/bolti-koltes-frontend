@@ -32,11 +32,16 @@ const ApiProvider = ({ children }) => {
                 controller.abort()
             }, 30000)
 
+            let accessToken
+            if (userLoggedIn) {
+                accessToken = await getTokenHandler()
+            }
+
             const res = await fetch(`${API_URL}/${barcode}`, {
                 method: 'GET',
                 signal: controller.signal,
                 cache: 'no-store',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
             })
 
             clearTimeout(timeoutID)
@@ -350,7 +355,7 @@ const ApiProvider = ({ children }) => {
 
     /**
      * The function the gets the users list from the database.
-     * @returns {Array} The array of the product objects
+     * @returns {Promise} The array of the product objects
      */
     const getListHandler = async () => {
         try {
@@ -385,6 +390,137 @@ const ApiProvider = ({ children }) => {
 
             if (res.status === 403) {
                 throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
+            }
+        } catch (err) {
+            throw err
+        }
+    }
+
+    /**
+     * The fuction gets user favourite items.
+     * @returns {Promise}   The promise resolves to the list of items
+     */
+    const getFavouritesHandler = async () => {
+        try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
+            const accessToken = await getTokenHandler()
+
+            const res = await fetch(`${API_URL}/favourites`, {
+                method: 'GET',
+                signal: controller.signal,
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
+            })
+
+            clearTimeout(timeoutID)
+
+            if (res.status === 200) {
+                return res.json()
+            }
+
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (res.status === 403) {
+                throw new Error('Be kell jelentkeznie ehhez a funkcióhoz')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
+            }
+        } catch (err) {
+            throw err
+        }
+    }
+
+    /**
+     * The fuction adds a product to the favourites.
+     * @param {string} barcode  The barcode of the product which we want to add to favourites.
+     */
+    const addFavouriteHandler = async (barcode) => {
+        try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
+            const accessToken = await getTokenHandler()
+
+            const res = await fetch(`${API_URL}/favourites/add`, {
+                method: 'POST',
+                signal: controller.signal,
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
+                body: JSON.stringify({ Barcode: barcode }),
+            })
+
+            clearTimeout(timeoutID)
+
+            if (res.status === 200) {
+                return
+            }
+
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (res.status === 403) {
+                throw new Error('Be kell jelentkeznie ehhez a funkcióhoz')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
+            }
+        } catch (err) {
+            throw err
+        }
+    }
+
+    /**
+     * The function that removes a favourite item.
+     * @param {string} barcode  The barcode that specifies the item.
+     */
+    const removeFavouriteHandler = async (barcode) => {
+        try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
+            const accessToken = await getTokenHandler()
+
+            const res = await fetch(`${API_URL}/favourites/remove`, {
+                method: 'DELETE',
+                signal: controller.signal,
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
+                body: JSON.stringify({ Barcode: barcode }),
+            })
+
+            clearTimeout(timeoutID)
+
+            if (res.status === 200) {
+                return
+            }
+
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (res.status === 403) {
+                throw new Error('Be kell jelentkeznie ehhez a funkcióhoz')
             }
 
             if (!res.ok) {
@@ -442,11 +578,25 @@ const ApiProvider = ({ children }) => {
      * @returns {string}   Returns a valid access token.
      */
     const getTokenHandler = async () => {
+        if (token.access === null) return await refreshToken()
+
         const decode = jwtDecode(token.access)
         if (decode.exp * 1000 < Date.now()) {
             return await refreshToken()
         }
+
         return token.access
+    }
+
+    /**
+     * The function that reads the refreshToken from the store and sets it.
+     */
+    const initUserHandler = async () => {
+        const refreshToken = await SecureStore.getItemAsync('refreshToken')
+        if (refreshToken !== null) {
+            setToken({ access: null, refresh: refreshToken })
+            setUserLoggedIn(true)
+        }
     }
 
     const apiContext = {
@@ -459,6 +609,10 @@ const ApiProvider = ({ children }) => {
         saveItem: saveItemHandler,
         removeItem: removeItemHandler,
         updateItem: updateItemHandler,
+        getFavourites: getFavouritesHandler,
+        addFavourite: addFavouriteHandler,
+        removeFavourite: removeFavouriteHandler,
+        initUser: initUserHandler,
         userStatus: userLoggedIn,
         shops: shopList,
     }

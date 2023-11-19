@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useContext, useReducer } from 'react'
+import { useContext, useEffect, useReducer } from 'react'
 
 import ListContext from './list-context'
 import ApiContext from '../api/api-context'
@@ -55,6 +55,10 @@ const listReducer = (state, action) => {
 const ListProvider = (props) => {
     const [list, dispatch] = useReducer(listReducer, [])
     const api = useContext(ApiContext)
+
+    useEffect(() => {
+        initListHandler()
+    }, [api.userStatus])
 
     /**
      * The function that adds the product to the cart.
@@ -169,6 +173,18 @@ const ListProvider = (props) => {
         list.forEach((element) => {
             localList.push(JSON.parse(element[1]))
         })
+
+        if (api.userStatus) {
+            const remoteList = await api.getList()
+            remoteList.forEach((product) => {
+                const index = localList.findIndex((item) => item.Barcode === product.Barcode)
+                if (index === -1) {
+                    localList.push(product)
+                    saveItemHandler(product)
+                }
+            })
+        }
+
         dispatch({ type: 'INIT_LOAD', list: localList })
     }
 

@@ -1,13 +1,14 @@
 import { useState, useContext } from 'react'
 import { View, StyleSheet } from 'react-native'
 import NumericInput from 'react-native-numeric-input'
-import { Button, Card, IconButton, TextInput, Text, Portal, Modal, Snackbar } from 'react-native-paper'
+import { Button, Card, IconButton, TextInput, Text, Portal, Snackbar } from 'react-native-paper'
 
 import ApiContext from '../../../../Contexts/api/api-context'
 import CartContext from '../../../../Contexts/cart/cart-context'
 import ListContext from '../../../../Contexts/list/list-context'
 import TopNavBar from '../../../Navigation/TopNavBar'
 import Dropdown from '../../../UI/Dropdown'
+import ErrorModal from '../../../UI/ErrorModal'
 
 /**
  * The component for showing the product after scanning it.
@@ -22,7 +23,8 @@ const ProductScreen = ({ navigation, route }) => {
     const [value, setValue] = useState(undefined)
     const [price, setPrice] = useState(0)
     const [pieces, setPieces] = useState(1)
-    const [showModal, setShowModal] = useState(false)
+    const [favourite, setFavourite] = useState(route.params.details.Favourite)
+    const [error, setError] = useState({ err: false, msg: '' })
     const [showSnackBar, setShowSnackBar] = useState(false)
 
     const prodDetails = route.params.details
@@ -31,7 +33,7 @@ const ProductScreen = ({ navigation, route }) => {
 
     const addProductHandler = (source) => {
         if (value === undefined) {
-            setShowModal(true)
+            setError({ err: true, msg: 'Válasszon egy boltot!' })
             return
         }
 
@@ -42,6 +44,7 @@ const ProductScreen = ({ navigation, route }) => {
             ...prodDetails,
             Pieces: pieces,
             ShopID: api.shops[value - 1].ShopID,
+            Favourite: favourite,
         }
 
         if (source === 'list') {
@@ -67,6 +70,28 @@ const ProductScreen = ({ navigation, route }) => {
         }
     }
 
+    const chageFavouriteHandler = async () => {
+        if (!api.userStatus) {
+            setError({ err: true, msg: 'Ehhez a funkcióhoz be kell jelentkeznie!' })
+            return
+        }
+        if (!favourite) {
+            try {
+                await api.addFavourite(prodDetails.Barcode)
+                setFavourite(true)
+            } catch (err) {
+                setError({ err: true, msg: err.message })
+            }
+        } else {
+            try {
+                await api.removeFavourite(prodDetails.Barcode)
+                setFavourite(false)
+            } catch (err) {
+                setError({ err: true, msg: err.message })
+            }
+        }
+    }
+
     const dropDownSelectHandler = (item) => {
         const shop = api.shops.find((element) => element.ShopName === item)
         setValue(shop.ShopID)
@@ -77,34 +102,18 @@ const ProductScreen = ({ navigation, route }) => {
         <>
             {/* The component which shows the errors */}
             <Portal>
-                <Modal
-                    style={styles.centerview}
-                    visible={showModal}
+                <ErrorModal
+                    message={error.msg}
+                    buttonText="Vissza"
+                    visible={error.err}
+                    dismissable
                     onDismiss={() => {
-                        setShowModal(false)
+                        setError({ err: false, msg: '' })
                     }}
-                >
-                    <Card style={styles.modalcard}>
-                        <Card.Content>
-                            <View style={styles.centerview}>
-                                <Text variant="headlineSmall">Válasszon egy boltot!</Text>
-                            </View>
-                        </Card.Content>
-                        <Card.Actions>
-                            <View style={styles.centercontainer}>
-                                <Button
-                                    style={styles.button}
-                                    mode="outlined"
-                                    onPress={() => {
-                                        setShowModal(false)
-                                    }}
-                                >
-                                    Vissza
-                                </Button>
-                            </View>
-                        </Card.Actions>
-                    </Card>
-                </Modal>
+                    onButtonPress={() => {
+                        setError({ err: false, msg: '' })
+                    }}
+                />
             </Portal>
 
             {/* Snacbar shows if the product handling was succesfull */}
@@ -160,12 +169,7 @@ const ProductScreen = ({ navigation, route }) => {
                             }}
                         />
                     </View>
-                    <IconButton
-                        icon="star-outline"
-                        onPress={() => {
-                            console.log('Kedvencekhez')
-                        }}
-                    />
+                    <IconButton icon={favourite ? 'star' : 'star-outline'} onPress={chageFavouriteHandler} />
                 </Card.Actions>
             </Card>
 
