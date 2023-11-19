@@ -6,6 +6,7 @@ import { Button, Card, IconButton, TextInput, Text, Portal, Snackbar } from 'rea
 import ApiContext from '../../../../Contexts/api/api-context'
 import CartContext from '../../../../Contexts/cart/cart-context'
 import ListContext from '../../../../Contexts/list/list-context'
+import PreferencesContext from '../../../../Contexts/preferences/preferences-context'
 import TopNavBar from '../../../Navigation/TopNavBar'
 import Dropdown from '../../../UI/Dropdown'
 import ErrorModal from '../../../UI/ErrorModal'
@@ -19,8 +20,9 @@ const ProductScreen = ({ navigation, route }) => {
     const api = useContext(ApiContext)
     const list = useContext(ListContext)
     const cart = useContext(CartContext)
+    const preferences = useContext(PreferencesContext)
 
-    const [value, setValue] = useState(undefined)
+    const [value, setValue] = useState(preferences.prevShopID)
     const [price, setPrice] = useState(0)
     const [pieces, setPieces] = useState(1)
     const [favourite, setFavourite] = useState(route.params.details.Favourite)
@@ -94,6 +96,7 @@ const ProductScreen = ({ navigation, route }) => {
 
     const dropDownSelectHandler = (item) => {
         const shop = api.shops.find((element) => element.ShopName === item)
+        preferences.setShop(shop.ShopID)
         setValue(shop.ShopID)
         setPrice(list.getShopPrice(prodDetails, shop.ShopID))
     }
@@ -164,6 +167,7 @@ const ProductScreen = ({ navigation, route }) => {
                         <Dropdown
                             placeholder="Válasszon egy boltot"
                             data={shopNames}
+                            defaultValue={api.shops.findIndex((shop) => shop.ShopID === preferences.prevShopID)}
                             onSelect={(item) => {
                                 dropDownSelectHandler(item)
                             }}
