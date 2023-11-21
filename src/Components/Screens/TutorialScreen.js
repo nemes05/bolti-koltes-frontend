@@ -1,31 +1,55 @@
+import { useState } from 'react'
 import { View, Image, StyleSheet } from 'react-native'
 import { Button } from 'react-native-paper'
 
-import main from '../../../assets/main.jpg'
-
 const TutorialScreen = ({ navigation }) => {
+    const [imageIndex, setImageIndex] = useState(0)
+    const images = [
+        require('../../../assets/main.jpg'),
+        require('../../../assets/scan.jpg'),
+        require('../../../assets/details.jpg'),
+        require('../../../assets/changes.jpg'),
+    ]
+
     const navigtionHandler = () => {
         navigation.navigate('usernavigation', { screen: 'register' })
     }
 
-    const nextHandle = async () => {}
+    const nextHandle = async () => {
+        setImageIndex((prev) => prev + 1)
+    }
+
+    const previousHandle = async () => {
+        setImageIndex((prev) => prev - 1)
+    }
 
     return (
         <View style={styles.maincontainer}>
             <View style={styles.imagecontainer}>
-                <Image resizeMode="center" resizeMethod="auto" style={styles.image} source={main} />
+                <Image resizeMode="center" resizeMethod="auto" style={styles.image} source={images[imageIndex]} />
             </View>
             <View style={styles.buttoncontainer}>
-                <Button mode="contained" style={{ width: 120 }}>
-                    Előző
-                </Button>
-                <Button mode="contained" style={{ width: 120 }} onPress={nextHandle}>
-                    Következő
-                </Button>
+                <View>
+                    {imageIndex !== 0 && (
+                        <Button mode="contained" style={{ width: 120 }} onPress={previousHandle}>
+                            Előző
+                        </Button>
+                    )}
+                </View>
+                <View>
+                    {imageIndex !== 3 && (
+                        <Button mode="contained" style={{ width: 120 }} onPress={nextHandle}>
+                            Következő
+                        </Button>
+                    )}
+                </View>
             </View>
-            <Button style={styles.skipbutton} onPress={navigtionHandler}>
-                Átugrom
-            </Button>
+            <View style={styles.buttoncontainer}>
+                <View>{imageIndex === 3 && <Button onPress={navigtionHandler}>Regisztráció</Button>}</View>
+                <View>
+                    <Button onPress={navigtionHandler}>Átugrom</Button>
+                </View>
+            </View>
         </View>
     )
 }
