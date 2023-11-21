@@ -3,6 +3,8 @@ import React from 'react'
 const ApiContext = React.createContext({
     getProduct: getProductHandler,
     getShops: getShopsHandler,
+    getCategories: getCategoriesHandler,
+    getProductsInCategory: getProductsInCategoryHandler,
     login: loginHandler,
     logout: logoutHandler,
     getList: getListHandler,
@@ -29,6 +31,20 @@ const getProductHandler = (barcode) => {}
  * The function sets the shopList that returns from the api.
  */
 const getShopsHandler = () => {}
+
+/**
+ * The function requests the categories from the specified store.
+ * @param {number} ShopID   The ID of the shop from which we want the categories
+ * @returns {Promise}   The promise resolves to the array of categories
+ */
+const getCategoriesHandler = async (ShopID) => {}
+
+/**
+ * The function that requests all the pruducts in the specified subcategory
+ * @param {number} SubCatID The ID that specifies the subcategory
+ * @returns {Promise}   The promise resolves to the array of products
+ */
+const getProductsInCategoryHandler = async (SubCatID) => {}
 
 /**
  * The function sends a request for login for the specified user.

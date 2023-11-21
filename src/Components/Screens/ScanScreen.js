@@ -30,6 +30,12 @@ const ScanScreen = ({ navigation }) => {
         navigation.replace('main')
     }
 
+    const handleManualInput = () => {
+        navigation.replace('productnavigation', {
+            screen: 'categoryinput',
+        })
+    }
+
     const dismissError = () => {
         setScanned(false)
         setError({ hasError: false, msg: '' })
@@ -110,7 +116,7 @@ const ScanScreen = ({ navigation }) => {
                             style={styles.barcodescanner}
                         />
                     </View>
-                    <Button mode="contained" style={styles.button}>
+                    <Button mode="contained" style={styles.button} onPress={handleManualInput}>
                         Manuális bevitel
                     </Button>
                     <Button mode="contained" style={styles.button} onPress={handleNavigation}>
