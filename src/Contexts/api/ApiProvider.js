@@ -102,6 +102,77 @@ const ApiProvider = ({ children }) => {
     }
 
     /**
+     * The function requests the categories from the specified store.
+     * @param {number} ShopID   The ID of the shop from which we want the categories
+     * @returns {Promise}   The promise resolves to the array of categories
+     */
+    const getCategoriesHandler = async (ShopID) => {
+        try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
+            const res = await fetch(`${API_URL}/categories/${ShopID}`, {
+                method: 'GET',
+                signal: controller.signal,
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json' },
+            })
+
+            clearTimeout(timeoutID)
+
+            if (res.status === 200) {
+                return await res.json()
+            }
+
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
+            }
+        } catch (err) {
+            throw err
+        }
+    }
+
+    const getProductsInCategoryHandler = async (SubCatID) => {
+        try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
+            const res = await fetch(`${API_URL}/products/${SubCatID}`, {
+                method: 'GET',
+                signal: controller.signal,
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json' },
+            })
+
+            clearTimeout(timeoutID)
+
+            if (res.status === 200) {
+                return await res.json()
+            }
+
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
+            }
+        } catch (err) {
+            throw err
+        }
+    }
+
+    /**
      * The function sends a request for registration for the specified user.
      * @param {object}  registerData            Object that containes the email, username and password.
      * @param {string}  registerData.email      The email of the user.
@@ -602,6 +673,8 @@ const ApiProvider = ({ children }) => {
     const apiContext = {
         getProduct: getProductHandler,
         getShops: getShopsHandler,
+        getCategories: getCategoriesHandler,
+        getProductsInCategory: getProductsInCategoryHandler,
         register: registerHandler,
         login: loginHandler,
         logout: logoutHandler,

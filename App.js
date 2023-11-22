@@ -18,6 +18,7 @@ import MainScreen from './src/Components/Screens/MainScreen'
 import ProductNavigationScreen from './src/Components/Screens/Product/ProductNavigationScreen'
 import ScanScreen from './src/Components/Screens/ScanScreen'
 import SettingsScreen from './src/Components/Screens/SettingsScreen'
+import TutorialScreen from './src/Components/Screens/TutorialScreen'
 import UserNavigationScreen from './src/Components/Screens/User/UserNavigationScreen'
 import ApiProvider from './src/Contexts/api/ApiProvider'
 import CartProvider from './src/Contexts/cart/CartProvider'
@@ -37,6 +38,7 @@ export default function App() {
                                 <GestureHandlerRootView style={{ flex: 1 }}>
                                     <Stack.Navigator screenOptions={{ headerShown: false }}>
                                         <Stack.Screen name="load" component={LoadScreen} />
+                                        <Stack.Screen name="tutorial" component={TutorialScreen} />
                                         <Stack.Screen name="main" component={MainScreen} />
                                         <Stack.Screen name="scan" component={ScanScreen} />
                                         <Stack.Screen name="settings" component={SettingsScreen} />

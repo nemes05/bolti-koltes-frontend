@@ -11,7 +11,7 @@ const ProductNavigationScreen = () => {
 
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="manualbarcodeinput" component={ManualInputScreen} />
+            <Stack.Screen name="categoryinput" component={ManualInputScreen} />
             <Stack.Screen name="productpage" component={ProductScreen} />
         </Stack.Navigator>
     )

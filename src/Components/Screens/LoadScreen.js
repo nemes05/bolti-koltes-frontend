@@ -31,8 +31,8 @@ const LoadScreen = ({ navigation }) => {
                 .catch((err) => {
                     setError({ err: true, msg: err.message })
                 })
-                .then(() => {
-                    navigation.navigate('main')
+                .then((page) => {
+                    navigation.replace(page)
                 })
         }
     }
@@ -64,7 +64,7 @@ const LoadScreen = ({ navigation }) => {
 
     const loadPreferences = async () => {
         try {
-            await preferences.loadPreferences()
+            return await preferences.loadPreferences()
         } catch (err) {
             setError({ err: true, msg: err.message })
         }
@@ -80,11 +80,13 @@ const LoadScreen = ({ navigation }) => {
 
     const loadContent = async () => {
         try {
-            await loadPreferences()
-            await loadUser()
             await getShops()
-            //await loadList()
-            //await loadCart()
+            const firstTime = await loadPreferences()
+            if (firstTime) {
+                return 'tutorial'
+            }
+            await loadUser()
+            return 'main'
         } catch (err) {
             setError({ err: true, msg: err.message })
         }

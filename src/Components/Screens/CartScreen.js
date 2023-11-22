@@ -37,7 +37,7 @@ const CartScreen = ({ cartSwipeHandler }) => {
                         <Card style={styles.card}>
                             <Card.Content>
                                 <Text variant="headlineSmall" style={styles.text}>
-                                    Biztos törli a kosár tartalmát?
+                                    Biztos befejezi a vásárlást?
                                 </Text>
                             </Card.Content>
                             <Card.Actions style={styles.actionscontainer}>
