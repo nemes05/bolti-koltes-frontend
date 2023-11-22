@@ -76,6 +76,7 @@ const CartProvider = ({ children }) => {
     const addProductHandler = (product, caller) => {
         if (caller === 'list_screen') {
             dispatch({ type: 'ADD_OR_UPDATE', product })
+            saveItemHandler(product)
             return
         }
 
@@ -86,6 +87,7 @@ const CartProvider = ({ children }) => {
                 inList: { Pieces: inListProduct.Pieces },
                 product,
             })
+            saveItemHandler(product)
             return
         }
 
@@ -118,11 +120,27 @@ const CartProvider = ({ children }) => {
     /**
      * The function that removes all the products from the cart.
      */
-    const emptyCartHandler = () => {
-        cart.forEach((item) => {
-            removeProductHandler(item.Barcode)
-            list.removeProduct(item.Barcode)
-        })
+    const emptyCartHandler = async () => {
+        const save = []
+        if (api.userStatus) {
+            cart.forEach((product) => {
+                removeProductHandler(product.Barcode)
+                list.removeProduct(product.Barcode)
+                const index = product.Price.findIndex((item) => item.ShopID === product.ShopID)
+                save.push({
+                    Barcode: product.Barcode,
+                    Quantity: product.Pieces,
+                    Price: product.Price[index].Price,
+                    ShopID: product.ShopID,
+                })
+            })
+            api.saveHistory(save)
+        } else {
+            cart.forEach((product) => {
+                removeProductHandler(product.Barcode)
+                list.removeProduct(product.Barcode)
+            })
+        }
     }
 
     /**
@@ -150,7 +168,7 @@ const CartProvider = ({ children }) => {
      * @param {object} product
      */
     const updateItemHandler = (product) => {
-        AsyncStorage.mergeItem(`@list:${product.Barcode}`, JSON.stringify(product)).catch((err) => {
+        AsyncStorage.mergeItem(`@cart:${product.Barcode}`, JSON.stringify(product)).catch((err) => {
             console.log(err.message)
         })
     }

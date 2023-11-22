@@ -15,6 +15,7 @@ const ApiContext = React.createContext({
     getFavourites: getFavouritesHandler,
     addFavourite: addFavouriteHandler,
     removeFavourite: removeFavouriteHandler,
+    saveHistory: saveHistoryHandler,
     initUser: initUserHandler,
     userStatus: Boolean,
     shops: [],
@@ -103,6 +104,12 @@ const addFavouriteHandler = async (barcode) => {}
  * @param {string} barcode  The barcode that specifies the item.
  */
 const removeFavouriteHandler = async (barcode) => {}
+
+/**
+ * The function that save the cart to history.
+ * @param {Array} cart  The cart with the items we want to save to history.
+ */
+const saveHistoryHandler = async (cart) => {}
 
 /**
  * Updates an item in the remote storage.

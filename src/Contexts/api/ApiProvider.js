@@ -603,6 +603,50 @@ const ApiProvider = ({ children }) => {
     }
 
     /**
+     * The function that save the cart to history.
+     * @param {Array} cart  The cart with the items we want to save to history.
+     */
+    const saveHistoryHandler = async (cart) => {
+        try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
+            const accessToken = await getTokenHandler()
+
+            const res = await fetch(`${API_URL}/history`, {
+                method: 'POST',
+                signal: controller.signal,
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
+                body: JSON.stringify(cart),
+            })
+
+            clearTimeout(timeoutID)
+
+            if (res.status === 200) {
+                return
+            }
+
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (res.status === 403) {
+                throw new Error('Be kell jelentkeznie ehhez a funkcióhoz')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
+            }
+        } catch (err) {
+            throw err
+        }
+    }
+
+    /**
      * Requests a new access token and sets it.
      * @returns {string}    The requested access token
      */
@@ -685,6 +729,7 @@ const ApiProvider = ({ children }) => {
         getFavourites: getFavouritesHandler,
         addFavourite: addFavouriteHandler,
         removeFavourite: removeFavouriteHandler,
+        saveHistory: saveHistoryHandler,
         initUser: initUserHandler,
         userStatus: userLoggedIn,
         shops: shopList,

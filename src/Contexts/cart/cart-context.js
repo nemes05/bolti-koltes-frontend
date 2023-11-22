@@ -51,7 +51,7 @@ const getShopPriceHandler = (product, shopID) => {}
 /**
  * The function that removes all the products from the cart.
  */
-const emptyCartHandler = () => {}
+const emptyCartHandler = async () => {}
 
 /**
  * The function reads the cart items from Async Storage.
