@@ -34,7 +34,9 @@ const ApiProvider = ({ children }) => {
 
             let accessToken
             if (userLoggedIn) {
-                accessToken = await getTokenHandler()
+                if (userLoggedIn) {
+                    accessToken = await getTokenHandler()
+                }
             }
 
             const res = await fetch(`${API_URL}/${barcode}`, {
