@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { View, FlatList, StyleSheet } from 'react-native'
-import { IconButton } from 'react-native-paper'
+import { IconButton, Text } from 'react-native-paper'
 
 import ApiContext from '../../Contexts/api/api-context'
 import PreferencesContext from '../../Contexts/preferences/preferences-context'
@@ -19,12 +19,31 @@ const FavouritesScreen = ({ navigation }) => {
     }
 
     useEffect(() => {
-        getFavourites()
+        if (api.userStatus) getFavourites()
     }, [])
 
-    useEffect(() => {
-        console.log(favourites)
-    }, [favourites])
+    if (!api.userStatus) {
+        return (
+            <>
+                <TopNavBar
+                    navigation={navigation}
+                    title={
+                        <IconButton
+                            icon="home"
+                            size={40}
+                            onPress={() => {
+                                navigation.navigate('main')
+                            }}
+                        />
+                    }
+                />
+
+                <View style={styles.messagecontainer}>
+                    <Text variant="labelLarge">Jelentkezzen be ehhez a funkcióhoz!</Text>
+                </View>
+            </>
+        )
+    }
 
     return (
         <>
@@ -40,7 +59,7 @@ const FavouritesScreen = ({ navigation }) => {
                     />
                 }
             />
-            <View style={styles.cartcontainer}>
+            <View style={styles.listcontainer}>
                 {preferences.cardSize === 'small' && (
                     <FlatList
                         data={favourites}
@@ -67,14 +86,10 @@ const FavouritesScreen = ({ navigation }) => {
 }
 
 const styles = StyleSheet.create({
-    cartcontainer: {
+    listcontainer: {
         height: '100%',
         marginTop: 5,
         marginBottom: 5,
-    },
-    cardcontainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
     },
     card: {
         width: '90%',
@@ -82,16 +97,12 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: 'center',
     },
-    text: {
-        textAlign: 'center',
-    },
-    actionscontainer: {
+    messagecontainer: {
         display: 'flex',
-        flexDirection: 'column',
-    },
-    button: {
-        width: '70%',
-        margin: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        height: '50%',
     },
 })
 
