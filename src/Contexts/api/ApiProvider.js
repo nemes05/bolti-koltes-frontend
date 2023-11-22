@@ -653,6 +653,84 @@ const ApiProvider = ({ children }) => {
         }
     }
 
+    const getHistoryHandler = async () => {
+        try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
+            const accessToken = await getTokenHandler()
+
+            const res = await fetch(`${API_URL}/history/purchases`, {
+                method: 'GET',
+                signal: controller.signal,
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
+            })
+
+            clearTimeout(timeoutID)
+
+            if (res.status === 200) {
+                return res.json()
+            }
+
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (res.status === 403) {
+                throw new Error('Be kell jelentkeznie ehhez a funkcióhoz')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
+            }
+        } catch (err) {
+            throw err
+        }
+    }
+
+    const getHistoryItemsHandler = async (PurchaseID) => {
+        try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
+            const accessToken = await getTokenHandler()
+
+            const res = await fetch(`${API_URL}/history/purchases/${PurchaseID}`, {
+                method: 'GET',
+                signal: controller.signal,
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
+            })
+
+            clearTimeout(timeoutID)
+
+            if (res.status === 200) {
+                return res.json()
+            }
+
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (res.status === 403) {
+                throw new Error('Be kell jelentkeznie ehhez a funkcióhoz')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
+            }
+        } catch (err) {
+            throw err
+        }
+    }
+
     /**
      * Requests a new access token and sets it.
      * @returns {string}    The requested access token
@@ -737,6 +815,8 @@ const ApiProvider = ({ children }) => {
         addFavourite: addFavouriteHandler,
         removeFavourite: removeFavouriteHandler,
         saveHistory: saveHistoryHandler,
+        getHistory: getHistoryHandler,
+        getHistoryItems: getHistoryItemsHandler,
         initUser: initUserHandler,
         userStatus: userLoggedIn,
         shops: shopList,

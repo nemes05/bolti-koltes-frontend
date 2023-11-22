@@ -32,6 +32,14 @@ const MenuNavigation = ({ navigation, visible, hide, position }) => {
                     navigation.navigate('favourites')
                 }}
             />
+            <DrawerItem
+                title="Előzmények"
+                icon="history"
+                onPress={() => {
+                    hide()
+                    navigation.navigate('history')
+                }}
+            />
         </Drawer>
     )
 }
