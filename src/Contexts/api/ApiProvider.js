@@ -139,6 +139,11 @@ const ApiProvider = ({ children }) => {
         }
     }
 
+    /**
+     * The function that requests all the pruducts in the specified subcategory
+     * @param {number} SubCatID The ID that specifies the subcategory
+     * @returns {Promise}   The promise resolves to the array of products
+     */
     const getProductsInCategoryHandler = async (SubCatID) => {
         try {
             const controller = new AbortController()
