@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import { FlatList, View } from 'react-native'
-import { Button, Portal } from 'react-native-paper'
+import { Button, Portal, IconButton } from 'react-native-paper'
 
 import ApiContext from '../../../../Contexts/api/api-context'
 import TopNavBar from '../../../Navigation/TopNavBar'
@@ -59,7 +59,18 @@ const ManualInputScreen = ({ navigation }) => {
     if (categoryList.length === 0) {
         return (
             <>
-                <TopNavBar />
+                <TopNavBar
+                    navigation={navigation}
+                    title={
+                        <IconButton
+                            icon="home"
+                            size={40}
+                            onPress={() => {
+                                navigation.navigate('main')
+                            }}
+                        />
+                    }
+                />
 
                 <Portal>
                     <ErrorModal
@@ -92,7 +103,18 @@ const ManualInputScreen = ({ navigation }) => {
     if (products.length === 0) {
         return (
             <>
-                <TopNavBar />
+                <TopNavBar
+                    navigation={navigation}
+                    title={
+                        <IconButton
+                            icon="home"
+                            size={40}
+                            onPress={() => {
+                                navigation.navigate('main')
+                            }}
+                        />
+                    }
+                />
 
                 <Portal>
                     <ErrorModal
@@ -144,7 +166,18 @@ const ManualInputScreen = ({ navigation }) => {
 
     return (
         <>
-            <TopNavBar />
+            <TopNavBar
+                navigation={navigation}
+                title={
+                    <IconButton
+                        icon="home"
+                        size={40}
+                        onPress={() => {
+                            navigation.navigate('main')
+                        }}
+                    />
+                }
+            />
 
             <Portal>
                 <ErrorModal
