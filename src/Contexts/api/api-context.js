@@ -3,6 +3,7 @@ import React from 'react'
 const ApiContext = React.createContext({
     getProduct: getProductHandler,
     getShops: getShopsHandler,
+    getDiscounts: getDiscountsHandler,
     getCategories: getCategoriesHandler,
     getProductsInCategory: getProductsInCategoryHandler,
     login: loginHandler,
@@ -33,7 +34,9 @@ const getProductHandler = (barcode) => {}
 /**
  * The function sets the shopList that returns from the api.
  */
-const getShopsHandler = () => {}
+const getShopsHandler = async () => {}
+
+const getDiscountsHandler = async () => {}
 
 /**
  * The function requests the categories from the specified store.

@@ -9,6 +9,11 @@ import ApiContext from './api-context'
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL
 
+const DISCOUNTS = [
+    { DiscountID: 1, DiscountName: 'Egységár kedvezmény' },
+    { DiscountID: 2, DiscountName: 'Kosár kedvezmény' },
+]
+
 /**
  * The component for declardeclaring the the fuctions for using the api.
  * @param {ReactComponent}   children    The parameter for the children of the element.
@@ -101,6 +106,12 @@ const ApiProvider = ({ children }) => {
         } catch (err) {
             throw err
         }
+    }
+
+    const getDiscountsHandler = async () => {
+        return new Promise((resolve) => {
+            resolve(DISCOUNTS)
+        })
     }
 
     /**
@@ -802,6 +813,7 @@ const ApiProvider = ({ children }) => {
     const apiContext = {
         getProduct: getProductHandler,
         getShops: getShopsHandler,
+        getDiscounts: getDiscountsHandler,
         getCategories: getCategoriesHandler,
         getProductsInCategory: getProductsInCategoryHandler,
         register: registerHandler,

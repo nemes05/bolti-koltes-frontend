@@ -6,6 +6,7 @@ import { Portal, Modal, Card, Text, Button } from 'react-native-paper'
 import CartContext from '../../Contexts/cart/cart-context'
 import PreferencesContext from '../../Contexts/preferences/preferences-context'
 import CustomIconButton from '../UI/CustomIconButton'
+import CartDiscountCard from '../UI/Discounts/CartDiscountCard'
 import CartProduct from '../UI/Product/CartProduct'
 import SimplifiedCartProduct from '../UI/Product/SimplifiedCartProduct'
 
@@ -71,11 +72,24 @@ const CartScreen = ({ cartSwipeHandler }) => {
                     {preferences.cardSize === 'small' && (
                         <FlatList
                             data={cart.cart}
-                            renderItem={({ item }) => <SimplifiedCartProduct product={item} />}
+                            renderItem={({ item }) => {
+                                if (item.hasOwnProperty('DiscountName')) {
+                                    return <CartDiscountCard discount={item} />
+                                }
+                                return <SimplifiedCartProduct product={item} />
+                            }}
                         />
                     )}
                     {preferences.cardSize === 'big' && (
-                        <FlatList data={cart.cart} renderItem={({ item }) => <CartProduct product={item} />} />
+                        <FlatList
+                            data={cart.cart}
+                            renderItem={({ item }) => {
+                                if (item.hasOwnProperty('DiscountName')) {
+                                    return <CartDiscountCard discount={item} />
+                                }
+                                return <CartProduct product={item} />
+                            }}
+                        />
                     )}
                     <CustomIconButton
                         icon="cash-multiple"

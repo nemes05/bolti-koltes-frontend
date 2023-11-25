@@ -51,6 +51,22 @@ const cartReducer = (state, action) => {
         case 'INIT_LOAD': {
             return action.cart
         }
+        case 'ADD_DISCOUNT': {
+            const index = state.findIndex((item) => item.DiscountID === action.discount.DiscountID)
+            if (index === -1) {
+                return [...state, action.discount]
+            }
+            return state.map((item) => {
+                if (item.DiscountID !== action.discount.DiscountID) {
+                    return item
+                } else {
+                    return action.discount
+                }
+            })
+        }
+        case 'REMOVE_DISCOUNT': {
+            return state.filter((item) => item.DiscountName !== action.discount.DiscountName)
+        }
     }
 }
 
@@ -66,6 +82,10 @@ const CartProvider = ({ children }) => {
     useEffect(() => {
         initCartHandler()
     }, [api.userStatus])
+
+    useEffect(() => {
+        console.log(cart)
+    }, [cart])
 
     /**
      * The function for adding products to the cart, also can handle updating.
@@ -115,6 +135,14 @@ const CartProvider = ({ children }) => {
         const newProduct = { ...product, Pieces: newPieces - product.Pieces, ShopID: newShopID, InCart: inCart }
         dispatch({ type: 'UPDATE', product: newProduct })
         updateItemHandler({ ...newProduct, Pieces: newPieces })
+    }
+
+    const addDiscountHandler = (discount) => {
+        dispatch({ type: 'ADD_DISCOUNT', discount })
+    }
+
+    const removeDiscountHandler = (discount) => {
+        dispatch({ type: 'REMOVE_DISCOUNT', discount })
     }
 
     /**
@@ -207,13 +235,14 @@ const CartProvider = ({ children }) => {
     const getCartPriceHandler = () => {
         let price = 0
         cart.forEach((element) => {
-            console.log(element.Discount)
-            if (element.Discount !== undefined) {
-                price += calculateDiscount(element)
-            } else {
-                price +=
-                    element.Price[element.Price.findIndex((shop) => shop.ShopID === element.ShopID)].Price *
-                    element.Pieces
+            if (!element.hasOwnProperty('DiscountName')) {
+                if (element.Discount !== undefined) {
+                    price += calculateDiscount(element)
+                } else {
+                    price +=
+                        element.Price[element.Price.findIndex((shop) => shop.ShopID === element.ShopID)].Price *
+                        element.Pieces
+                }
             }
         })
         return price
@@ -260,6 +289,8 @@ const CartProvider = ({ children }) => {
         addProduct: addProductHandler,
         removeProduct: removeProductHandler,
         updateProduct: updateProductHandler,
+        addDiscount: addDiscountHandler,
+        removeDiscount: removeDiscountHandler,
         getShopPrice: getShopPriceHandler,
         getCartPrice: getCartPriceHandler,
         emptyCart: emptyCartHandler,

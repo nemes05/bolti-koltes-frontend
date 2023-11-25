@@ -4,6 +4,8 @@ const CartContext = React.createContext({
     addProduct: addProductHandler,
     removeProduct: removeProductHandler,
     updateProduct: updateProductHandler,
+    addDiscount: addDiscountHandler,
+    removeDiscount: removeDiscountHandler,
     getCartPrice: getCartPriceHandler,
     getShopPrice: getShopPriceHandler,
     emptyCart: emptyCartHandler,
@@ -33,6 +35,10 @@ const removeProductHandler = (barcode) => {}
  * @param {boolean} InCart      The variable determines if the product should be in the cart or not.
  */
 const updateProductHandler = (product, newPieces, newShopID, inCart) => {}
+
+const addDiscountHandler = (discount) => {}
+
+const removeDiscountHandler = (discount) => {}
 
 /**
  * The function returns the value of the cart.
