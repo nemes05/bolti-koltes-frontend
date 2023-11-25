@@ -28,7 +28,7 @@ const SimplifiedCartProduct = ({ product }) => {
     }
 
     const getProductPrice = () => {
-        return (product.Pieces * cart.getShopPrice(product, product.ShopID)).toLocaleString()
+        return cart.getShopPrice(product, product.ShopID).toLocaleString()
     }
 
     return (
