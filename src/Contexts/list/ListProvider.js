@@ -45,6 +45,18 @@ const listReducer = (state, action) => {
         case 'INIT_LOAD': {
             return action.list
         }
+        case 'DISCOUNT': {
+            return state.map((item) => {
+                if (item.Barcode !== action.barcode) {
+                    return item
+                } else {
+                    return {
+                        ...item,
+                        Discount: action.discount,
+                    }
+                }
+            })
+        }
     }
 }
 
@@ -116,6 +128,10 @@ const ListProvider = (props) => {
         })
     }
 
+    const addDiscountHandler = (barcode, discount) => {
+        dispatch({ type: 'DISCOUNT', discount, barcode })
+    }
+
     /**
      * The function removes the specified item from Async Storage
      * @param {string} barcode  The barcode of the product which should be deleted.
@@ -142,13 +158,33 @@ const ListProvider = (props) => {
      */
     const getListPriceHandler = () => {
         let price = 0
-        list.forEach(
-            (element) =>
-                (price +=
+        list.forEach((element) => {
+            if (element.Discount !== undefined) {
+                price += calculateDiscount(element)
+            } else {
+                price +=
                     element.Price[element.Price.findIndex((shop) => shop.ShopID === element.ShopID)].Price *
-                    element.Pieces)
-        )
+                    element.Pieces
+            }
+        })
         return price
+    }
+
+    const calculateDiscount = (product) => {
+        switch (product.Discount.DiscountID) {
+            case 1: {
+                if (product.Pieces > product.Discount.Quantity) {
+                    const index = product.Price.findIndex((item) => item.ShopID === product.ShopID)
+                    const price = product.Price[index].Price
+                    return Math.round(price * (1 - product.Discount.Percent / 100) * product.Pieces)
+                } else {
+                    return (
+                        product.Price[product.Price.findIndex((shop) => shop.ShopID === product.ShopID)].Price *
+                        product.Pieces
+                    )
+                }
+            }
+        }
     }
 
     /**
@@ -192,6 +228,7 @@ const ListProvider = (props) => {
         addProduct: addProductHandler,
         updateProduct: updateProductHandler,
         removeProduct: removeProductHandler,
+        addDiscount: addDiscountHandler,
         getListPrice: getListPriceHandler,
         getShopPrice: getShopPriceHandler,
         initList: initListHandler,

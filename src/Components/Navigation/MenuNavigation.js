@@ -40,6 +40,14 @@ const MenuNavigation = ({ navigation, visible, hide, position }) => {
                     navigation.navigate('history')
                 }}
             />
+            <DrawerItem
+                title="Kedvezmények"
+                icon="percent"
+                onPress={() => {
+                    hide()
+                    navigation.navigate('discount')
+                }}
+            />
         </Drawer>
     )
 }

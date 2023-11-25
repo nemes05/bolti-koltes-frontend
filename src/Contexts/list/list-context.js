@@ -4,6 +4,7 @@ const ListContext = React.createContext({
     addProduct: addProductHandler,
     removeProduct: removeProductHandler,
     updateProduct: updateProductHandler,
+    addDiscount: addDiscountHandler,
     getListPrice: getListPriceHandler,
     getShopPrice: getShopPriceHandler,
     initList: initListHandler,
@@ -30,6 +31,8 @@ const removeProductHandler = (barcode) => {}
  * @param {boolean} inCart      The variable indicates if the product is in the cart or not.
  */
 const updateProductHandler = (product, newPieces, newShopID, inCart) => {}
+
+const addDiscountHandler = (barcode) => {}
 
 /**
  * The function calculates the value of the list

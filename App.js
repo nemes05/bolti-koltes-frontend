@@ -12,6 +12,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { PaperProvider } from 'react-native-paper'
 
+import DiscountScreen from './src/Components/Screens/DiscountScreen'
 import FavouritesScreen from './src/Components/Screens/FavouritesScreen'
 import HistoryScreen from './src/Components/Screens/HistoryScreen'
 import LoadScreen from './src/Components/Screens/LoadScreen'
@@ -43,6 +44,7 @@ export default function App() {
                                         <Stack.Screen name="main" component={MainScreen} />
                                         <Stack.Screen name="scan" component={ScanScreen} />
                                         <Stack.Screen name="settings" component={SettingsScreen} />
+                                        <Stack.Screen name="discount" component={DiscountScreen} />
                                         <Stack.Screen name="favourites" component={FavouritesScreen} />
                                         <Stack.Screen name="history" component={HistoryScreen} />
                                         <Stack.Screen
