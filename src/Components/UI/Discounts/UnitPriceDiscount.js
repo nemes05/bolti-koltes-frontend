@@ -21,7 +21,12 @@ const UnitPriceDiscount = () => {
         const index = list.list.findIndex((item) => item.Name === product)
         const Barcode = list.list[index].Barcode
 
-        list.addDiscount(list.list[index], Barcode, { DiscountID: 1, Quantity: quantity, Percent: percent })
+        list.addDiscount(list.list[index], Barcode, {
+            DiscountID: 1,
+            Quantity: quantity,
+            Percent: percent,
+            Name: 'Egységár kedvezmény',
+        })
     }
 
     return (

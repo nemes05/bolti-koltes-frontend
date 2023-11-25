@@ -63,6 +63,10 @@ const ProductDetails = ({ onDismiss, product, caller }) => {
         onDismiss()
     }
 
+    const removeDiscount = () => {
+        if (!product.InCart) list.removeDiscount(product)
+    }
+
     const dropDownSelectHandler = (item) => {
         const shop = api.shops.find((element) => element.ShopName === item)
         setNewShop(shop.ShopID)
@@ -82,6 +86,25 @@ const ProductDetails = ({ onDismiss, product, caller }) => {
                                 </Text>
                             </View>
                             <Divider />
+
+                            {product.Discount !== undefined && (
+                                <>
+                                    <View
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            margin: 10,
+                                        }}
+                                    >
+                                        <Text variant="labelLarge" onLongPress={removeDiscount}>
+                                            {product.Discount.Name}
+                                        </Text>
+                                    </View>
+                                    <Divider />
+                                </>
+                            )}
+
                             <View style={styles.inputcontainer}>
                                 <TextInput
                                     mode="outlined"

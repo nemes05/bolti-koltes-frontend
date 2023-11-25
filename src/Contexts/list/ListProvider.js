@@ -129,6 +129,15 @@ const ListProvider = (props) => {
     }
 
     /**
+     * The object where we want to delete the discount
+     * @param {object} product
+     */
+    const removeDiscountHandler = (product) => {
+        dispatch({ type: 'DISCOUNT', discount: undefined, barcode: product.Barcode })
+        updateItemHandler({ ...product, Discount: undefined })
+    }
+
+    /**
      * The function saves the the product to Async Storage.
      * @param {object} product  The product that should be saved.
      */
@@ -244,6 +253,7 @@ const ListProvider = (props) => {
         updateProduct: updateProductHandler,
         removeProduct: removeProductHandler,
         addDiscount: addDiscountHandler,
+        removeDiscount: removeDiscountHandler,
         getListPrice: getListPriceHandler,
         getShopPrice: getShopPriceHandler,
         initList: initListHandler,

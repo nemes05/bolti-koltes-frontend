@@ -5,6 +5,7 @@ const ListContext = React.createContext({
     removeProduct: removeProductHandler,
     updateProduct: updateProductHandler,
     addDiscount: addDiscountHandler,
+    removeDiscount: removeDiscountHandler,
     getListPrice: getListPriceHandler,
     getShopPrice: getShopPriceHandler,
     initList: initListHandler,
@@ -38,6 +39,12 @@ const updateProductHandler = (product, newPieces, newShopID, inCart) => {}
  * @param {object} discount The discount object with the details of the discount
  */
 const addDiscountHandler = (barcode) => {}
+
+/**
+ * The object where we want to delete the discount
+ * @param {object} product
+ */
+const removeDiscountHandler = (product) => {}
 
 /**
  * The function calculates the value of the list
