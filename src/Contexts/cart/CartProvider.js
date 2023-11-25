@@ -206,13 +206,40 @@ const CartProvider = ({ children }) => {
      */
     const getCartPriceHandler = () => {
         let price = 0
-        cart.forEach(
-            (element) =>
-                (price +=
+        cart.forEach((element) => {
+            console.log(element.Discount)
+            if (element.Discount !== undefined) {
+                price += calculateDiscount(element)
+            } else {
+                price +=
                     element.Price[element.Price.findIndex((shop) => shop.ShopID === element.ShopID)].Price *
-                    element.Pieces)
-        )
+                    element.Pieces
+            }
+        })
         return price
+    }
+
+    /**
+     * The function calculates the discounted price for the given product
+     * @param {object} product  The product for calculating the discounted price
+     * @returns {number}    The calculated price
+     */
+    const calculateDiscount = (product) => {
+        console.log('calculating')
+        switch (product.Discount.DiscountID) {
+            case 1: {
+                if (product.Pieces > product.Discount.Quantity) {
+                    const index = product.Price.findIndex((item) => item.ShopID === product.ShopID)
+                    const price = product.Price[index].Price
+                    return Math.round(price * (1 - product.Discount.Percent / 100) * product.Pieces)
+                } else {
+                    return (
+                        product.Price[product.Price.findIndex((shop) => shop.ShopID === product.ShopID)].Price *
+                        product.Pieces
+                    )
+                }
+            }
+        }
     }
 
     /**
@@ -222,7 +249,11 @@ const CartProvider = ({ children }) => {
      * @returns {number}        The price of the product.
      */
     const getShopPriceHandler = (product, shopID) => {
-        return product.Price[product.Price.findIndex((shop) => shop.ShopID === shopID)].Price
+        if (product.Discount !== undefined) {
+            return calculateDiscount(product)
+        } else {
+            return product.Price[product.Price.findIndex((shop) => shop.ShopID === shopID)].Price * product.Pieces
+        }
     }
 
     const carContext = {

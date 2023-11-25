@@ -119,6 +119,16 @@ const ListProvider = (props) => {
     }
 
     /**
+     * The function updates the product with the given discount
+     * @param {string} barcode  The barcode of the product which should be updated
+     * @param {object} discount The discount object with the details of the discount
+     */
+    const addDiscountHandler = (product, barcode, discount) => {
+        dispatch({ type: 'DISCOUNT', discount, barcode })
+        updateItemHandler({ ...product, Discount: discount })
+    }
+
+    /**
      * The function saves the the product to Async Storage.
      * @param {object} product  The product that should be saved.
      */
@@ -126,10 +136,6 @@ const ListProvider = (props) => {
         AsyncStorage.setItem(`@list:${product.Barcode}`, JSON.stringify(product)).catch((err) => {
             console.log(err.message)
         })
-    }
-
-    const addDiscountHandler = (barcode, discount) => {
-        dispatch({ type: 'DISCOUNT', discount, barcode })
     }
 
     /**
@@ -170,6 +176,11 @@ const ListProvider = (props) => {
         return price
     }
 
+    /**
+     * The function calculates the discounted price for the given product
+     * @param {object} product  The product for calculating the discounted price
+     * @returns {number}    The calculated price
+     */
     const calculateDiscount = (product) => {
         switch (product.Discount.DiscountID) {
             case 1: {
@@ -194,7 +205,11 @@ const ListProvider = (props) => {
      * @returns {number}    The price of the product in the specified shop.
      */
     const getShopPriceHandler = (product, shopID) => {
-        return product.Price[product.Price.findIndex((shop) => shop.ShopID === shopID)].Price
+        if (product.Discount !== undefined) {
+            return calculateDiscount(product)
+        } else {
+            return product.Price[product.Price.findIndex((shop) => shop.ShopID === shopID)].Price * product.Pieces
+        }
     }
 
     /**

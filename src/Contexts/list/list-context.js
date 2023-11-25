@@ -32,6 +32,11 @@ const removeProductHandler = (barcode) => {}
  */
 const updateProductHandler = (product, newPieces, newShopID, inCart) => {}
 
+/**
+ * The function updates the product with the given discount
+ * @param {string} barcode  The barcode of the product which should be updated
+ * @param {object} discount The discount object with the details of the discount
+ */
 const addDiscountHandler = (barcode) => {}
 
 /**
