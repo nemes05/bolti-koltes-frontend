@@ -8,14 +8,14 @@ import TopNavBar from '../../Navigation/TopNavBar'
 const CartDiscount = ({ navigation, onBackPress, discount }) => {
     const cart = useContext(CartContext)
     const [price, setPrice] = useState(10000)
-    const [percent, setPercent] = useState(10)
+    const [discountValue, setDiscountValue] = useState(1000)
 
     const setDiscountHandler = () => {
         cart.addDiscount({
             DiscountID: discount.DiscountID,
             DiscountName: discount.DiscountName,
             Price: price,
-            Percent: percent,
+            DiscountValue: discountValue,
             ImageLink: discount.ImageLink,
         })
 
@@ -40,7 +40,7 @@ const CartDiscount = ({ navigation, onBackPress, discount }) => {
             <View style={styles.cardcontainer}>
                 <Card>
                     <Card.Content>
-                        <View style={styles.maincontentcontainer}>
+                        <View style={styles.cardcontentcontainer}>
                             <View style={styles.inputcontainer}>
                                 <TextInput
                                     style={{ height: 45 }}
@@ -55,13 +55,13 @@ const CartDiscount = ({ navigation, onBackPress, discount }) => {
                                 <TextInput
                                     style={{ height: 45 }}
                                     mode="outlined"
-                                    value={percent.toString()}
+                                    value={discountValue.toString()}
                                     keyboardType="numeric"
                                     onChangeText={(number) => {
-                                        if (number >= 0 && number <= 100) setPercent(+number)
+                                        setDiscountValue(+number)
                                     }}
                                 />
-                                <Text variant="labelLarge"> % kedvezmény.</Text>
+                                <Text variant="labelLarge"> Ft kedvezmény.</Text>
                             </View>
                             <View style={{ width: '60%' }}>
                                 <Button mode="contained" onPress={setDiscountHandler}>
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
         height: '80%',
         margin: 10,
     },
-    maincontentcontainer: {
+    cardcontentcontainer: {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',

@@ -6,7 +6,9 @@ import ApiContext from '../../Contexts/api/api-context'
 import TopNavBar from '../Navigation/TopNavBar'
 import CategoryCard from '../UI/CategoryCard'
 import CartDiscount from '../UI/Discounts/CartDiscount'
+import CartDiscountFt from '../UI/Discounts/CartDiscountFt'
 import UnitPriceDiscount from '../UI/Discounts/UnitPriceDiscount'
+import ErrorModal from '../UI/ErrorModal'
 
 const DiscountScreen = ({ navigation }) => {
     const api = useContext(ApiContext)
@@ -36,6 +38,23 @@ const DiscountScreen = ({ navigation }) => {
         setDiscountID(undefined)
     }
 
+    if (error.err) {
+        return (
+            <ErrorModal
+                message={error.message}
+                buttonText="Vissza"
+                visible={error.err}
+                dismissable
+                onDismiss={() => {
+                    setError({ err: false, msg: '' })
+                }}
+                onButtonPress={() => {
+                    setError({ err: false, msg: '' })
+                }}
+            />
+        )
+    }
+
     if (discountID !== undefined) {
         const index = discounts.findIndex((item) => item.DiscountID === discountID)
         switch (discountID) {
@@ -51,6 +70,15 @@ const DiscountScreen = ({ navigation }) => {
             case 2: {
                 return (
                     <CartDiscount navigation={navigation} onBackPress={backButtonHandler} discount={discounts[index]} />
+                )
+            }
+            case 3: {
+                return (
+                    <CartDiscountFt
+                        navigation={navigation}
+                        onBackPress={backButtonHandler}
+                        discount={discounts[index]}
+                    />
                 )
             }
         }
@@ -77,8 +105,6 @@ const DiscountScreen = ({ navigation }) => {
                     <CategoryCard title={item.DiscountName} id={item.DiscountID} onSelect={discountSelectHandler} />
                 )}
             />
-
-            {/* <UnitPriceDiscount /> */}
         </>
     )
 }
