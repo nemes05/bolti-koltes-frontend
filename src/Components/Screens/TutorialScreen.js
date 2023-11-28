@@ -7,7 +7,7 @@ const TutorialScreen = ({ navigation }) => {
     const images = [
         require('../../../assets/main.jpg'),
         require('../../../assets/scan.jpg'),
-        require('../../../assets/details.jpg'),
+        require('../../../assets/detailes.jpg'),
         require('../../../assets/changes.jpg'),
     ]
 

@@ -9,11 +9,6 @@ import ApiContext from './api-context'
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL
 
-const DISCOUNTS = [
-    { DiscountID: 1, DiscountName: 'Egységár kedvezmény' },
-    { DiscountID: 2, DiscountName: 'Kosár kedvezmény' },
-]
-
 /**
  * The component for declardeclaring the the fuctions for using the api.
  * @param {ReactComponent}   children    The parameter for the children of the element.
@@ -109,9 +104,36 @@ const ApiProvider = ({ children }) => {
     }
 
     const getDiscountsHandler = async () => {
-        return new Promise((resolve) => {
-            resolve(DISCOUNTS)
-        })
+        try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
+            const res = await fetch(`${API_URL}/discount`, {
+                method: 'GET',
+                signal: controller.signal,
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json' },
+            })
+
+            clearTimeout(timeoutID)
+
+            if (res.status === 200) {
+                return res.json()
+            }
+
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
+            }
+        } catch (err) {
+            throw err
+        }
     }
 
     /**

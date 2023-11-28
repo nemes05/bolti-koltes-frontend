@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react'
-import { View } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import NumericInput from 'react-native-numeric-input'
 import { Button, Card, Text, TextInput, IconButton } from 'react-native-paper'
 
@@ -28,6 +28,8 @@ const UnitPriceDiscount = ({ navigation, onBackPress }) => {
             Quantity: quantity,
             Percent: percent,
         })
+
+        navigation.navigate('main')
     }
 
     return (
@@ -45,25 +47,10 @@ const UnitPriceDiscount = ({ navigation, onBackPress }) => {
                 }
             />
 
-            <View
-                style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    height: '80%',
-                    margin: 10,
-                }}
-            >
+            <View style={styles.cardcontainer}>
                 <Card>
-                    <Card.Content style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 20 }}>
-                        <View
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'row',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                            }}
-                        >
+                    <Card.Content style={styles.cardcontentcontainer}>
+                        <View style={styles.inputcontainer}>
                             <NumericInput
                                 rounded="true"
                                 onChange={(value) => {
@@ -87,6 +74,7 @@ const UnitPriceDiscount = ({ navigation, onBackPress }) => {
                         </View>
                         <View>
                             <Dropdown
+                                placeholder="Válasszon terméket..."
                                 data={products}
                                 onSelect={(item) => {
                                     setProduct(item)
@@ -107,5 +95,27 @@ const UnitPriceDiscount = ({ navigation, onBackPress }) => {
         </>
     )
 }
+
+const styles = StyleSheet.create({
+    cardcontainer: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        height: '80%',
+        margin: 15,
+    },
+    cardcontentcontainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 20,
+    },
+    inputcontainer: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+})
 
 export default UnitPriceDiscount

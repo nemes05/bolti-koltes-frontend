@@ -301,6 +301,7 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
     },
     priceinput: {
+        color: 'rgb(255,234,123)',
         width: '70%',
         height: 60,
         fontSize: 30,

@@ -29,7 +29,7 @@ const SimplifiedListProduct = ({ product }) => {
     }
 
     const getProductPrice = () => {
-        return list.getShopPrice(product, product.ShopID).toLocaleString()
+        return list.getProductPrice(product, product.ShopID).toLocaleString()
     }
 
     const disabledcard = {
