@@ -28,7 +28,7 @@ const CartProduct = ({ product }) => {
     }
 
     const getProductPrice = () => {
-        return cart.getShopPrice(product, product.ShopID).toLocaleString()
+        return cart.getProductPrice(product, product.ShopID).toLocaleString()
     }
 
     return (

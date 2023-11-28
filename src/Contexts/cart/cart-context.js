@@ -8,6 +8,7 @@ const CartContext = React.createContext({
     removeDiscount: removeDiscountHandler,
     getCartPrice: getCartPriceHandler,
     getShopPrice: getShopPriceHandler,
+    getProductPrice: getProductPriceHandler,
     emptyCart: emptyCartHandler,
     initCart: initCartHandler,
     cart: [],
@@ -36,8 +37,28 @@ const removeProductHandler = (barcode) => {}
  */
 const updateProductHandler = (product, newPieces, newShopID, inCart) => {}
 
+/**
+ * The function adds the specified discount to the cart
+ * @param {object} discount         The discount that should be added
+ * @param {number} DiscountID       The id of the discount
+ * @param {string} DiscountName     The name of the discount
+ * @param {number} Price            The minimum price of the purchase (for the discount to activate)
+ * @param {string} ImageLink        Link for the image to show for the user
+ * @param {string} DiscountValue    The value of the discount (in FT)
+ * @param {string} Percent          The value of the discount (in %)
+ */
 const addDiscountHandler = (discount) => {}
 
+/**
+ * The function that removes the specified discount
+ * @param {object} discount         The discount that should be added
+ * @param {number} DiscountID       The id of the discount
+ * @param {string} DiscountName     The name of the discount
+ * @param {number} Price            The minimum price of the purchase (for the discount to activate)
+ * @param {string} ImageLink        Link for the image to show for the user
+ * @param {string} DiscountValue    The value of the discount (in FT)
+ * @param {string} Percent          The value of the discount (in %)
+ */
 const removeDiscountHandler = (discount) => {}
 
 /**
@@ -53,6 +74,14 @@ const getCartPriceHandler = () => {}
  * @returns {number}        The price of the product.
  */
 const getShopPriceHandler = (product, shopID) => {}
+
+/**
+ * The function thet returns the price of a product with the discounts already calculated
+ * @param {object} product  The object that contains the product
+ * @param {number} shopID   The id of the shop from where we want to get the price
+ * @returns {number}    The calculated price
+ */
+const getProductPriceHandler = (product, shopID) => {}
 
 /**
  * The function that removes all the products from the cart.

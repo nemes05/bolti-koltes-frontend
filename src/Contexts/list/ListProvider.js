@@ -214,6 +214,10 @@ const ListProvider = (props) => {
      * @returns {number}    The price of the product in the specified shop.
      */
     const getShopPriceHandler = (product, shopID) => {
+        return product.Price[product.Price.findIndex((shop) => shop.ShopID === shopID)].Price
+    }
+
+    const getProductPriceHandler = (product, shopID) => {
         if (product.Discount !== undefined) {
             return calculateDiscount(product)
         } else {
@@ -256,6 +260,7 @@ const ListProvider = (props) => {
         removeDiscount: removeDiscountHandler,
         getListPrice: getListPriceHandler,
         getShopPrice: getShopPriceHandler,
+        getProductPrice: getProductPriceHandler,
         initList: initListHandler,
         list,
     }

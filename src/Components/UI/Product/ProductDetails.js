@@ -89,15 +89,12 @@ const ProductDetails = ({ onDismiss, product, caller }) => {
 
                             {product.Discount !== undefined && (
                                 <>
-                                    <View
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            margin: 10,
-                                        }}
-                                    >
-                                        <Text variant="labelLarge" onLongPress={removeDiscount}>
+                                    <View style={styles.discountview}>
+                                        <Text
+                                            variant="labelLarge"
+                                            style={{ color: 'rgb(186, 26, 26)' }}
+                                            onLongPress={removeDiscount}
+                                        >
                                             {product.Discount.Name}
                                         </Text>
                                     </View>
@@ -266,20 +263,11 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#444',
     },
-    dropdown1BtnTxtStyle: {
-        color: '#444',
-        textAlign: 'left',
-    },
-    dropdown1DropdownStyle: {
-        backgroundColor: '#EFEFEF',
-    },
-    dropdown1RowStyle: {
-        backgroundColor: '#EFEFEF',
-        borderBottomColor: '#C5C5C5',
-    },
-    dropdown1RowTxtStyle: {
-        color: '#444',
-        textAlign: 'left',
+    discountview: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 10,
     },
 })
 

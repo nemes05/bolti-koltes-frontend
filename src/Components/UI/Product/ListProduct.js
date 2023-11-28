@@ -62,7 +62,7 @@ const ListProduct = ({ product }) => {
                     <View style={styles.bottomcontainer}>
                         <Card.Cover source={{ uri: product.ImageLink }} style={styles.productimage} />
                         <Text variant="headlineMedium">
-                            {list.getShopPrice(product, product.ShopID).toLocaleString()} Ft
+                            {list.getProductPrice(product, product.ShopID).toLocaleString()} Ft
                         </Text>
                         <IconButton
                             style={styles.iconbutton}

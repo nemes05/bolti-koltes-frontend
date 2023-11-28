@@ -8,6 +8,7 @@ const ListContext = React.createContext({
     removeDiscount: removeDiscountHandler,
     getListPrice: getListPriceHandler,
     getShopPrice: getShopPriceHandler,
+    getProductPrice: getProductPriceHandler,
     initList: initListHandler,
     list: [],
 })
@@ -59,6 +60,8 @@ const getListPriceHandler = () => {}
  * @returns {number}    The price of the product in the specified shop.
  */
 const getShopPriceHandler = (product, shopID) => {}
+
+const getProductPriceHandler = (product, shopID) => {}
 
 /**
  * The function loads the list.

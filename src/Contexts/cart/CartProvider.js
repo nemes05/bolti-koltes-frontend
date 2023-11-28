@@ -52,17 +52,18 @@ const cartReducer = (state, action) => {
             return action.cart
         }
         case 'ADD_DISCOUNT': {
-            const index = state.findIndex((item) => item.DiscountID === action.discount.DiscountID)
+            const index = state.findIndex((item) => item.hasOwnProperty('DiscountID'))
             if (index === -1) {
                 return [...state, action.discount]
+            } else {
+                return state.map((item) => {
+                    if (item.hasOwnProperty('DiscountID')) {
+                        return action.discount
+                    } else {
+                        return item
+                    }
+                })
             }
-            return state.map((item) => {
-                if (item.DiscountID !== action.discount.DiscountID) {
-                    return item
-                } else {
-                    return action.discount
-                }
-            })
         }
         case 'REMOVE_DISCOUNT': {
             return state.filter((item) => item.DiscountName !== action.discount.DiscountName)
@@ -82,10 +83,6 @@ const CartProvider = ({ children }) => {
     useEffect(() => {
         initCartHandler()
     }, [api.userStatus])
-
-    useEffect(() => {
-        console.log(cart)
-    }, [cart])
 
     /**
      * The function for adding products to the cart, also can handle updating.
@@ -137,10 +134,30 @@ const CartProvider = ({ children }) => {
         updateItemHandler({ ...newProduct, Pieces: newPieces })
     }
 
+    /**
+     * The function adds the specified discount to the cart
+     * @param {object} discount         The discount that should be added
+     * @param {number} DiscountID       The id of the discount
+     * @param {string} DiscountName     The name of the discount
+     * @param {number} Price            The minimum price of the purchase (for the discount to activate)
+     * @param {string} ImageLink        Link for the image to show for the user
+     * @param {string} DiscountValue    The value of the discount (in FT)
+     * @param {string} Percent          The value of the discount (in %)
+     */
     const addDiscountHandler = (discount) => {
         dispatch({ type: 'ADD_DISCOUNT', discount })
     }
 
+    /**
+     * The function that removes the specified discount
+     * @param {object} discount         The discount that should be added
+     * @param {number} DiscountID       The id of the discount
+     * @param {string} DiscountName     The name of the discount
+     * @param {number} Price            The minimum price of the purchase (for the discount to activate)
+     * @param {string} ImageLink        Link for the image to show for the user
+     * @param {string} DiscountValue    The value of the discount (in FT)
+     * @param {string} Percent          The value of the discount (in %)
+     */
     const removeDiscountHandler = (discount) => {
         dispatch({ type: 'REMOVE_DISCOUNT', discount })
     }
@@ -218,9 +235,11 @@ const CartProvider = ({ children }) => {
             const remoteCart = await api.getList()
             remoteCart.forEach((product) => {
                 if (product.InCart === true) {
-                    const index = cart.findIndex((item) => item.Barcode === product.Barcode)
-                    if (index === -1) localCart.push(product)
-                    saveItemHandler(product)
+                    const index = localCart.findIndex((item) => item.Barcode === product.Barcode)
+                    if (index === -1) {
+                        localCart.push(product)
+                        saveItemHandler(product)
+                    }
                 }
             })
         }
@@ -245,7 +264,27 @@ const CartProvider = ({ children }) => {
                 }
             }
         })
-        return price
+        const index = cart.findIndex((item) => item.hasOwnProperty('DiscountID'))
+
+        if (index !== -1) {
+            const discount = cart[index]
+            switch (discount.DiscountID) {
+                case 2: {
+                    if (price >= discount.Price) {
+                        price = price * ((100 - discount.Percent) / 100)
+                    }
+                    break
+                }
+                case 3: {
+                    if (price >= discount.Price) {
+                        price = price - discount.DiscountValue
+                    }
+                    break
+                }
+            }
+        }
+
+        return Math.round(price)
     }
 
     /**
@@ -254,7 +293,6 @@ const CartProvider = ({ children }) => {
      * @returns {number}    The calculated price
      */
     const calculateDiscount = (product) => {
-        console.log('calculating')
         switch (product.Discount.DiscountID) {
             case 1: {
                 if (product.Pieces > product.Discount.Quantity) {
@@ -278,6 +316,16 @@ const CartProvider = ({ children }) => {
      * @returns {number}        The price of the product.
      */
     const getShopPriceHandler = (product, shopID) => {
+        return product.Price[product.Price.findIndex((shop) => shop.ShopID === shopID)].Price
+    }
+
+    /**
+     * The function thet returns the price of a product with the discounts already calculated
+     * @param {object} product  The object that contains the product
+     * @param {number} shopID   The id of the shop from where we want to get the price
+     * @returns {number}    The calculated price
+     */
+    const getProductPriceHandler = (product, shopID) => {
         if (product.Discount !== undefined) {
             return calculateDiscount(product)
         } else {
@@ -292,6 +340,7 @@ const CartProvider = ({ children }) => {
         addDiscount: addDiscountHandler,
         removeDiscount: removeDiscountHandler,
         getShopPrice: getShopPriceHandler,
+        getProductPrice: getProductPriceHandler,
         getCartPrice: getCartPriceHandler,
         emptyCart: emptyCartHandler,
         initCart: initCartHandler,
