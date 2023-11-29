@@ -45,6 +45,18 @@ const listReducer = (state, action) => {
         case 'INIT_LOAD': {
             return action.list
         }
+        case 'DISCOUNT': {
+            return state.map((item) => {
+                if (item.Barcode !== action.barcode) {
+                    return item
+                } else {
+                    return {
+                        ...item,
+                        Discount: action.discount,
+                    }
+                }
+            })
+        }
     }
 }
 
@@ -107,6 +119,25 @@ const ListProvider = (props) => {
     }
 
     /**
+     * The function updates the product with the given discount
+     * @param {string} barcode  The barcode of the product which should be updated
+     * @param {object} discount The discount object with the details of the discount
+     */
+    const addDiscountHandler = (product, barcode, discount) => {
+        dispatch({ type: 'DISCOUNT', discount, barcode })
+        updateItemHandler({ ...product, Discount: discount })
+    }
+
+    /**
+     * The object where we want to delete the discount
+     * @param {object} product
+     */
+    const removeDiscountHandler = (product) => {
+        dispatch({ type: 'DISCOUNT', discount: undefined, barcode: product.Barcode })
+        updateItemHandler({ ...product, Discount: undefined })
+    }
+
+    /**
      * The function saves the the product to Async Storage.
      * @param {object} product  The product that should be saved.
      */
@@ -142,13 +173,38 @@ const ListProvider = (props) => {
      */
     const getListPriceHandler = () => {
         let price = 0
-        list.forEach(
-            (element) =>
-                (price +=
+        list.forEach((element) => {
+            if (element.Discount !== undefined) {
+                price += calculateDiscount(element)
+            } else {
+                price +=
                     element.Price[element.Price.findIndex((shop) => shop.ShopID === element.ShopID)].Price *
-                    element.Pieces)
-        )
+                    element.Pieces
+            }
+        })
         return price
+    }
+
+    /**
+     * The function calculates the discounted price for the given product
+     * @param {object} product  The product for calculating the discounted price
+     * @returns {number}    The calculated price
+     */
+    const calculateDiscount = (product) => {
+        switch (product.Discount.DiscountID) {
+            case 1: {
+                if (product.Pieces > product.Discount.Quantity) {
+                    const index = product.Price.findIndex((item) => item.ShopID === product.ShopID)
+                    const price = product.Price[index].Price
+                    return Math.round(price * (1 - product.Discount.Percent / 100) * product.Pieces)
+                } else {
+                    return (
+                        product.Price[product.Price.findIndex((shop) => shop.ShopID === product.ShopID)].Price *
+                        product.Pieces
+                    )
+                }
+            }
+        }
     }
 
     /**
@@ -159,6 +215,14 @@ const ListProvider = (props) => {
      */
     const getShopPriceHandler = (product, shopID) => {
         return product.Price[product.Price.findIndex((shop) => shop.ShopID === shopID)].Price
+    }
+
+    const getProductPriceHandler = (product, shopID) => {
+        if (product.Discount !== undefined) {
+            return calculateDiscount(product)
+        } else {
+            return product.Price[product.Price.findIndex((shop) => shop.ShopID === shopID)].Price * product.Pieces
+        }
     }
 
     /**
@@ -192,8 +256,11 @@ const ListProvider = (props) => {
         addProduct: addProductHandler,
         updateProduct: updateProductHandler,
         removeProduct: removeProductHandler,
+        addDiscount: addDiscountHandler,
+        removeDiscount: removeDiscountHandler,
         getListPrice: getListPriceHandler,
         getShopPrice: getShopPriceHandler,
+        getProductPrice: getProductPriceHandler,
         initList: initListHandler,
         list,
     }

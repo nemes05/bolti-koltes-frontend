@@ -4,8 +4,11 @@ const ListContext = React.createContext({
     addProduct: addProductHandler,
     removeProduct: removeProductHandler,
     updateProduct: updateProductHandler,
+    addDiscount: addDiscountHandler,
+    removeDiscount: removeDiscountHandler,
     getListPrice: getListPriceHandler,
     getShopPrice: getShopPriceHandler,
+    getProductPrice: getProductPriceHandler,
     initList: initListHandler,
     list: [],
 })
@@ -32,6 +35,19 @@ const removeProductHandler = (barcode) => {}
 const updateProductHandler = (product, newPieces, newShopID, inCart) => {}
 
 /**
+ * The function updates the product with the given discount
+ * @param {string} barcode  The barcode of the product which should be updated
+ * @param {object} discount The discount object with the details of the discount
+ */
+const addDiscountHandler = (barcode) => {}
+
+/**
+ * The object where we want to delete the discount
+ * @param {object} product
+ */
+const removeDiscountHandler = (product) => {}
+
+/**
  * The function calculates the value of the list
  * @returns {number}    The value of the list with all the items.
  */
@@ -44,6 +60,8 @@ const getListPriceHandler = () => {}
  * @returns {number}    The price of the product in the specified shop.
  */
 const getShopPriceHandler = (product, shopID) => {}
+
+const getProductPriceHandler = (product, shopID) => {}
 
 /**
  * The function loads the list.

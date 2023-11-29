@@ -34,7 +34,9 @@ const ApiProvider = ({ children }) => {
 
             let accessToken
             if (userLoggedIn) {
-                accessToken = await getTokenHandler()
+                if (userLoggedIn) {
+                    accessToken = await getTokenHandler()
+                }
             }
 
             const res = await fetch(`${API_URL}/${barcode}`, {
@@ -101,6 +103,39 @@ const ApiProvider = ({ children }) => {
         }
     }
 
+    const getDiscountsHandler = async () => {
+        try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
+            const res = await fetch(`${API_URL}/discount`, {
+                method: 'GET',
+                signal: controller.signal,
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json' },
+            })
+
+            clearTimeout(timeoutID)
+
+            if (res.status === 200) {
+                return res.json()
+            }
+
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
+            }
+        } catch (err) {
+            throw err
+        }
+    }
+
     /**
      * The function requests the categories from the specified store.
      * @param {number} ShopID   The ID of the shop from which we want the categories
@@ -139,6 +174,11 @@ const ApiProvider = ({ children }) => {
         }
     }
 
+    /**
+     * The function that requests all the pruducts in the specified subcategory
+     * @param {number} SubCatID The ID that specifies the subcategory
+     * @returns {Promise}   The promise resolves to the array of products
+     */
     const getProductsInCategoryHandler = async (SubCatID) => {
         try {
             const controller = new AbortController()
@@ -603,6 +643,128 @@ const ApiProvider = ({ children }) => {
     }
 
     /**
+     * The function that save the cart to history.
+     * @param {Array} cart  The cart with the items we want to save to history.
+     */
+    const saveHistoryHandler = async (cart) => {
+        try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
+            const accessToken = await getTokenHandler()
+
+            const res = await fetch(`${API_URL}/history`, {
+                method: 'POST',
+                signal: controller.signal,
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
+                body: JSON.stringify(cart),
+            })
+
+            clearTimeout(timeoutID)
+
+            if (res.status === 200) {
+                return
+            }
+
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (res.status === 403) {
+                throw new Error('Be kell jelentkeznie ehhez a funkcióhoz')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
+            }
+        } catch (err) {
+            throw err
+        }
+    }
+
+    const getHistoryHandler = async () => {
+        try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
+            const accessToken = await getTokenHandler()
+
+            const res = await fetch(`${API_URL}/history/purchases`, {
+                method: 'GET',
+                signal: controller.signal,
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
+            })
+
+            clearTimeout(timeoutID)
+
+            if (res.status === 200) {
+                return res.json()
+            }
+
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (res.status === 403) {
+                throw new Error('Be kell jelentkeznie ehhez a funkcióhoz')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
+            }
+        } catch (err) {
+            throw err
+        }
+    }
+
+    const getHistoryItemsHandler = async (PurchaseID) => {
+        try {
+            const controller = new AbortController()
+
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
+
+            const accessToken = await getTokenHandler()
+
+            const res = await fetch(`${API_URL}/history/purchases/${PurchaseID}`, {
+                method: 'GET',
+                signal: controller.signal,
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
+            })
+
+            clearTimeout(timeoutID)
+
+            if (res.status === 200) {
+                return res.json()
+            }
+
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (res.status === 403) {
+                throw new Error('Be kell jelentkeznie ehhez a funkcióhoz')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
+            }
+        } catch (err) {
+            throw err
+        }
+    }
+
+    /**
      * Requests a new access token and sets it.
      * @returns {string}    The requested access token
      */
@@ -673,6 +835,7 @@ const ApiProvider = ({ children }) => {
     const apiContext = {
         getProduct: getProductHandler,
         getShops: getShopsHandler,
+        getDiscounts: getDiscountsHandler,
         getCategories: getCategoriesHandler,
         getProductsInCategory: getProductsInCategoryHandler,
         register: registerHandler,
@@ -685,6 +848,9 @@ const ApiProvider = ({ children }) => {
         getFavourites: getFavouritesHandler,
         addFavourite: addFavouriteHandler,
         removeFavourite: removeFavouriteHandler,
+        saveHistory: saveHistoryHandler,
+        getHistory: getHistoryHandler,
+        getHistoryItems: getHistoryItemsHandler,
         initUser: initUserHandler,
         userStatus: userLoggedIn,
         shops: shopList,

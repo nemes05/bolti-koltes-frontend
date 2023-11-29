@@ -32,6 +32,22 @@ const MenuNavigation = ({ navigation, visible, hide, position }) => {
                     navigation.navigate('favourites')
                 }}
             />
+            <DrawerItem
+                title="Előzmények"
+                icon="history"
+                onPress={() => {
+                    hide()
+                    navigation.navigate('history')
+                }}
+            />
+            <DrawerItem
+                title="Kedvezmények"
+                icon="percent"
+                onPress={() => {
+                    hide()
+                    navigation.navigate('discount')
+                }}
+            />
         </Drawer>
     )
 }

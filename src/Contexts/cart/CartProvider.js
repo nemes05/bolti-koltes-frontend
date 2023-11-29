@@ -51,6 +51,23 @@ const cartReducer = (state, action) => {
         case 'INIT_LOAD': {
             return action.cart
         }
+        case 'ADD_DISCOUNT': {
+            const index = state.findIndex((item) => item.hasOwnProperty('DiscountID'))
+            if (index === -1) {
+                return [...state, action.discount]
+            } else {
+                return state.map((item) => {
+                    if (item.hasOwnProperty('DiscountID')) {
+                        return action.discount
+                    } else {
+                        return item
+                    }
+                })
+            }
+        }
+        case 'REMOVE_DISCOUNT': {
+            return state.filter((item) => item.DiscountName !== action.discount.DiscountName)
+        }
     }
 }
 
@@ -76,6 +93,7 @@ const CartProvider = ({ children }) => {
     const addProductHandler = (product, caller) => {
         if (caller === 'list_screen') {
             dispatch({ type: 'ADD_OR_UPDATE', product })
+            saveItemHandler(product)
             return
         }
 
@@ -86,6 +104,7 @@ const CartProvider = ({ children }) => {
                 inList: { Pieces: inListProduct.Pieces },
                 product,
             })
+            saveItemHandler(product)
             return
         }
 
@@ -116,13 +135,57 @@ const CartProvider = ({ children }) => {
     }
 
     /**
+     * The function adds the specified discount to the cart
+     * @param {object} discount         The discount that should be added
+     * @param {number} DiscountID       The id of the discount
+     * @param {string} DiscountName     The name of the discount
+     * @param {number} Price            The minimum price of the purchase (for the discount to activate)
+     * @param {string} ImageLink        Link for the image to show for the user
+     * @param {string} DiscountValue    The value of the discount (in FT)
+     * @param {string} Percent          The value of the discount (in %)
+     */
+    const addDiscountHandler = (discount) => {
+        dispatch({ type: 'ADD_DISCOUNT', discount })
+    }
+
+    /**
+     * The function that removes the specified discount
+     * @param {object} discount         The discount that should be added
+     * @param {number} DiscountID       The id of the discount
+     * @param {string} DiscountName     The name of the discount
+     * @param {number} Price            The minimum price of the purchase (for the discount to activate)
+     * @param {string} ImageLink        Link for the image to show for the user
+     * @param {string} DiscountValue    The value of the discount (in FT)
+     * @param {string} Percent          The value of the discount (in %)
+     */
+    const removeDiscountHandler = (discount) => {
+        dispatch({ type: 'REMOVE_DISCOUNT', discount })
+    }
+
+    /**
      * The function that removes all the products from the cart.
      */
-    const emptyCartHandler = () => {
-        cart.forEach((item) => {
-            removeProductHandler(item.Barcode)
-            list.removeProduct(item.Barcode)
-        })
+    const emptyCartHandler = async () => {
+        const save = []
+        if (api.userStatus) {
+            cart.forEach((product) => {
+                removeProductHandler(product.Barcode)
+                list.removeProduct(product.Barcode)
+                const index = product.Price.findIndex((item) => item.ShopID === product.ShopID)
+                save.push({
+                    Barcode: product.Barcode,
+                    Quantity: product.Pieces,
+                    Price: product.Price[index].Price,
+                    ShopID: product.ShopID,
+                })
+            })
+            api.saveHistory(save)
+        } else {
+            cart.forEach((product) => {
+                removeProductHandler(product.Barcode)
+                list.removeProduct(product.Barcode)
+            })
+        }
     }
 
     /**
@@ -150,7 +213,7 @@ const CartProvider = ({ children }) => {
      * @param {object} product
      */
     const updateItemHandler = (product) => {
-        AsyncStorage.mergeItem(`@list:${product.Barcode}`, JSON.stringify(product)).catch((err) => {
+        AsyncStorage.mergeItem(`@cart:${product.Barcode}`, JSON.stringify(product)).catch((err) => {
             console.log(err.message)
         })
     }
@@ -172,9 +235,11 @@ const CartProvider = ({ children }) => {
             const remoteCart = await api.getList()
             remoteCart.forEach((product) => {
                 if (product.InCart === true) {
-                    const index = cart.findIndex((item) => item.Barcode === product.Barcode)
-                    if (index === -1) localCart.push(product)
-                    saveItemHandler(product)
+                    const index = localCart.findIndex((item) => item.Barcode === product.Barcode)
+                    if (index === -1) {
+                        localCart.push(product)
+                        saveItemHandler(product)
+                    }
                 }
             })
         }
@@ -188,13 +253,60 @@ const CartProvider = ({ children }) => {
      */
     const getCartPriceHandler = () => {
         let price = 0
-        cart.forEach(
-            (element) =>
-                (price +=
-                    element.Price[element.Price.findIndex((shop) => shop.ShopID === element.ShopID)].Price *
-                    element.Pieces)
-        )
-        return price
+        cart.forEach((element) => {
+            if (!element.hasOwnProperty('DiscountName')) {
+                if (element.Discount !== undefined) {
+                    price += calculateDiscount(element)
+                } else {
+                    price +=
+                        element.Price[element.Price.findIndex((shop) => shop.ShopID === element.ShopID)].Price *
+                        element.Pieces
+                }
+            }
+        })
+        const index = cart.findIndex((item) => item.hasOwnProperty('DiscountID'))
+
+        if (index !== -1) {
+            const discount = cart[index]
+            switch (discount.DiscountID) {
+                case 2: {
+                    if (price >= discount.Price) {
+                        price = price * ((100 - discount.Percent) / 100)
+                    }
+                    break
+                }
+                case 3: {
+                    if (price >= discount.Price) {
+                        price = price - discount.DiscountValue
+                    }
+                    break
+                }
+            }
+        }
+
+        return Math.round(price)
+    }
+
+    /**
+     * The function calculates the discounted price for the given product
+     * @param {object} product  The product for calculating the discounted price
+     * @returns {number}    The calculated price
+     */
+    const calculateDiscount = (product) => {
+        switch (product.Discount.DiscountID) {
+            case 1: {
+                if (product.Pieces > product.Discount.Quantity) {
+                    const index = product.Price.findIndex((item) => item.ShopID === product.ShopID)
+                    const price = product.Price[index].Price
+                    return Math.round(price * (1 - product.Discount.Percent / 100) * product.Pieces)
+                } else {
+                    return (
+                        product.Price[product.Price.findIndex((shop) => shop.ShopID === product.ShopID)].Price *
+                        product.Pieces
+                    )
+                }
+            }
+        }
     }
 
     /**
@@ -207,11 +319,28 @@ const CartProvider = ({ children }) => {
         return product.Price[product.Price.findIndex((shop) => shop.ShopID === shopID)].Price
     }
 
+    /**
+     * The function thet returns the price of a product with the discounts already calculated
+     * @param {object} product  The object that contains the product
+     * @param {number} shopID   The id of the shop from where we want to get the price
+     * @returns {number}    The calculated price
+     */
+    const getProductPriceHandler = (product, shopID) => {
+        if (product.Discount !== undefined) {
+            return calculateDiscount(product)
+        } else {
+            return product.Price[product.Price.findIndex((shop) => shop.ShopID === shopID)].Price * product.Pieces
+        }
+    }
+
     const carContext = {
         addProduct: addProductHandler,
         removeProduct: removeProductHandler,
         updateProduct: updateProductHandler,
+        addDiscount: addDiscountHandler,
+        removeDiscount: removeDiscountHandler,
         getShopPrice: getShopPriceHandler,
+        getProductPrice: getProductPriceHandler,
         getCartPrice: getCartPriceHandler,
         emptyCart: emptyCartHandler,
         initCart: initCartHandler,

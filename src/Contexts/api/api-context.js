@@ -3,6 +3,7 @@ import React from 'react'
 const ApiContext = React.createContext({
     getProduct: getProductHandler,
     getShops: getShopsHandler,
+    getDiscounts: getDiscountsHandler,
     getCategories: getCategoriesHandler,
     getProductsInCategory: getProductsInCategoryHandler,
     login: loginHandler,
@@ -15,6 +16,9 @@ const ApiContext = React.createContext({
     getFavourites: getFavouritesHandler,
     addFavourite: addFavouriteHandler,
     removeFavourite: removeFavouriteHandler,
+    saveHistory: saveHistoryHandler,
+    getHistory: getHistoryHandler,
+    getHistoryItems: getHistoryItemsHandler,
     initUser: initUserHandler,
     userStatus: Boolean,
     shops: [],
@@ -30,7 +34,9 @@ const getProductHandler = (barcode) => {}
 /**
  * The function sets the shopList that returns from the api.
  */
-const getShopsHandler = () => {}
+const getShopsHandler = async () => {}
+
+const getDiscountsHandler = async () => {}
 
 /**
  * The function requests the categories from the specified store.
@@ -103,6 +109,16 @@ const addFavouriteHandler = async (barcode) => {}
  * @param {string} barcode  The barcode that specifies the item.
  */
 const removeFavouriteHandler = async (barcode) => {}
+
+/**
+ * The function that save the cart to history.
+ * @param {Array} cart  The cart with the items we want to save to history.
+ */
+const saveHistoryHandler = async (cart) => {}
+
+const getHistoryHandler = async () => {}
+
+const getHistoryItemsHandler = async (PurchaseID) => {}
 
 /**
  * Updates an item in the remote storage.

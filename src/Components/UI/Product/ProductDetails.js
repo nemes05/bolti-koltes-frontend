@@ -63,6 +63,10 @@ const ProductDetails = ({ onDismiss, product, caller }) => {
         onDismiss()
     }
 
+    const removeDiscount = () => {
+        if (!product.InCart) list.removeDiscount(product)
+    }
+
     const dropDownSelectHandler = (item) => {
         const shop = api.shops.find((element) => element.ShopName === item)
         setNewShop(shop.ShopID)
@@ -82,6 +86,22 @@ const ProductDetails = ({ onDismiss, product, caller }) => {
                                 </Text>
                             </View>
                             <Divider />
+
+                            {product.Discount !== undefined && (
+                                <>
+                                    <View style={styles.discountview}>
+                                        <Text
+                                            variant="labelLarge"
+                                            style={{ color: 'rgb(186, 26, 26)' }}
+                                            onLongPress={removeDiscount}
+                                        >
+                                            {product.Discount.Name}
+                                        </Text>
+                                    </View>
+                                    <Divider />
+                                </>
+                            )}
+
                             <View style={styles.inputcontainer}>
                                 <TextInput
                                     mode="outlined"
@@ -243,20 +263,11 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#444',
     },
-    dropdown1BtnTxtStyle: {
-        color: '#444',
-        textAlign: 'left',
-    },
-    dropdown1DropdownStyle: {
-        backgroundColor: '#EFEFEF',
-    },
-    dropdown1RowStyle: {
-        backgroundColor: '#EFEFEF',
-        borderBottomColor: '#C5C5C5',
-    },
-    dropdown1RowTxtStyle: {
-        color: '#444',
-        textAlign: 'left',
+    discountview: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 10,
     },
 })
 
