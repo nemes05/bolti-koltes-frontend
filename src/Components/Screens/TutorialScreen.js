@@ -2,6 +2,10 @@ import { useState } from 'react'
 import { View, Image, StyleSheet } from 'react-native'
 import { Button } from 'react-native-paper'
 
+/**
+ * The screen that shows the tutorial
+ * @param {object} navigation   The React Navigation object
+ */
 const TutorialScreen = ({ navigation }) => {
     const [imageIndex, setImageIndex] = useState(0)
     const images = [

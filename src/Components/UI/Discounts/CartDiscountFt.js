@@ -5,6 +5,12 @@ import { Button, Card, Text, TextInput, IconButton } from 'react-native-paper'
 import CartContext from '../../../Contexts/cart/cart-context'
 import TopNavBar from '../../Navigation/TopNavBar'
 
+/**
+ * The component that renders the card for a forint type discount for the cart
+ * @param {object}      navigation  The React Navigation object
+ * @param {function}    onBackPress Function that runs when the back button is pressed
+ * @param {object}      discount    A discount object wiht {ImageLink, DiscountID, DiscountName}
+ */
 const CartDiscount = ({ navigation, onBackPress, discount }) => {
     const cart = useContext(CartContext)
     const [price, setPrice] = useState(10000)

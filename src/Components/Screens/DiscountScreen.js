@@ -10,6 +10,10 @@ import CartDiscountFt from '../UI/Discounts/CartDiscountFt'
 import UnitPriceDiscount from '../UI/Discounts/UnitPriceDiscount'
 import ErrorModal from '../UI/ErrorModal'
 
+/**
+ * The screen that renders the Discounts
+ * @param {object} navigation   The React Navigation object
+ */
 const DiscountScreen = ({ navigation }) => {
     const api = useContext(ApiContext)
 

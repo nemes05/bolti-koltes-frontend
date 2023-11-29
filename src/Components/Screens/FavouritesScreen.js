@@ -8,6 +8,10 @@ import TopNavBar from '../Navigation/TopNavBar'
 import FavouriteProduct from '../UI/Product/FavouriteProduct'
 import SimplifiedFavouriteProduct from '../UI/Product/SimplifiedFavouriteProduct'
 
+/**
+ * The screen that lists the favourite products (if user is logged in)
+ * @param {object} navigation   The React Navigation object
+ */
 const FavouritesScreen = ({ navigation }) => {
     const preferences = useContext(PreferencesContext)
     const api = useContext(ApiContext)

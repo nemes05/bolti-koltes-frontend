@@ -7,6 +7,12 @@ import ListContext from '../../../Contexts/list/list-context'
 import TopNavBar from '../../Navigation/TopNavBar'
 import Dropdown from '../Dropdown'
 
+/**
+ * The component that renders the card for a unit price percent type discount
+ * @param {object}      navigation  The React Navigation object
+ * @param {function}    onBackPress Function that runs when the back button is pressed
+ * @param {object}      discount    A discount object wiht {ImageLink, DiscountID, DiscountName}
+ */
 const UnitPriceDiscount = ({ navigation, onBackPress }) => {
     const list = useContext(ListContext)
     const [quantity, setQuantity] = useState(3)

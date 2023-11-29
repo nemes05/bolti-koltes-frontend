@@ -4,6 +4,13 @@ import { Card, Text, IconButton } from 'react-native-paper'
 
 import ApiContext from '../../../Contexts/api/api-context'
 
+/**
+ * The component that renders the product for the manual search
+ * @param {string} Barcode      The barcode of the product
+ * @param {string} ImageLink    The image link of the product
+ * @param {string} Name         The name of the product
+ * @param {object} navigation   The React Navigation object
+ */
 const SearchProduct = ({ Barcode, ImageLink, Name, navigation }) => {
     const api = useContext(ApiContext)
 

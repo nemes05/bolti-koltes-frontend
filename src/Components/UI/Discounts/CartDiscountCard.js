@@ -4,6 +4,10 @@ import { Card, Text } from 'react-native-paper'
 
 import CartContext from '../../../Contexts/cart/cart-context'
 
+/**
+ * The component that renders a discount card in the cart
+ * @param {object} discount The discount with the discount details
+ */
 const CartDiscount = ({ discount }) => {
     const cart = useContext(CartContext)
 

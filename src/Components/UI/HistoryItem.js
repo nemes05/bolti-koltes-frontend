@@ -1,5 +1,12 @@
 import { Card, Text } from 'react-native-paper'
 
+/**
+ * The component that renders an item on the HistoryScreen
+ * @param {string}      Date        The date of the purchase
+ * @param {number}      Price       The complete price of the purchase
+ * @param {number}      id          The id of the purchase
+ * @param {function}    onSelect    The function that runs on history selection
+ */
 const HistoryItem = ({ Date, Price, id, onSelect }) => {
     return (
         <Card

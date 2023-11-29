@@ -36,6 +36,9 @@ const getProductHandler = (barcode) => {}
  */
 const getShopsHandler = async () => {}
 
+/**
+ * The function returns all the available discounts
+ */
 const getDiscountsHandler = async () => {}
 
 /**
@@ -116,8 +119,15 @@ const removeFavouriteHandler = async (barcode) => {}
  */
 const saveHistoryHandler = async (cart) => {}
 
+/**
+ * The function that returns the history of the user
+ */
 const getHistoryHandler = async () => {}
 
+/**
+ * The function returns the details of the purchase specified by the ID
+ * @param {number} PurchaseID
+ */
 const getHistoryItemsHandler = async (PurchaseID) => {}
 
 /**

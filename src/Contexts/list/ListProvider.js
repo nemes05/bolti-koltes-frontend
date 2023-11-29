@@ -217,6 +217,12 @@ const ListProvider = (props) => {
         return product.Price[product.Price.findIndex((shop) => shop.ShopID === shopID)].Price
     }
 
+    /**
+     * The function returns the price of the product multiplied by the Pieces with calculated discount
+     * @param {object} product  The product with all it's detailes
+     * @param {number} shopID   The ID of the shop from which we want to get the price
+     * @returns
+     */
     const getProductPriceHandler = (product, shopID) => {
         if (product.Discount !== undefined) {
             return calculateDiscount(product)
