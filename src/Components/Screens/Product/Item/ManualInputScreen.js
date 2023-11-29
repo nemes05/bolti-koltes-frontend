@@ -8,6 +8,10 @@ import CategoryCard from '../../../UI/CategoryCard'
 import ErrorModal from '../../../UI/ErrorModal'
 import SearchProduct from '../../../UI/Product/SearchProduct'
 
+/**
+ * The screen that provides option for manually selecting the products from a list
+ * @param {object}  navigation  The React Navigation navigation object
+ */
 const ManualInputScreen = ({ navigation }) => {
     const api = useContext(ApiContext)
     const shops = api.shops

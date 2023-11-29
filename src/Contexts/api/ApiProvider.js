@@ -103,6 +103,9 @@ const ApiProvider = ({ children }) => {
         }
     }
 
+    /**
+     * The function returns all the available discounts
+     */
     const getDiscountsHandler = async () => {
         try {
             const controller = new AbortController()
@@ -686,6 +689,9 @@ const ApiProvider = ({ children }) => {
         }
     }
 
+    /**
+     * The function that returns the history of the user
+     */
     const getHistoryHandler = async () => {
         try {
             const controller = new AbortController()
@@ -725,6 +731,10 @@ const ApiProvider = ({ children }) => {
         }
     }
 
+    /**
+     * The function returns the details of the purchase specified by the ID
+     * @param {number} PurchaseID
+     */
     const getHistoryItemsHandler = async (PurchaseID) => {
         try {
             const controller = new AbortController()

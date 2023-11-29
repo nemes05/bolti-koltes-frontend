@@ -5,6 +5,12 @@ import { Card, Divider, Text, IconButton, Portal } from 'react-native-paper'
 import ApiContext from '../../../Contexts/api/api-context'
 import ErrorModal from '../ErrorModal'
 
+/**
+ * The component that renders a product in the FavouriteScreen
+ * @param {object}      navigation  The React Navigation object
+ * @param {object}      product     The object that contains the detailes of a product
+ * @param {function}    refresh     The function that can be called to refresh
+ */
 const FavouriteProduct = ({ navigation, product, refresh }) => {
     const [error, setError] = useState({ err: false, msg: '' })
     const api = useContext(ApiContext)

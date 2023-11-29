@@ -10,6 +10,10 @@ import HistoryItem from '../UI/HistoryItem'
 import HistoryProduct from '../UI/Product/History/HistoryProduct'
 import SimplifiedHistoryProduct from '../UI/Product/History/SimplifiedHistoryProduct'
 
+/**
+ * The screen renders the users previous purchases
+ * @param {object} navigation   The React Navigation object
+ */
 const HistoryScreen = ({ navigation }) => {
     const api = useContext(ApiContext)
     const preference = useContext(PreferncesContext)

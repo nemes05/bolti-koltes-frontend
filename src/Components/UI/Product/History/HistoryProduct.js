@@ -4,6 +4,16 @@ import { Card, Text, IconButton, Divider } from 'react-native-paper'
 
 import ApiContext from '../../../../Contexts/api/api-context'
 
+/**
+ * The component for rendering a history product item (used in HistoryScreen)
+ * @param {string}      Name        The name of the product
+ * @param {string}      Barcode     The barcode of the products
+ * @param {string}      ImageLink   The link for the product image
+ * @param {number}      Price       The price of the product
+ * @param {function}    onError     Function that runs if error happens
+ * @param {object}      navigation  The React Navigation object
+ * @returns
+ */
 const HistoryProduct = ({ Name, Barcode, ImageLink, Price, onError, navigation }) => {
     const api = useContext(ApiContext)
 
