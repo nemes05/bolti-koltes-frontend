@@ -7,8 +7,8 @@ import CartContext from '../../Contexts/cart/cart-context'
 import PreferencesContext from '../../Contexts/preferences/preferences-context'
 import CustomIconButton from '../UI/CustomIconButton'
 import CartDiscountCard from '../UI/Discounts/CartDiscountCard'
-import CartProduct from '../UI/Product/CartProduct'
-import SimplifiedCartProduct from '../UI/Product/SimplifiedCartProduct'
+import CartProduct from '../UI/Product/Cart/CartProduct'
+import SimplifiedCartProduct from '../UI/Product/Cart/SimplifiedCartProduct'
 
 /**
  * The screen that renders the cart items.

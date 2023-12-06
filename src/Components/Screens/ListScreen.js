@@ -5,8 +5,8 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import ListContext from '../../Contexts/list/list-context'
 import PreferencesContext from '../../Contexts/preferences/preferences-context'
 import CustomIconButton from '../UI/CustomIconButton'
-import ListProduct from '../UI/Product/ListProduct'
-import SimplifiedListProduct from '../UI/Product/SimplifiedListProduct'
+import ListProduct from '../UI/Product/List/ListProduct'
+import SimplifiedListProduct from '../UI/Product/List/SimplifiedListProduct'
 
 /**
  * The screen that renders the list items.

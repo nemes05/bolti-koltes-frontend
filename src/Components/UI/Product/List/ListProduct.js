@@ -1,13 +1,13 @@
 import { useContext, useState } from 'react'
-import { StyleSheet } from 'react-native'
-import { Card, IconButton, Text, useTheme } from 'react-native-paper'
+import { View, StyleSheet } from 'react-native'
+import { Card, Divider, IconButton, Text, useTheme } from 'react-native-paper'
 
-import ProductDetailsModal from './ProductDetailsModal'
-import CartContext from '../../../Contexts/cart/cart-context'
-import ListContext from '../../../Contexts/list/list-context'
+import CartContext from '../../../../Contexts/cart/cart-context'
+import ListContext from '../../../../Contexts/list/list-context'
+import ProductDetailsModal from '../Details/ProductDetailsModal'
 
 /**
- * A component which displays a product on the list. Same as ListProduct but with simplified view.
+ * A component which displays a product on the list
  * @param {Object}  product             The product object wich contains the details.
  * @param {string}  product.ImageLink   A link for an image of the product.
  * @param {string}  product.Name        The name of the product.
@@ -16,7 +16,7 @@ import ListContext from '../../../Contexts/list/list-context'
  * @param {boolean} product.InCart      The variable that shows if the specified product is in the cart.
  * @param {number}  product.ShopID      The ID for the shop from which the product will be bought.
  */
-const SimplifiedListProduct = ({ product }) => {
+const ListProduct = ({ product }) => {
     const list = useContext(ListContext)
     const cart = useContext(CartContext)
     const theme = useTheme()
@@ -26,10 +26,6 @@ const SimplifiedListProduct = ({ product }) => {
     const customButtonHandler = () => {
         list.updateProduct(product, product.Pieces, product.ShopID, true)
         cart.addProduct({ ...product, InCart: true }, 'list_screen')
-    }
-
-    const getProductPrice = () => {
-        return list.getProductPrice(product, product.ShopID).toLocaleString()
     }
 
     const disabledcard = {
@@ -56,19 +52,27 @@ const SimplifiedListProduct = ({ product }) => {
                     setShowDetails(true)
                 }}
             >
-                <Card.Content style={styles.cardcontent}>
-                    <Text style={styles.productname} numberOfLines={2} variant="labelLarge">
-                        {product.Name}
-                    </Text>
-                    <Text variant="headlineMedium">{getProductPrice()} Ft</Text>
-                    <IconButton
-                        disabled={product.InCart}
-                        icon="cart-arrow-up"
-                        size={30}
-                        style={styles.iconbutton}
-                        mode="contained-tonal"
-                        onPress={customButtonHandler}
-                    />
+                <Card.Content>
+                    <View style={styles.topcontainer}>
+                        <Text style={styles.productname} variant="labelLarge">
+                            {product.Name}
+                        </Text>
+                        <Divider horizontalInset="true" bold="true" />
+                    </View>
+                    <View style={styles.bottomcontainer}>
+                        <Card.Cover source={{ uri: product.ImageLink }} style={styles.productimage} />
+                        <Text variant="headlineMedium">
+                            {list.getProductPrice(product, product.ShopID).toLocaleString()} Ft
+                        </Text>
+                        <IconButton
+                            style={styles.iconbutton}
+                            disabled={product.InCart}
+                            icon="cart-plus"
+                            size={30}
+                            mode="contained-tonal"
+                            onPress={customButtonHandler}
+                        />
+                    </View>
                 </Card.Content>
             </Card>
         </>
@@ -76,25 +80,39 @@ const SimplifiedListProduct = ({ product }) => {
 }
 
 const styles = StyleSheet.create({
+    disabledcard: {
+        margin: 5,
+        padding: 3,
+    },
     card: {
         margin: 5,
         padding: 3,
     },
-    cardcontent: {
+    topcontainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+    },
+    bottomcontainer: {
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-evenly',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        gap: 20,
+        marginTop: 10,
+    },
+    productname: {
+        textAlign: 'center',
+        marginBottom: 5,
+    },
+    productimage: {
+        width: 70,
+        height: 70,
+        marginRight: 5,
     },
     iconbutton: {
         margin: 0,
         padding: 0,
     },
-    productname: {
-        flex: 1,
-        flexWrap: 'wrap',
-    },
 })
 
-export default SimplifiedListProduct
+export default ListProduct

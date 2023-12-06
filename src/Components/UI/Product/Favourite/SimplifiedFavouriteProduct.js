@@ -2,8 +2,8 @@ import { useContext, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { Card, Text, IconButton, Portal } from 'react-native-paper'
 
-import ApiContext from '../../../Contexts/api/api-context'
-import ErrorModal from '../ErrorModal'
+import ApiContext from '../../../../Contexts/api/api-context'
+import ErrorModal from '../../ErrorModal'
 
 /**
  * The simplified component that renders a product in the FavouriteScreen

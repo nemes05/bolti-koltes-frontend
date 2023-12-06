@@ -5,8 +5,8 @@ import { IconButton, Text } from 'react-native-paper'
 import ApiContext from '../../Contexts/api/api-context'
 import PreferencesContext from '../../Contexts/preferences/preferences-context'
 import TopNavBar from '../Navigation/TopNavBar'
-import FavouriteProduct from '../UI/Product/FavouriteProduct'
-import SimplifiedFavouriteProduct from '../UI/Product/SimplifiedFavouriteProduct'
+import FavouriteProduct from '../UI/Product/Favourite/FavouriteProduct'
+import SimplifiedFavouriteProduct from '../UI/Product/Favourite/SimplifiedFavouriteProduct'
 
 /**
  * The screen that lists the favourite products (if user is logged in)
