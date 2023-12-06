@@ -12,14 +12,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { PaperProvider } from 'react-native-paper'
 
-import DiscountScreen from './src/Components/Screens/DiscountScreen'
-import FavouritesScreen from './src/Components/Screens/FavouritesScreen'
-import HistoryScreen from './src/Components/Screens/HistoryScreen'
 import LoadScreen from './src/Components/Screens/LoadScreen'
 import MainScreen from './src/Components/Screens/MainScreen'
+import MenuNavigationScreen from './src/Components/Screens/Menu/MenuNavigationScreen'
 import ProductNavigationScreen from './src/Components/Screens/Product/ProductNavigationScreen'
 import ScanScreen from './src/Components/Screens/ScanScreen'
-import SettingsScreen from './src/Components/Screens/SettingsScreen'
 import TutorialScreen from './src/Components/Screens/TutorialScreen'
 import UserNavigationScreen from './src/Components/Screens/User/UserNavigationScreen'
 import ApiProvider from './src/Contexts/api/ApiProvider'
@@ -43,10 +40,7 @@ export default function App() {
                                         <Stack.Screen name="tutorial" component={TutorialScreen} />
                                         <Stack.Screen name="main" component={MainScreen} />
                                         <Stack.Screen name="scan" component={ScanScreen} />
-                                        <Stack.Screen name="settings" component={SettingsScreen} />
-                                        <Stack.Screen name="discount" component={DiscountScreen} />
-                                        <Stack.Screen name="favourites" component={FavouritesScreen} />
-                                        <Stack.Screen name="history" component={HistoryScreen} />
+                                        <Stack.Screen name="menu" component={MenuNavigationScreen} />
                                         <Stack.Screen
                                             name="productnavigation"
                                             component={ProductNavigationScreen}

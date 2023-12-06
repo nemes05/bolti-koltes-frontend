@@ -21,7 +21,9 @@ const MenuNavigation = ({ navigation, visible, hide, position }) => {
                 icon="cog"
                 onPress={() => {
                     hide()
-                    navigation.navigate('settings')
+                    navigation.navigate('menu', {
+                        screen: 'settings',
+                    })
                 }}
             />
             <DrawerItem
@@ -29,7 +31,9 @@ const MenuNavigation = ({ navigation, visible, hide, position }) => {
                 icon="star"
                 onPress={() => {
                     hide()
-                    navigation.navigate('favourites')
+                    navigation.navigate('menu', {
+                        screen: 'favourite',
+                    })
                 }}
             />
             <DrawerItem
@@ -37,7 +41,9 @@ const MenuNavigation = ({ navigation, visible, hide, position }) => {
                 icon="history"
                 onPress={() => {
                     hide()
-                    navigation.navigate('history')
+                    navigation.navigate('menu', {
+                        screen: 'history',
+                    })
                 }}
             />
             <DrawerItem
@@ -45,7 +51,9 @@ const MenuNavigation = ({ navigation, visible, hide, position }) => {
                 icon="percent"
                 onPress={() => {
                     hide()
-                    navigation.navigate('discount')
+                    navigation.navigate('menu', {
+                        screen: 'discount',
+                    })
                 }}
             />
         </Drawer>

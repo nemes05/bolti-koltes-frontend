@@ -2,13 +2,13 @@ import { useContext, useEffect, useState } from 'react'
 import { View, FlatList, StyleSheet } from 'react-native'
 import { IconButton, Portal, Text } from 'react-native-paper'
 
-import ApiContext from '../../Contexts/api/api-context'
-import PreferencesContext from '../../Contexts/preferences/preferences-context'
-import TopNavBar from '../Navigation/TopNavBar'
-import ErrorModal from '../UI/ErrorModal'
-import LoadIndicator from '../UI/LoadIndicator'
-import FavouriteProduct from '../UI/Product/Favourite/FavouriteProduct'
-import SimplifiedFavouriteProduct from '../UI/Product/Favourite/SimplifiedFavouriteProduct'
+import ApiContext from '../../../Contexts/api/api-context'
+import PreferencesContext from '../../../Contexts/preferences/preferences-context'
+import TopNavBar from '../../Navigation/TopNavBar'
+import ErrorModal from '../../UI/ErrorModal'
+import LoadIndicator from '../../UI/LoadIndicator'
+import FavouriteProduct from '../../UI/Product/Favourite/FavouriteProduct'
+import SimplifiedFavouriteProduct from '../../UI/Product/Favourite/SimplifiedFavouriteProduct'
 
 /**
  * The screen that lists the favourite products (if user is logged in)
@@ -17,6 +17,8 @@ import SimplifiedFavouriteProduct from '../UI/Product/Favourite/SimplifiedFavour
 const FavouritesScreen = ({ navigation }) => {
     const preferences = useContext(PreferencesContext)
     const api = useContext(ApiContext)
+    const navigationParent = navigation.getParent()
+
     const [favourites, setFavourites] = useState([])
     const [error, setError] = useState({ err: false, msg: '' })
     const [loading, setLoading] = useState(false)
@@ -67,7 +69,7 @@ const FavouritesScreen = ({ navigation }) => {
                             icon="home"
                             size={40}
                             onPress={() => {
-                                navigation.navigate('main')
+                                navigationParent.navigate('main')
                             }}
                         />
                     }
@@ -84,13 +86,13 @@ const FavouritesScreen = ({ navigation }) => {
         return (
             <>
                 <TopNavBar
-                    navigation={navigation}
+                    navigation={navigationParent}
                     title={
                         <IconButton
                             icon="home"
                             size={40}
                             onPress={() => {
-                                navigation.navigate('main')
+                                navigationParent.navigate('main')
                             }}
                         />
                     }
@@ -105,13 +107,13 @@ const FavouritesScreen = ({ navigation }) => {
     return (
         <>
             <TopNavBar
-                navigation={navigation}
+                navigation={navigationParent}
                 title={
                     <IconButton
                         icon="home"
                         size={40}
                         onPress={() => {
-                            navigation.navigate('main')
+                            navigationParent.navigate('main')
                         }}
                     />
                 }
@@ -122,7 +124,7 @@ const FavouritesScreen = ({ navigation }) => {
                         data={favourites}
                         renderItem={({ item }) => (
                             <SimplifiedFavouriteProduct
-                                navigation={navigation}
+                                navigation={navigationParent}
                                 product={item}
                                 refresh={getFavourites}
                             />
@@ -133,7 +135,7 @@ const FavouritesScreen = ({ navigation }) => {
                     <FlatList
                         data={favourites}
                         renderItem={({ item }) => (
-                            <FavouriteProduct navigation={navigation} product={item} refresh={getFavourites} />
+                            <FavouriteProduct navigation={navigationParent} product={item} refresh={getFavourites} />
                         )}
                     />
                 )}

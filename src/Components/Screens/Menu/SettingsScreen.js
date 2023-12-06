@@ -2,8 +2,8 @@ import { useContext } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { Card, Divider, IconButton, RadioButton, Text } from 'react-native-paper'
 
-import PreferencesContext from '../../Contexts/preferences/preferences-context'
-import TopNavBar from '../Navigation/TopNavBar'
+import PreferencesContext from '../../../Contexts/preferences/preferences-context'
+import TopNavBar from '../../Navigation/TopNavBar'
 
 /**
  * The screen where the user can change their settings.
@@ -11,17 +11,18 @@ import TopNavBar from '../Navigation/TopNavBar'
  */
 const SettingsScreen = ({ navigation }) => {
     const preferences = useContext(PreferencesContext)
+    const parentNavigation = navigation.getParent()
 
     return (
         <>
             <TopNavBar
-                navigation={navigation}
+                navigation={parentNavigation}
                 title={
                     <IconButton
                         icon="home"
                         size={40}
                         onPress={() => {
-                            navigation.navigate('main')
+                            parentNavigation.navigate('main')
                         }}
                     />
                 }
