@@ -53,7 +53,9 @@ const ManualInputScreen = ({ navigation }) => {
     }
 
     const onBackHandler = () => {
-        if (mainCatIndex !== undefined) {
+        if (products.length > 0) {
+            setProducts([])
+        } else if (mainCatIndex !== undefined) {
             setMainCatIndex(undefined)
         } else if (categoryList.length > 0) {
             setCategoryList([])
@@ -89,6 +91,7 @@ const ManualInputScreen = ({ navigation }) => {
 
                 {categoryList.length === 0 && (
                     <FlatList
+                        maxToRenderPerBatch={10}
                         data={shops}
                         renderItem={({ item }) => (
                             <CategoryCard
@@ -206,6 +209,12 @@ const ManualInputScreen = ({ navigation }) => {
                     />
                 )}
             />
+
+            <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Button mode="contained" style={{ width: '50%', marginBottom: 10 }} onPress={onBackHandler}>
+                    Vissza
+                </Button>
+            </View>
         </>
     )
 }
