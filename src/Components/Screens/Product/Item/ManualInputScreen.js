@@ -6,6 +6,7 @@ import ApiContext from '../../../../Contexts/api/api-context'
 import TopNavBar from '../../../Navigation/TopNavBar'
 import CategoryCard from '../../../UI/CategoryCard'
 import ErrorModal from '../../../UI/ErrorModal'
+import LoadIndicator from '../../../UI/LoadIndicator'
 import SearchProduct from '../../../UI/Product/SearchProduct'
 
 /**
@@ -20,32 +21,50 @@ const ManualInputScreen = ({ navigation }) => {
     const [mainCatIndex, setMainCatIndex] = useState(undefined)
     const [products, setProducts] = useState([])
     const [error, setError] = useState({ err: false, msg: '' })
+    const [loading, setLoading] = useState(false)
 
     const shopSelectHandler = async (ShopID) => {
-        const array = await api.getCategories(ShopID)
-        if (array.length === 0) {
-            setError({ err: true, msg: 'Nincsenek kategóriák ebben a boltban!' })
-            return
+        setLoading(true)
+        try {
+            const array = await api.getCategories(ShopID)
+            if (array.length === 0) {
+                setError({ err: true, msg: 'Nincsenek kategóriák ebben a boltban!' })
+                setLoading(false)
+                return
+            }
+            setCategoryList(array)
+            setLoading(false)
+        } catch (err) {
+            setLoading(false)
+            setError({ err: true, msg: err.message })
         }
-        setCategoryList(array)
     }
 
     const mainCategorySelect = (CategoryID) => {
+        setLoading(true)
         const index = categoryList.findIndex((category) => category.MainCategoryID === CategoryID)
         if (categoryList[index].SubCategories.length === 0) {
             setError({ err: true, msg: 'Nincsenek további kategóriák!' })
             return
         }
         setMainCatIndex(index)
+        setLoading(false)
     }
 
     const subCategorySelect = async (SubCatIndex) => {
-        const array = await api.getProductsInCategory(SubCatIndex)
-        if (array.length === 0) {
-            setError({ err: true, msg: 'Nincsenek termékek a kategóriában!' })
-            return
+        setLoading(true)
+        try {
+            const array = await api.getProductsInCategory(SubCatIndex)
+            if (array.length === 0) {
+                setError({ err: true, msg: 'Nincsenek termékek a kategóriában!' })
+                return
+            }
+            setProducts(array)
+            setLoading(false)
+        } catch (err) {
+            setLoading(false)
+            setError({ err: true, msg: err.message })
         }
-        setProducts(array)
     }
 
     const hideError = () => {
@@ -60,6 +79,28 @@ const ManualInputScreen = ({ navigation }) => {
         } else if (categoryList.length > 0) {
             setCategoryList([])
         }
+    }
+
+    if (loading) {
+        return (
+            <>
+                <TopNavBar
+                    navigation={navigation}
+                    title={
+                        <IconButton
+                            icon="home"
+                            size={40}
+                            onPress={() => {
+                                navigation.navigate('main')
+                            }}
+                        />
+                    }
+                />
+                <View style={{ marginTop: 50 }}>
+                    <LoadIndicator title="Adatok betöltése folyamatban..." />
+                </View>
+            </>
+        )
     }
 
     if (categoryList.length === 0) {

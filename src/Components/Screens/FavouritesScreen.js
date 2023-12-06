@@ -6,6 +6,7 @@ import ApiContext from '../../Contexts/api/api-context'
 import PreferencesContext from '../../Contexts/preferences/preferences-context'
 import TopNavBar from '../Navigation/TopNavBar'
 import ErrorModal from '../UI/ErrorModal'
+import LoadIndicator from '../UI/LoadIndicator'
 import FavouriteProduct from '../UI/Product/Favourite/FavouriteProduct'
 import SimplifiedFavouriteProduct from '../UI/Product/Favourite/SimplifiedFavouriteProduct'
 
@@ -18,12 +19,17 @@ const FavouritesScreen = ({ navigation }) => {
     const api = useContext(ApiContext)
     const [favourites, setFavourites] = useState([])
     const [error, setError] = useState({ err: false, msg: '' })
+    const [loading, setLoading] = useState(false)
 
     const getFavourites = async () => {
+        setLoading(true)
         try {
             const favourites = await api.getFavourites()
             setFavourites(favourites)
+            setLoading(false)
         } catch (err) {
+            setLoading(false)
+
             setError({ err: true, msg: err.message })
         }
     }
@@ -69,6 +75,28 @@ const FavouritesScreen = ({ navigation }) => {
 
                 <View style={styles.messagecontainer}>
                     <Text variant="labelLarge">Jelentkezzen be ehhez a funkcióhoz!</Text>
+                </View>
+            </>
+        )
+    }
+
+    if (loading) {
+        return (
+            <>
+                <TopNavBar
+                    navigation={navigation}
+                    title={
+                        <IconButton
+                            icon="home"
+                            size={40}
+                            onPress={() => {
+                                navigation.navigate('main')
+                            }}
+                        />
+                    }
+                />
+                <View style={{ marginTop: 50 }}>
+                    <LoadIndicator title="Adatok betöltése folyamatban..." />
                 </View>
             </>
         )

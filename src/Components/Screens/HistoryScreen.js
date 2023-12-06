@@ -7,6 +7,7 @@ import PreferncesContext from '../../Contexts/preferences/preferences-context'
 import TopNavBar from '../Navigation/TopNavBar'
 import ErrorModal from '../UI/ErrorModal'
 import HistoryItem from '../UI/HistoryItem'
+import LoadIndicator from '../UI/LoadIndicator'
 import HistoryProduct from '../UI/Product/History/HistoryProduct'
 import SimplifiedHistoryProduct from '../UI/Product/History/SimplifiedHistoryProduct'
 
@@ -20,19 +21,34 @@ const HistoryScreen = ({ navigation }) => {
     const [history, setHistory] = useState([])
     const [products, setProducts] = useState([])
     const [error, setError] = useState({ err: false, msg: '' })
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         if (api.userStatus) getPurchasesHandler()
     }, [])
 
     const getPurchasesHandler = async () => {
-        const data = await api.getHistory()
-        setHistory(data)
+        setLoading(true)
+        try {
+            const data = await api.getHistory()
+            setHistory(data)
+            setLoading(false)
+        } catch (err) {
+            setLoading(false)
+            setError({ err: true, msg: err.message })
+        }
     }
 
     const historySelectHandler = async (PurchaseID) => {
-        const data = await api.getHistoryItems(PurchaseID)
-        setProducts(data)
+        setLoading(true)
+        try {
+            const data = await api.getHistoryItems(PurchaseID)
+            setProducts(data)
+            setLoading(false)
+        } catch (err) {
+            setLoading(false)
+            setError({ err: true, msg: err.message })
+        }
     }
 
     const onBackHandler = () => {
@@ -57,6 +73,28 @@ const HistoryScreen = ({ navigation }) => {
 
                 <View style={styles.messagecontainer}>
                     <Text variant="labelLarge">Jelentkezzen be ehhez a funkcióhoz!</Text>
+                </View>
+            </>
+        )
+    }
+
+    if (loading) {
+        return (
+            <>
+                <TopNavBar
+                    navigation={navigation}
+                    title={
+                        <IconButton
+                            icon="home"
+                            size={40}
+                            onPress={() => {
+                                navigation.navigate('main')
+                            }}
+                        />
+                    }
+                />
+                <View style={{ marginTop: 50 }}>
+                    <LoadIndicator title="Adatok betöltése folyamatban..." />
                 </View>
             </>
         )

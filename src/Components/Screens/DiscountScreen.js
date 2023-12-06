@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { FlatList } from 'react-native'
+import { FlatList, View } from 'react-native'
 import { IconButton } from 'react-native-paper'
 
 import ApiContext from '../../Contexts/api/api-context'
@@ -9,6 +9,7 @@ import CartDiscount from '../UI/Discounts/CartDiscount'
 import CartDiscountFt from '../UI/Discounts/CartDiscountFt'
 import UnitPriceDiscount from '../UI/Discounts/UnitPriceDiscount'
 import ErrorModal from '../UI/ErrorModal'
+import LoadIndicator from '../UI/LoadIndicator'
 
 /**
  * The screen that renders the Discounts
@@ -20,16 +21,20 @@ const DiscountScreen = ({ navigation }) => {
     const [discounts, setDiscounts] = useState([])
     const [discountID, setDiscountID] = useState(undefined)
     const [error, setError] = useState({ err: false, msg: '' })
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         getCategories()
     }, [])
 
     const getCategories = async () => {
+        setLoading(true)
         try {
             const data = await api.getDiscounts()
             setDiscounts(data)
+            setLoading(false)
         } catch (err) {
+            setLoading(false)
             setError({ err: true, msg: err.message })
         }
     }
@@ -56,6 +61,28 @@ const DiscountScreen = ({ navigation }) => {
                     setError({ err: false, msg: '' })
                 }}
             />
+        )
+    }
+
+    if (loading) {
+        return (
+            <>
+                <TopNavBar
+                    navigation={navigation}
+                    title={
+                        <IconButton
+                            icon="home"
+                            size={40}
+                            onPress={() => {
+                                navigation.navigate('main')
+                            }}
+                        />
+                    }
+                />
+                <View style={{ marginTop: 50 }}>
+                    <LoadIndicator title="Adatok betöltése folyamatban..." />
+                </View>
+            </>
         )
     }
 
