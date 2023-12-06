@@ -105,6 +105,7 @@ const ApiProvider = ({ children }) => {
 
     /**
      * The function returns all the available discounts
+     * @returns {Promise} The list of the available discounts
      */
     const getDiscountsHandler = async () => {
         try {
@@ -583,7 +584,7 @@ const ApiProvider = ({ children }) => {
             clearTimeout(timeoutID)
 
             if (res.status === 200) {
-                return
+                return res.json()
             }
 
             if (res.status === 400) {
@@ -756,6 +757,7 @@ const ApiProvider = ({ children }) => {
 
     /**
      * The function that returns the history of the user
+     * @returns {Promise} Promise that resolves to a list of previous purchases.
      */
     const getHistoryHandler = async () => {
         try {
@@ -777,7 +779,7 @@ const ApiProvider = ({ children }) => {
             clearTimeout(timeoutID)
 
             if (res.status === 200) {
-                return
+                return res.json()
             }
 
             if (res.status === 400) {
@@ -803,6 +805,7 @@ const ApiProvider = ({ children }) => {
     /**
      * The function returns the details of the purchase specified by the ID
      * @param {number} PurchaseID
+     * @returns {Promise} Promise that resolves to a specific list of items.
      */
     const getHistoryItemsHandler = async (PurchaseID) => {
         try {
@@ -824,7 +827,7 @@ const ApiProvider = ({ children }) => {
             clearTimeout(timeoutID)
 
             if (res.status === 200) {
-                return
+                return res.json()
             }
 
             if (res.status === 400) {
