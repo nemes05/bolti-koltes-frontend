@@ -37,7 +37,7 @@ const LoadScreen = ({ navigation }) => {
         try {
             await api.getShops()
         } catch (err) {
-            setError({ err: true, msg: err.message })
+            throw err
         }
     }
 
@@ -45,7 +45,7 @@ const LoadScreen = ({ navigation }) => {
         try {
             return await preferences.loadPreferences()
         } catch (err) {
-            setError({ err: true, msg: err.message })
+            throw err
         }
     }
 
@@ -53,7 +53,7 @@ const LoadScreen = ({ navigation }) => {
         try {
             await api.initUser()
         } catch (err) {
-            setError({ err: true, msg: err.message })
+            throw err
         }
     }
 
@@ -67,7 +67,7 @@ const LoadScreen = ({ navigation }) => {
             await loadUser()
             return 'main'
         } catch (err) {
-            setError({ err: true, msg: err.message })
+            throw err
         }
     }
 
