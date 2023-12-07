@@ -105,6 +105,7 @@ const ApiProvider = ({ children }) => {
 
     /**
      * The function returns all the available discounts
+     * @returns {Promise} The list of the available discounts
      */
     const getDiscountsHandler = async () => {
         try {
@@ -353,40 +354,56 @@ const ApiProvider = ({ children }) => {
      * @param {object} product  The product which should be added.
      */
     const saveItemHandler = async (product) => {
-        const priceIndex = product.Price.findIndex((element) => element.ShopID === product.ShopID)
+        try {
+            const priceIndex = product.Price.findIndex((element) => element.ShopID === product.ShopID)
 
-        const listItem = {
-            Barcode: product.Barcode,
-            CurrentPrice: product.Price[priceIndex].Price,
-            ShopID: product.ShopID,
-            Quantity: product.Pieces,
-            InCart: product.InCart,
-        }
+            const listItem = {
+                Barcode: product.Barcode,
+                CurrentPrice: product.Price[priceIndex].Price,
+                ShopID: product.ShopID,
+                Quantity: product.Pieces,
+                InCart: product.InCart,
+            }
 
-        const controller = new AbortController()
+            const controller = new AbortController()
 
-        const timeoutID = setTimeout(() => {
-            controller.abort()
-        }, 30000)
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
 
-        const accessToken = await getTokenHandler()
+            const accessToken = await getTokenHandler()
 
-        const res = await fetch(`${API_URL}/list/add`, {
-            method: 'POST',
-            signal: controller.signal,
-            cache: 'no-store',
-            headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
-            body: JSON.stringify(listItem),
-        })
+            const res = await fetch(`${API_URL}/list/add`, {
+                method: 'POST',
+                signal: controller.signal,
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
+                body: JSON.stringify(listItem),
+            })
 
-        clearTimeout(timeoutID)
+            clearTimeout(timeoutID)
 
-        if (res.status === 200) {
-            console.log('saved')
-            return
-        }
+            if (res.status === 200) {
+                return
+            }
 
-        if (res.status === 401) {
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (res.status === 403) {
+                throw new Error('Jelentkezzen be a mentéshez!')
+            }
+
+            if (res.status === 401) {
+                throw new Error('Jelentkezzen be a mentéshez!')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
+            }
+        } catch (err) {
+            throw err
         }
     }
 
@@ -395,30 +412,46 @@ const ApiProvider = ({ children }) => {
      * @param {string} barcode
      */
     const removeItemHandler = async (barcode) => {
-        const controller = new AbortController()
+        try {
+            const controller = new AbortController()
 
-        const timeoutID = setTimeout(() => {
-            controller.abort()
-        }, 30000)
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
 
-        const accessToken = await getTokenHandler()
+            const accessToken = await getTokenHandler()
 
-        const res = await fetch(`${API_URL}/list/remove`, {
-            method: 'DELETE',
-            signal: controller.signal,
-            cache: 'no-store',
-            headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
-            body: JSON.stringify({ Barcode: barcode }),
-        })
+            const res = await fetch(`${API_URL}/list/remove`, {
+                method: 'DELETE',
+                signal: controller.signal,
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
+                body: JSON.stringify({ Barcode: barcode }),
+            })
 
-        clearTimeout(timeoutID)
+            clearTimeout(timeoutID)
 
-        if (res.status === 200) {
-            console.log('deleted')
-            return
-        }
+            if (res.status === 200) {
+                return
+            }
 
-        if (res.status === 401) {
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (res.status === 403) {
+                throw new Error('Jelentkezzen be a törléshez!')
+            }
+
+            if (res.status === 401) {
+                throw new Error('Jelentkezzen be a törléshez!')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
+            }
+        } catch (err) {
+            throw err
         }
     }
 
@@ -427,43 +460,56 @@ const ApiProvider = ({ children }) => {
      * @param {objetc}  product  The product object with the new values.
      */
     const updateItemHandler = async (product) => {
-        const priceIndex = product.Price.findIndex((element) => element.ShopID === product.ShopID)
+        try {
+            const priceIndex = product.Price.findIndex((element) => element.ShopID === product.ShopID)
 
-        const listItem = {
-            Barcode: product.Barcode,
-            CurrentPrice: product.Price[priceIndex].Price,
-            ShopID: product.ShopID,
-            Quantity: product.Pieces,
-            InCart: product.InCart,
-        }
+            const listItem = {
+                Barcode: product.Barcode,
+                CurrentPrice: product.Price[priceIndex].Price,
+                ShopID: product.ShopID,
+                Quantity: product.Pieces,
+                InCart: product.InCart,
+            }
 
-        const controller = new AbortController()
+            const controller = new AbortController()
 
-        const timeoutID = setTimeout(() => {
-            controller.abort()
-        }, 30000)
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
 
-        const accessToken = await getTokenHandler()
+            const accessToken = await getTokenHandler()
 
-        const res = await fetch(`${API_URL}/list/modify`, {
-            method: 'POST',
-            signal: controller.signal,
-            cache: 'no-store',
-            headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
-            body: JSON.stringify(listItem),
-        })
+            const res = await fetch(`${API_URL}/list/modify`, {
+                method: 'POST',
+                signal: controller.signal,
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + accessToken },
+                body: JSON.stringify(listItem),
+            })
 
-        clearTimeout(timeoutID)
+            clearTimeout(timeoutID)
 
-        if (res.status === 200) {
-            console.log('saved')
-            return
-        }
+            if (res.status === 200) {
+                return
+            }
 
-        if (res.status === 403) {
-        }
+            if (res.status === 400) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
 
-        if (res.status === 401) {
+            if (res.status === 403) {
+                throw new Error('Jelentkezzen be a módosításhoz!')
+            }
+
+            if (res.status === 401) {
+                throw new Error('Jelentkezzen be a módosításhoz!')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
+            }
+        } catch (err) {
+            throw err
         }
     }
 
@@ -499,11 +545,11 @@ const ApiProvider = ({ children }) => {
             }
 
             if (res.status === 401) {
-                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+                throw new Error('Jelentkezzen be a lista szinkronizálásához!')
             }
 
             if (res.status === 403) {
-                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+                throw new Error('Jelentkezzen be a lista szinkronizálásához!')
             }
 
             if (!res.ok) {
@@ -546,7 +592,11 @@ const ApiProvider = ({ children }) => {
             }
 
             if (res.status === 403) {
-                throw new Error('Be kell jelentkeznie ehhez a funkcióhoz')
+                throw new Error('Jelentkezzen be a kedvencek megjelenítéséhez!')
+            }
+
+            if (res.status === 401) {
+                throw new Error('Jelentkezzen be a kedvencek megjelenítéséhez!')
             }
 
             if (!res.ok) {
@@ -590,7 +640,15 @@ const ApiProvider = ({ children }) => {
             }
 
             if (res.status === 403) {
-                throw new Error('Be kell jelentkeznie ehhez a funkcióhoz')
+                throw new Error('Jelentkezzen be a kedvencek mentéséhez!')
+            }
+
+            if (res.status === 401) {
+                throw new Error('Jelentkezzen be a kedvencek mentéséhez!')
+            }
+
+            if (res.status === 409) {
+                throw new Error('Ez a termék már a kedvencei között van')
             }
 
             if (!res.ok) {
@@ -634,7 +692,11 @@ const ApiProvider = ({ children }) => {
             }
 
             if (res.status === 403) {
-                throw new Error('Be kell jelentkeznie ehhez a funkcióhoz')
+                throw new Error('Jelentkezzen be a kedvencek eltávolításához!')
+            }
+
+            if (res.status === 401) {
+                throw new Error('Jelentkezzen be a kedvencek eltávolításához!')
             }
 
             if (!res.ok) {
@@ -678,7 +740,11 @@ const ApiProvider = ({ children }) => {
             }
 
             if (res.status === 403) {
-                throw new Error('Be kell jelentkeznie ehhez a funkcióhoz')
+                throw new Error('Jelentkezzen be az előzmények mentéséhez!')
+            }
+
+            if (res.status === 401) {
+                throw new Error('Jelentkezzen be az előzmények mentéséhez!')
             }
 
             if (!res.ok) {
@@ -691,6 +757,7 @@ const ApiProvider = ({ children }) => {
 
     /**
      * The function that returns the history of the user
+     * @returns {Promise} Promise that resolves to a list of previous purchases.
      */
     const getHistoryHandler = async () => {
         try {
@@ -720,7 +787,11 @@ const ApiProvider = ({ children }) => {
             }
 
             if (res.status === 403) {
-                throw new Error('Be kell jelentkeznie ehhez a funkcióhoz')
+                throw new Error('Jelentkezzen be az előzmények megjelenítéséhez!')
+            }
+
+            if (res.status === 401) {
+                throw new Error('Jelentkezzen be az előzmények megjelenítéséhez!')
             }
 
             if (!res.ok) {
@@ -734,6 +805,7 @@ const ApiProvider = ({ children }) => {
     /**
      * The function returns the details of the purchase specified by the ID
      * @param {number} PurchaseID
+     * @returns {Promise} Promise that resolves to a specific list of items.
      */
     const getHistoryItemsHandler = async (PurchaseID) => {
         try {
@@ -763,7 +835,11 @@ const ApiProvider = ({ children }) => {
             }
 
             if (res.status === 403) {
-                throw new Error('Be kell jelentkeznie ehhez a funkcióhoz')
+                throw new Error('Jelentkezzen be az előzmény megjelenítéséhez!')
+            }
+
+            if (res.status === 401) {
+                throw new Error('Jelentkezzen be az előzmény megjelenítéséhez!')
             }
 
             if (!res.ok) {
@@ -779,40 +855,48 @@ const ApiProvider = ({ children }) => {
      * @returns {string}    The requested access token
      */
     const refreshToken = async () => {
-        const controller = new AbortController()
+        try {
+            const controller = new AbortController()
 
-        const timeoutID = setTimeout(() => {
-            controller.abort()
-        }, 30000)
+            const timeoutID = setTimeout(() => {
+                controller.abort()
+            }, 30000)
 
-        const res = await fetch(`${API_URL}/token`, {
-            method: 'POST',
-            signal: controller.signal,
-            cache: 'no-store',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ refreshToken: token.refresh }),
-        })
-
-        clearTimeout(timeoutID)
-
-        if (res.status === 200) {
-            const resData = await res.json()
-            setToken((prevState) => {
-                return { access: resData.accessToken, refresh: prevState.refresh }
+            const res = await fetch(`${API_URL}/token`, {
+                method: 'POST',
+                signal: controller.signal,
+                cache: 'no-store',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ refreshToken: token.refresh }),
             })
-            return resData.accessToken
-        }
 
-        if (res.status === 401) {
-            throw new Error('Jelentkezzen be újra!')
-        }
+            clearTimeout(timeoutID)
 
-        if (res.status === 403) {
-            throw new Error('Jelentkezzen be újra!')
-        }
+            if (res.status === 200) {
+                const resData = await res.json()
+                setToken((prevState) => {
+                    return { access: resData.accessToken, refresh: prevState.refresh }
+                })
+                return resData.accessToken
+            }
 
-        if (!res.ok) {
-            throw new Error('Jelentkezzen be újra!')
+            if (res.status === 401) {
+                throw new Error('Nem tudtunk csatlakozni a kiszolgálóhoz!')
+            }
+
+            if (res.status === 401) {
+                throw new Error('Jelentkezzen be újra!')
+            }
+
+            if (res.status === 403) {
+                throw new Error('Jelentkezzen be újra!')
+            }
+
+            if (!res.ok) {
+                throw new Error('Valami hiba történt!')
+            }
+        } catch (err) {
+            throw err
         }
     }
 

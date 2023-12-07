@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { memo, useContext } from 'react'
 import { StyleSheet } from 'react-native'
 import { Card, Text, IconButton } from 'react-native-paper'
 
@@ -11,7 +11,7 @@ import ApiContext from '../../../Contexts/api/api-context'
  * @param {string} Name         The name of the product
  * @param {object} navigation   The React Navigation object
  */
-const SearchProduct = ({ Barcode, ImageLink, Name, navigation }) => {
+const SearchProduct = memo(({ Barcode, ImageLink, Name, navigation }) => {
     const api = useContext(ApiContext)
 
     const onAddPress = async () => {
@@ -38,7 +38,7 @@ const SearchProduct = ({ Barcode, ImageLink, Name, navigation }) => {
             </Card.Content>
         </Card>
     )
-}
+})
 
 const styles = StyleSheet.create({
     card: {

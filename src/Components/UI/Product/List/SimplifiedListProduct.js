@@ -1,13 +1,13 @@
 import { useContext, useState } from 'react'
 import { StyleSheet } from 'react-native'
-import { Card, IconButton, Text } from 'react-native-paper'
+import { Card, IconButton, Text, useTheme } from 'react-native-paper'
 
-import ProductDetailsModal from './ProductDetailsModal'
-import CartContext from '../../../Contexts/cart/cart-context'
-import ListContext from '../../../Contexts/list/list-context'
+import CartContext from '../../../../Contexts/cart/cart-context'
+import ListContext from '../../../../Contexts/list/list-context'
+import ProductDetailsModal from '../Details/ProductDetailsModal'
 
 /**
- * A component which displays a product on the cart. Same as CartProduct but with simplified view.
+ * A component which displays a product on the list. Same as ListProduct but with simplified view.
  * @param {Object}  product             The product object wich contains the details.
  * @param {string}  product.ImageLink   A link for an image of the product.
  * @param {string}  product.Name        The name of the product.
@@ -16,25 +16,32 @@ import ListContext from '../../../Contexts/list/list-context'
  * @param {boolean} product.InCart      The variable that shows if the specified product is in the cart.
  * @param {number}  product.ShopID      The ID for the shop from which the product will be bought.
  */
-const SimplifiedCartProduct = ({ product }) => {
-    const cart = useContext(CartContext)
+const SimplifiedListProduct = ({ product }) => {
     const list = useContext(ListContext)
+    const cart = useContext(CartContext)
+    const theme = useTheme()
 
     const [showDetails, setShowDetails] = useState(false)
 
     const customButtonHandler = () => {
-        list.updateProduct(product, product.Pieces, product.ShopID, false)
-        cart.removeProduct(product.Barcode)
+        list.updateProduct(product, product.Pieces, product.ShopID, true)
+        cart.addProduct({ ...product, InCart: true }, 'list_screen')
     }
 
     const getProductPrice = () => {
-        return cart.getProductPrice(product, product.ShopID).toLocaleString()
+        return list.getProductPrice(product, product.ShopID).toLocaleString()
+    }
+
+    const disabledcard = {
+        backgroundColor: theme.colors.secondary,
+        margin: 5,
+        padding: 3,
     }
 
     return (
         <>
             <ProductDetailsModal
-                caller="cart"
+                caller="list"
                 product={product}
                 visible={showDetails}
                 onDismiss={() => {
@@ -43,7 +50,8 @@ const SimplifiedCartProduct = ({ product }) => {
             />
 
             <Card
-                style={styles.card}
+                style={product.InCart ? disabledcard : styles.card}
+                disabled={product.InCart}
                 onPress={() => {
                     setShowDetails(true)
                 }}
@@ -54,6 +62,7 @@ const SimplifiedCartProduct = ({ product }) => {
                     </Text>
                     <Text variant="headlineMedium">{getProductPrice()} Ft</Text>
                     <IconButton
+                        disabled={product.InCart}
                         icon="cart-arrow-up"
                         size={30}
                         style={styles.iconbutton}
@@ -88,4 +97,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default SimplifiedCartProduct
+export default SimplifiedListProduct

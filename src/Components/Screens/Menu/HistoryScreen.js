@@ -2,13 +2,14 @@ import { useContext, useEffect, useState } from 'react'
 import { View, StyleSheet, FlatList } from 'react-native'
 import { Text, IconButton, Portal, Button } from 'react-native-paper'
 
-import ApiContext from '../../Contexts/api/api-context'
-import PreferncesContext from '../../Contexts/preferences/preferences-context'
-import TopNavBar from '../Navigation/TopNavBar'
-import ErrorModal from '../UI/ErrorModal'
-import HistoryItem from '../UI/HistoryItem'
-import HistoryProduct from '../UI/Product/History/HistoryProduct'
-import SimplifiedHistoryProduct from '../UI/Product/History/SimplifiedHistoryProduct'
+import ApiContext from '../../../Contexts/api/api-context'
+import PreferncesContext from '../../../Contexts/preferences/preferences-context'
+import TopNavBar from '../../Navigation/TopNavBar'
+import ErrorModal from '../../UI/ErrorModal'
+import HistoryItem from '../../UI/HistoryItem'
+import LoadIndicator from '../../UI/LoadIndicator'
+import HistoryProduct from '../../UI/Product/History/HistoryProduct'
+import SimplifiedHistoryProduct from '../../UI/Product/History/SimplifiedHistoryProduct'
 
 /**
  * The screen renders the users previous purchases
@@ -17,22 +18,39 @@ import SimplifiedHistoryProduct from '../UI/Product/History/SimplifiedHistoryPro
 const HistoryScreen = ({ navigation }) => {
     const api = useContext(ApiContext)
     const preference = useContext(PreferncesContext)
+    const parentNavigation = navigation.getParent()
+
     const [history, setHistory] = useState([])
     const [products, setProducts] = useState([])
     const [error, setError] = useState({ err: false, msg: '' })
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         if (api.userStatus) getPurchasesHandler()
     }, [])
 
     const getPurchasesHandler = async () => {
-        const data = await api.getHistory()
-        setHistory(data)
+        setLoading(true)
+        try {
+            const data = await api.getHistory()
+            setHistory(data)
+            setLoading(false)
+        } catch (err) {
+            setLoading(false)
+            setError({ err: true, msg: err.message })
+        }
     }
 
     const historySelectHandler = async (PurchaseID) => {
-        const data = await api.getHistoryItems(PurchaseID)
-        setProducts(data)
+        setLoading(true)
+        try {
+            const data = await api.getHistoryItems(PurchaseID)
+            setProducts(data)
+            setLoading(false)
+        } catch (err) {
+            setLoading(false)
+            setError({ err: true, msg: err.message })
+        }
     }
 
     const onBackHandler = () => {
@@ -43,13 +61,13 @@ const HistoryScreen = ({ navigation }) => {
         return (
             <>
                 <TopNavBar
-                    navigation={navigation}
+                    navigation={parentNavigation}
                     title={
                         <IconButton
                             icon="home"
                             size={40}
                             onPress={() => {
-                                navigation.navigate('main')
+                                parentNavigation.navigate('main')
                             }}
                         />
                     }
@@ -62,16 +80,38 @@ const HistoryScreen = ({ navigation }) => {
         )
     }
 
+    if (loading) {
+        return (
+            <>
+                <TopNavBar
+                    navigation={parentNavigation}
+                    title={
+                        <IconButton
+                            icon="home"
+                            size={40}
+                            onPress={() => {
+                                parentNavigation.navigate('main')
+                            }}
+                        />
+                    }
+                />
+                <View style={{ marginTop: 50 }}>
+                    <LoadIndicator title="Adatok betöltése folyamatban..." />
+                </View>
+            </>
+        )
+    }
+
     return (
         <>
             <TopNavBar
-                navigation={navigation}
+                navigation={parentNavigation}
                 title={
                     <IconButton
                         icon="home"
                         size={40}
                         onPress={() => {
-                            navigation.navigate('main')
+                            parentNavigation.navigate('main')
                         }}
                     />
                 }
@@ -118,7 +158,7 @@ const HistoryScreen = ({ navigation }) => {
                             onError={(message) => {
                                 setError({ err: true, msg: message })
                             }}
-                            navigation={navigation}
+                            navigation={parentNavigation}
                         />
                     )}
                 />
@@ -136,7 +176,7 @@ const HistoryScreen = ({ navigation }) => {
                             onError={(message) => {
                                 setError({ err: true, msg: message })
                             }}
-                            navigation={navigation}
+                            navigation={parentNavigation}
                         />
                     )}
                 />
