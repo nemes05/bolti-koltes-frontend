@@ -179,7 +179,7 @@ const CartProvider = ({ children }) => {
                     ShopID: product.ShopID,
                 })
             })
-            api.saveHistory(save)
+            await api.saveHistory(save)
         } else {
             cart.forEach((product) => {
                 removeProductHandler(product.Barcode)
